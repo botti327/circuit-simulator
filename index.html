@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>エクサスケイル防具 回路シミュレーター</title>
+<style>
+  body {
+    font-family: monospace;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    background: #fff;
+    color: #000;
+  }
+  .container { display: flex; gap: 30px; }
+  .left-frame, .side {
+    background: #f5f5f5;
+    padding: 16px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+  }
+  .left-frame {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 12px;
+  }
+  .board-wrap { 
+    text-align: center;
+    background: #f5f5f5;
+    padding: 12px;
+    border-radius: 10px;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 56px);
+    grid-template-rows: repeat(4, 56px);
+    gap: 2px;
+    padding: 4px;
+    background: #e0e0e0;
+    border-radius: 8px;
+  }
+  .cell {
+    position: relative;
+    border: 1px solid #333;
+    font-size: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    background: #fff;
+    border-radius: 6px;
+  }
+  .symbol-display {
+    position: absolute;
+    top:50%; left:50%;
+    transform: translate(-50%, -50%);
+  }
+  .number-display {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 14px;
+    color: #000;
+  }
+  .connected {
+    font-weight: bold;
+  }
+  .highlight-red {
+    background: #ffe8e8;
+    color: #c00;
+  }
+  .highlight-blue {
+    background: #e8f1ff;
+    color: #246bff;
+  }
+  .highlight-green {
+    background: #e6fffa;
+    color: #0a8;
+  }
+  .panel {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+  .palette {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    align-items: flex-start;
+  }
+  .column, .multi-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  .symbol {
+    width: 48px;
+    height: 48px;
+    border: 1px solid #333;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .symbol.selected {
+    background: #007bff;
+    color: #fff;
+  }
+  .symbol.multi {
+    width: 46px;
+    height: 46px;
+    font-size: 32px;
+    border: 2px dashed #333;
+  }
+  .multi-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-align: center;
+    height: 20px;
+    line-height: 1.5;
+  }
+  .delete-btn {
+    margin-top: 58px;
+  }
+  textarea {
+   width: 100%;
+   height: 120px;
+   font-family: monospace;
+   background: #fff;
+   color: #000;
+   border: 1px solid #333;
+   resize: none;
+  }
+  button {
+    cursor: pointer;
+    margin-bottom: 6px;
+  }
+  #changelog {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 250px;
+    max-height: 200px;
+    background: #fefefe;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 12px;
+    overflow-y: auto;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    z-index: 999;
+  }
+  #changelogTop {
+    position: fixed;
+    bottom: 150px;
+    right: 20px;
+    width: 250px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #c00;
+  }
+  #changelog h4 {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    text-align: center;
+  }
+  #changelog ul {
+    padding-left: 18px;
+    margin: 0;
+  }
+  #changelog li {
+    margin-bottom: 4px;
+  }
+  .clear-board-btn {
+    margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h2>エクサスケイル防具 回路シミュレーター v1.2</h2>
+
+<div class="container">
+  <!-- メインエリア -->
+  <div class="left-frame" id="boards"></div>
+
+  <!-- 操作 -->
+  <div class="side">
+
+    <!-- 回路 -->
+    <div class="palette">
+      <div class="column">
+        <div class="multi-title">増幅回路</div>
+        <div class="symbol">┃</div>
+        <div class="symbol">━</div>
+        <div class="symbol delete-btn">削</div>
+      </div>
+      <div class="column">
+        <div class="multi-title" style="visibility:hidden;">タイトル</div>
+        <div class="symbol">┗</div>
+        <div class="symbol">┏</div>
+        <div class="symbol">┓</div>
+        <div class="symbol">┛</div>
+      </div>
+      <div class="column">
+        <div class="multi-title" style="visibility:hidden;">タイトル</div>
+        <div class="symbol">┳</div>
+        <div class="symbol">┫</div>
+        <div class="symbol">┻</div>
+        <div class="symbol">┣</div>
+      </div>
+      <div class="column multi-column">
+        <div class="multi-title">複製回路</div>
+        <div class="symbol multi">┳</div>
+        <div class="symbol multi">┫</div>
+        <div class="symbol multi">┻</div>
+        <div class="symbol multi">┣</div>
+      </div>
+    </div>
+
+    <!-- 数値選択 -->
+    <h3>数値選択</h3>
+    <div id="numRadio">
+      <label><input type="radio" name="num" value="0">0</label>
+      <label><input type="radio" name="num" value="0.5" checked>0.5</label>
+      <label><input type="radio" name="num" value="0.6">0.6</label>
+      <label><input type="radio" name="num" value="0.7">0.7</label>
+      <label><input type="radio" name="num" value="0.8">0.8</label>
+      <label><input type="radio" name="num" value="0.9">0.9</label>
+      <label><input type="radio" name="num" value="1.0">1.0</label>
+    </div>
+
+    <!-- IN/EX -->
+    <h3>保存</h3>
+    <button id="exportBtn">Export</button>
+    <button id="importBtn">Import</button>
+    <textarea id="data"></textarea>
+  </div>
+</div>
+
+<div id="changelogTop"></div>
+<div id="changelog">
+  <h4>更新履歴</h4>
+  <ul id="changelogList">
+    <li>v1.2：ローカル保存機能追加</li>
+    <li>v1.1：部位・数値・複製回路機能追加</li>
+    <li>v1.0：シミュ仮公開</li>
+  </ul>
+</div>
+
+<script>
+
+/* ==============================
+   定数
+   ============================== */
+const size = 4;
+let selected = "";
+let selectedNumber = "0.5";
+let selectedIsMulti = false;
+const boards = [];
+const dataEl = document.getElementById("data");
+const connections = {
+  "━":{l:1,r:1,u:0,d:0}, "┃":{l:0,r:0,u:1,d:1},
+  "┗":{l:0,r:1,u:1,d:0}, "┏":{l:0,r:1,u:0,d:1},
+  "┓":{l:1,r:0,u:0,d:1}, "┛":{l:1,r:0,u:1,d:0},
+  "┳":{l:1,r:1,u:0,d:1}, "┻":{l:1,r:1,u:1,d:0},
+  "┣":{l:0,r:1,u:1,d:1}, "┫":{l:1,r:0,u:1,d:1}
+};
+
+const partPos = { top:[3,3], bottom:[0,3], glove:[3,0], shoes:[0,0] };
+const boardsEl = document.getElementById("boards");
+
+/* ==============================
+   回路選択・数字選択
+   ============================== */
+document.querySelectorAll(".symbol").forEach(s=>{
+  s.onclick = () => {
+    document.querySelectorAll(".symbol").forEach(x=>x.classList.remove("selected"));
+    s.classList.add("selected");
+    selected = s.textContent;
+    selectedIsMulti = s.classList.contains("multi");
+  };
+});
+document.querySelectorAll('input[name="num"]').forEach(r=>{
+  r.onchange = ()=> selectedNumber = r.value;
+});
+
+/* ==============================
+   部位自動生成
+   ============================== */
+const initialParts = ["top","bottom","glove","shoes"];
+let savedData = localStorage.getItem("circuitBoards");
+if(savedData){ try{ savedData = JSON.parse(savedData); } catch{ savedData = null; } } else savedData = null;
+
+for(let i=0;i<4;i++){
+  const wrap = document.createElement("div"); wrap.className="board-wrap";
+  const panel = document.createElement("div"); panel.className="panel";
+
+  panel.innerHTML=`
+    <select class="color">
+      <option value="red">赤</option>
+      <option value="blue">青</option>
+      <option value="green">緑</option>
+    </select>
+    <select class="part">
+      <option value="top">上衣</option>
+      <option value="bottom">下衣</option>
+      <option value="glove">手袋</option>
+      <option value="shoes">靴</option>
+    </select>
+  `;
+  wrap.appendChild(panel);
+
+  /* ==============================
+     回路クリアボタン
+     ============================== */
+  const clearBtn = document.createElement("button");
+  clearBtn.textContent = "回路クリア";
+  clearBtn.className = "clear-board-btn";
+  panel.appendChild(clearBtn);
+
+  const board = document.createElement("div"); board.className="board";
+  wrap.appendChild(board);
+
+  const sumDiv = document.createElement("div");
+  sumDiv.style.marginTop="6px"; sumDiv.style.fontWeight="bold";
+  sumDiv.textContent = "接続済み合計: 0";
+  wrap.appendChild(sumDiv);
+
+  const grid = Array.from({length:4},()=>Array(4).fill(null).map(()=>({symbol:"",number:"",multi:false})));
+  let part = initialParts[i];
+  if(savedData && savedData[i]) part = savedData[i].part || part;
+  const [px, py] = partPos[part];
+  grid[py][px] = { symbol: "◯", number: "", multi: false };
+  panel.querySelector(".part").value = part;
+
+  if(savedData && savedData[i] && savedData[i].grid){
+    for(let y=0;y<4;y++) for(let x=0;x<4;x++){
+      if(savedData[i].grid[y][x].symbol !== "◯"){
+        grid[y][x] = {...savedData[i].grid[y][x]};
+      }
+    }
+  }
+
+  /* ==============================
+     部位A
+     ============================== */
+  panel.querySelector(".part").onchange = () => {
+    const p = panel.querySelector(".part").value;
+    for(let y=0;y<4;y++) for(let x=0;x<4;x++)
+      if(grid[y][x].symbol === "◯") grid[y][x].symbol = "";
+    if(p){ const [x,y] = partPos[p]; grid[y][x] = {symbol:"◯",number:"",multi:false}; }
+    draw(); saveToLocal();
+  };
+  panel.querySelector(".color").onchange = ()=>{ draw(); saveToLocal(); };
+
+  clearBtn.onclick = () => {
+    if(confirm("回路を全て削除しますか？")){
+      for(let y=0;y<4;y++) for(let x=0;x<4;x++)
+        if(grid[y][x].symbol !== "◯") grid[y][x] = {symbol:"",number:"",multi:false};
+      draw(); saveToLocal();
+    }
+  };
+
+  /* ==============================
+     部位B
+     ============================== */
+  function draw(){
+    board.querySelectorAll(".cell").forEach((c,i)=>{
+      const y = Math.floor(i/4), x = i%4;
+      const s = grid[y][x];
+      c.innerHTML = `<div class="symbol-display">${s.symbol}</div><div class="number-display">${s.number||""}</div>`;
+      c.className = "cell";
+      if(s.multi) c.classList.add("multi-cell");
+    });
+    update();
+  }
+
+  for(let y=0;y<4;y++) for(let x=0;x<4;x++){
+    const c = document.createElement("div"); c.className="cell";
+    c.onclick = () => {
+      const cell = grid[y][x];
+      if(cell.symbol==="◯") return;
+      if(selected==="削") grid[y][x]={symbol:"",number:"",multi:false};
+      else if(selected) grid[y][x]={symbol:selected, number:selectedIsMulti?"":(selectedNumber||cell.number||""), multi:selectedIsMulti};
+      draw(); saveToLocal();
+    };
+    board.appendChild(c);
+  }
+
+  /* ==============================
+     接続・合計更新
+     ============================== */
+  function update(){
+    const dx={l:-1,r:1,u:0,d:0}, dy={l:0,r:0,u:-1,d:1}, opp={l:"r",r:"l",u:"d",d:"u"};
+    let hasLine=false, circle=false;
+    for(let y=0;y<4;y++) for(let x=0;x<4;x++){
+      const s=grid[y][x];
+      if(!s.symbol) continue;
+      if(!connections[s.symbol] && s.symbol!=="◯") continue;
+      if(s.symbol!=="◯") hasLine=true;
+      if(s.symbol==="◯"){ for(const d in dx){ const nx=x+dx[d], ny=y+dy[d]; if(grid[ny]?.[nx]?.symbol && grid[ny][nx].symbol!=="◯") circle=true; } continue; }
+      for(const d in connections[s.symbol]){
+        if(!connections[s.symbol][d]) continue;
+        const nx=x+dx[d], ny=y+dy[d]; const t=grid[ny]?.[nx];
+        if(!t) return clear(); if(t.symbol==="◯"){circle=true; continue;}
+        if(!connections[t.symbol] || !connections[t.symbol][opp[d]]) return clear();
+      }
+    }
+
+    const color=panel.querySelector(".color").value;
+    let sum=0;
+    board.querySelectorAll(".cell").forEach((c,i)=>{
+      const y=Math.floor(i/4), x=i%4;
+      const s=grid[y][x]; c.className="cell";
+      if(s.multi){
+        let sumHalf=0;
+        for(const d in dx){
+          const nx=x+dx[d], ny=y+dy[d], t=grid[ny]?.[nx];
+          if(t && t.symbol && t.symbol!=="◯" && !t.multi && t.number){
+            if(connections[s.symbol] && connections[t.symbol]){
+              for(const dir in connections[s.symbol]){
+                if(connections[s.symbol][dir]){
+                  const tx=x+dx[dir], ty=y+dy[dir];
+                  if(tx===nx && ty===ny && connections[t.symbol][opp[dir]]){
+                    const n=parseFloat(t.number);
+                    if(!isNaN(n)) sumHalf+=n/2;
+                  }
+                }
+              }
+            }
+          }
+        }
+        c.querySelector(".number-display").textContent=sumHalf?sumHalf.toFixed(2):"";
+      } else c.querySelector(".number-display").textContent=s.number||"";
+      if(hasLine && circle && s.symbol && connections[s.symbol]){
+        c.classList.add("connected","highlight-"+color);
+        const n=parseFloat(c.querySelector(".number-display").textContent);
+        if(!isNaN(n)) sum+=n;
+      }
+    });
+    sumDiv.textContent="接続済み合計: "+sum.toFixed(2);
+  }
+
+  function clear(){ board.querySelectorAll(".cell").forEach(c=>c.className="cell"); }
+  function saveToLocal(){
+    const saveData = boards.map(b=>({
+      grid: b.grid.map(r=>r.map(c=>({symbol:c.symbol,number:c.number,multi:c.multi}))),
+      color: b.panel.querySelector(".color").value,
+      part: b.panel.querySelector(".part").value
+    }));
+    localStorage.setItem("circuitBoards", JSON.stringify(saveData));
+  }
+
+  boards.push({grid,panel,draw});
+  boardsEl.appendChild(wrap);
+  draw();
+}
+
+/* ==============================
+   更新履歴通知
+   ============================== */
+function addChangelog(text){ document.getElementById("changelogTop").textContent = text; }
+
+/* ==============================
+   エクスポート
+   ============================== */
+document.getElementById("exportBtn").onclick = () => {
+  dataEl.value = JSON.stringify(boards.map(b=>({
+    grid:b.grid.map(r=>r.map(c=>({symbol:c.symbol,number:c.number,multi:c.multi}))),
+    color:b.panel.querySelector(".color").value,
+    part:b.panel.querySelector(".part").value
+  })));
+
+  addChangelog("エクスポートしました:" + new Date().toLocaleString());
+};
+
+/* ==============================
+   インポート
+   ============================== */
+document.getElementById("importBtn").onclick = () => {
+  try{
+    const data = JSON.parse(dataEl.value);
+    data.forEach((d,i)=>{
+      for(let y=0;y<4;y++) for(let x=0;x<4;x++) boards[i].grid[y][x]={symbol:d.grid[y][x].symbol, number:d.grid[y][x].number, multi:d.grid[y][x].multi};
+      boards[i].panel.querySelector(".color").value=d.color;
+      boards[i].panel.querySelector(".part").value=d.part;
+      boards[i].draw();
+    });
+    localStorage.setItem("circuitBoards", dataEl.value);
+    addChangelog("インポートしました:" + new Date().toLocaleString());
+  } catch{ alert("データ形式が不正です"); }
+};
+</script>
+
+</body>
+</html>
