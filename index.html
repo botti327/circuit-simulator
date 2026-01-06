@@ -361,7 +361,8 @@ for(let i=0;i<4;i++){
   const [px, py] = partPos[part];
   grid[py][px] = {symbol:"◯", number:"", multi:false};
   panel.querySelector(".part").value = part;
-
+  panel.querySelector(".color").value = savedData?.[i]?.color || "red";
+  
   // 保存データ読み込み
   if(savedData?.[i]?.grid){
     for(let y=0;y<4;y++) for(let x=0;x<4;x++)
@@ -526,3 +527,4 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
+
