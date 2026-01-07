@@ -125,6 +125,15 @@ h2 { margin-bottom: 16px; }
   user-select: none;
 }
 
+.multi-label {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+}
+
 .symbol.selected { background: #007bff; color: #fff; }
 .symbol.multi { width: 46px; height: 46px; font-size: 32px; border: 2px dashed #333; }
 .delete-btn { margin-top: 58px; }
@@ -185,7 +194,7 @@ h3 { text-align: left; margin-bottom: 4px; }
 </head>
 <body>
 
-<h2>エクサスケイル防具 回路シミュレーター v1.4</h2>
+<h2>エクサスケイル防具 回路シミュレーター v1.3</h2>
 
 <div class="container">
 
@@ -283,7 +292,6 @@ h3 { text-align: left; margin-bottom: 4px; }
     <div id="changelog">
       <h4>更新履歴</h4>
       <ul id="changelogList">
-        <li>v1.4：不具合修正</li>
         <li>v1.3：セーブスロット機能追加 + その他調整</li>
         <li>v1.2：ローカル保存機能追加 + その他調整</li>
         <li>v1.1：部位・数値・複製回路機能追加</li>
@@ -400,12 +408,11 @@ for(let i=0;i<4;i++){
   function drawBoard(){
     board.querySelectorAll(".cell").forEach((c,i)=>{
       const y=Math.floor(i/4), x=i%4, s=grid[y][x];
-      const y=Math.floor(i/4), x=i%4, s=grid[y][x];
       c.innerHTML =
         `<div class="symbol-display">${s.symbol}</div>
         ${s.multi ? '<div class="multi-label">複</div>' : ''}
         <div class="number-display">${s.number||""}</div>`;
-      
+
       c.className="cell"; if(s.multi) c.classList.add("multi-cell");
     });
     updateBoard();
@@ -442,7 +449,6 @@ for(let i=0;i<4;i++){
 
       const t = grid[ny]?.[nx];
        if (!t) continue;
-
         if(s.symbol==="◯"){
          if(t.symbol && connections[t.symbol]){
             if(!visited[ny][nx]){
@@ -590,6 +596,3 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
-
-
-
