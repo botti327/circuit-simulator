@@ -77,9 +77,11 @@ h2 { margin-bottom: 16px; }
 
 .symbol-display {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .number-display {
@@ -90,6 +92,13 @@ h2 { margin-bottom: 16px; }
   color: #000;
 }
 
+.circle-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  pointer-events: none;
+}
+  
 .connected { font-weight: bold; }
 
 .highlight-red { background: #ffe8e8; color: #c00; }
@@ -409,10 +418,25 @@ for(let i=0;i<4;i++){
   function drawBoard(){
     board.querySelectorAll(".cell").forEach((c,i)=>{
       const y=Math.floor(i/4), x=i%4, s=grid[y][x];
-      c.innerHTML =
-        `<div class="symbol-display">${s.symbol}</div>
-        ${s.multi ? '<div class="multi-label">複</div>' : ''}
-        <div class="number-display">${s.number||""}</div>`;
+      const part = panel.querySelector(".part").value;
+
+      const circleImages = {
+        top: "top.png",
+        bottom: "bottom.png",
+        glove: "glove.png",
+        shoes: "shoes.png"
+      };
+
+      let symbolHTML = s.symbol;
+
+      if(s.symbol==="◯" && circleImages[part]){
+        symbolHTML = `<img src="${circleImages[part]}" class="circle-img">`;
+      }
+
+      c.innerHTML = `
+       <div class="symbol-display">${symbolHTML}</div>
+        <div class="number-display">${s.number||""}</div>
+      `;
 
       c.className="cell"; if(s.multi) c.classList.add("multi-cell");
     });
@@ -601,5 +625,6 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
+
 
 
