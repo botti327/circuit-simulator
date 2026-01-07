@@ -435,7 +435,8 @@ for(let i=0;i<4;i++){
 
       c.innerHTML = `
        <div class="symbol-display">${symbolHTML}</div>
-        <div class="number-display">${s.number||""}</div>
+       ${s.multi ? `<div class="multi-label">複</div>` : ``}
+       <div class="number-display">${s.number||""}</div>
       `;
 
       c.className="cell"; if(s.multi) c.classList.add("multi-cell");
@@ -625,6 +626,7 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
+
 
 
 
