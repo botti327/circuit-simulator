@@ -426,10 +426,17 @@ for(let i=0;i<4;i++){
       const s = grid[y][x];
 
      for(const d in dx){
-       const nx=x+dx[d], ny=y+dy[d];
-       const t = grid[ny]?.[nx];
+     const nx = x + dx[d], ny = y + dy[d];
 
-        if(!t) continue;
+      if (connections[s.symbol]?.[d]) {
+       if (ny < 0 || ny >= 4 || nx < 0 || nx >= 4) {
+           invalid = true;
+           break;
+        }
+       }
+
+      const t = grid[ny]?.[nx];
+       if (!t) continue;
 
         if(s.symbol==="◯"){
          if(t.symbol && connections[t.symbol]){
@@ -578,4 +585,5 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
+
 
