@@ -451,13 +451,17 @@ for(let i=0;i<4;i++){
       const t = grid[ny]?.[nx];
        if (!t) continue;
         if(s.symbol==="◯"){
-         if(t.symbol && connections[t.symbol]){
+          if(t.symbol && connections[t.symbol]){
+           if(!connections[t.symbol]?.[opp[d]]){
+              invalid = true;
+             break;
+           }
             if(!visited[ny][nx]){
               visited[ny][nx]=true;
               stack.push([nx,ny]);
-           }
-         }
-         continue;
+            }
+          }
+          continue;
         }
 
        if(connections[s.symbol]?.[d]){
@@ -597,4 +601,5 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
+
 
