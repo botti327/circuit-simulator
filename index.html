@@ -400,7 +400,12 @@ for(let i=0;i<4;i++){
   function drawBoard(){
     board.querySelectorAll(".cell").forEach((c,i)=>{
       const y=Math.floor(i/4), x=i%4, s=grid[y][x];
-      c.innerHTML=`<div class="symbol-display">${s.symbol}</div><div class="number-display">${s.number||""}</div>`;
+      const y=Math.floor(i/4), x=i%4, s=grid[y][x];
+      c.innerHTML =
+        `<div class="symbol-display">${s.symbol}</div>
+        ${s.multi ? '<div class="multi-label">複</div>' : ''}
+        <div class="number-display">${s.number||""}</div>`;
+      
       c.className="cell"; if(s.multi) c.classList.add("multi-cell");
     });
     updateBoard();
@@ -585,5 +590,6 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
+
 
 
