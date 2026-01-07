@@ -396,6 +396,15 @@ for(let i=0;i<4;i++){
     board.appendChild(c);
   }
 
+  function drawBoard(){
+    board.querySelectorAll(".cell").forEach((c,i)=>{
+      const y=Math.floor(i/4), x=i%4, s=grid[y][x];
+      c.innerHTML=`<div class="symbol-display">${s.symbol}</div><div class="number-display">${s.number||""}</div>`;
+      c.className="cell"; if(s.multi) c.classList.add("multi-cell");
+    });
+    updateBoard();
+  }
+
   function updateBoard(){
     const dx={l:-1,r:1,u:0,d:0}, dy={l:0,r:0,u:-1,d:1}, opp={l:"r",r:"l",u:"d",d:"u"};
 
@@ -493,6 +502,7 @@ for(let i=0;i<4;i++){
     sumDiv.textContent="接続済み合計: "+sum.toFixed(2);
   }
 
+
   function clearBoard(){ board.querySelectorAll(".cell").forEach(c=>c.className="cell"); }
 
   wrap.drawBoard = drawBoard;
@@ -567,5 +577,3 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
-
-
