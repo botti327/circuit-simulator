@@ -396,60 +396,100 @@ for(let i=0;i<4;i++){
     board.appendChild(c);
   }
 
-  function drawBoard(){
-    board.querySelectorAll(".cell").forEach((c,i)=>{
-      const y=Math.floor(i/4), x=i%4, s=grid[y][x];
-      c.innerHTML=`<div class="symbol-display">${s.symbol}</div><div class="number-display">${s.number||""}</div>`;
-      c.className="cell"; if(s.multi) c.classList.add("multi-cell");
-    });
-    updateBoard();
-  }
-
   function updateBoard(){
     const dx={l:-1,r:1,u:0,d:0}, dy={l:0,r:0,u:-1,d:1}, opp={l:"r",r:"l",u:"d",d:"u"};
-    let hasLine=false, circle=false;
-    for(let y=0;y<4;y++) for(let x=0;x<4;x++){
-      const s=grid[y][x]; if(!s.symbol) continue;
-      if(!connections[s.symbol] && s.symbol!=="◯") continue;
-      if(s.symbol!=="◯") hasLine=true;
-      if(s.symbol==="◯"){ for(const d in dx){ const nx=x+dx[d], ny=y+dy[d]; if(grid[ny]?.[nx]?.symbol && grid[ny][nx].symbol!=="◯") circle=true; } continue; }
-      for(const d in connections[s.symbol]){
-        if(!connections[s.symbol][d]) continue;
-        const nx=x+dx[d], ny=y+dy[d], t=grid[ny]?.[nx];
-        if(!t) return clearBoard();
-        if(t.symbol==="◯"){circle=true; continue;}
-        if(!connections[t.symbol] || !connections[t.symbol][opp[d]]) return clearBoard();
+
+   let cx=-1, cy=-1;
+   for(let y=0;y<4;y++) for(let x=0;x<4;x++){
+     if(grid[y][x].symbol==="◯"){ cx=x; cy=y; }
+   }
+    if(cx===-1) return;
+
+    const visited = Array.from({length:4},()=>Array(4).fill(false));
+    const stack = [[cx,cy]];
+    visited[cy][cx]=true;
+
+  let invalid = false;
+
+    while(stack.length && !invalid){
+      const [x,y] = stack.pop();
+      const s = grid[y][x];
+
+     for(const d in dx){
+       const nx=x+dx[d], ny=y+dy[d];
+       const t = grid[ny]?.[nx];
+
+        if(!t) continue;
+
+        if(s.symbol==="◯"){
+         if(t.symbol && connections[t.symbol]){
+            if(!visited[ny][nx]){
+              visited[ny][nx]=true;
+              stack.push([nx,ny]);
+           }
+         }
+         continue;
+        }
+
+       if(connections[s.symbol]?.[d]){
+         if(!t.symbol){
+            invalid = true; break;
+          }
+          if(t.symbol==="◯"){
+            if(!visited[ny][nx]){
+              visited[ny][nx]=true;
+              stack.push([nx,ny]);
+            }
+          } else {
+           if(!connections[t.symbol]?.[opp[d]]){
+             invalid = true; break;
+            }
+            if(!visited[ny][nx]){
+              visited[ny][nx]=true;
+              stack.push([nx,ny]);
+           }
+         }
+        }
       }
     }
 
-    const color=panel.querySelector(".color").value;
-    let sum=0;
-    board.querySelectorAll(".cell").forEach((c,i)=>{
-      const y=Math.floor(i/4), x=i%4, s=grid[y][x]; c.className="cell";
-      if(s.multi){
-        let sumHalf=0;
-        for(const d in dx){
-          const nx=x+dx[d], ny=y+dy[d], t=grid[ny]?.[nx];
-          if(t && t.symbol && t.symbol!=="◯" && !t.multi && t.number){
-            for(const dir in connections[s.symbol]){
-              if(connections[s.symbol][dir]){
-                const tx=x+dx[dir], ty=y+dy[dir];
-                if(tx===nx && ty===ny && connections[t.symbol][opp[dir]]){
-                  const n=parseFloat(t.number);
-                  if(!isNaN(n)) sumHalf+=n/2;
-                }
-              }
+   if(invalid){
+      board.querySelectorAll(".cell").forEach(c=>c.className="cell");
+      sumDiv.textContent="接続済み合計: 0";
+      return;
+    }
+
+    const color = panel.querySelector(".color").value;
+    let sum = 0;
+
+   board.querySelectorAll(".cell").forEach((c,i)=>{
+     const y=Math.floor(i/4), x=i%4, s=grid[y][x];
+     c.className="cell";
+     if(!visited[y][x]) return;
+
+     if(s.multi){
+       let sumHalf=0;
+       for(const d in dx){
+         const nx=x+dx[d], ny=y+dy[d], t=grid[ny]?.[nx];
+         if(t && visited[ny][nx] && !t.multi && t.number){
+            if(connections[s.symbol]?.[d] && connections[t.symbol]?.[opp[d]]){
+             sumHalf += parseFloat(t.number)/2;
             }
           }
         }
-        c.querySelector(".number-display").textContent=sumHalf?sumHalf.toFixed(2):"";
-      } else c.querySelector(".number-display").textContent=s.number||"";
-      if(hasLine && circle && s.symbol && connections[s.symbol]){
-        c.classList.add("connected","highlight-"+color);
-        const n=parseFloat(c.querySelector(".number-display").textContent);
+       c.querySelector(".number-display").textContent =
+         sumHalf ? sumHalf.toFixed(2) : "";
+       sum += sumHalf;
+      } else {
+        const n=parseFloat(s.number);
         if(!isNaN(n)) sum+=n;
+     }
+
+      if(connections[s.symbol]){
+       c.classList.add("connected","highlight-"+color);
       }
     });
+
     sumDiv.textContent="接続済み合計: "+sum.toFixed(2);
   }
 
@@ -527,4 +567,5 @@ document.querySelectorAll(".loadBtn").forEach(btn=>{
 
 </body>
 </html>
+
 
