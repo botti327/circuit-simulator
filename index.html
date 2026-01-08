@@ -79,7 +79,6 @@
       justify-content: center;
       cursor: pointer;
       user-select: none;
-      background: #fff;
       border-radius: 5px;
     }
 
@@ -100,30 +99,29 @@
       color: #000;
     }
 
-    .circle-img {
-      width: 50px;
-      height: 50px;
+    .img {
+      width: 52px;
       object-fit: contain;
       pointer-events: none;
-    }
-
-    .connected {
-      font-weight: bold;
+      border-radius: 5px;
     }
 
     .highlight-red {
-      background: #ffe8e8;
-      color: #c00;
+      background: #fff0f0;
+      color: #ff6666;
+      box-shadow: 0 0 20px  #ff8888;
     }
 
     .highlight-blue {
-      background: #e8f1ff;
-      color: #246bff;
+      background: #f0f8ff;
+      color: #3399ff;
+      box-shadow: 0 0 20px #66b3ff;
     }
 
     .highlight-green {
-      background: #e6fffa;
-      color: #0a8;
+      background: #f0fff4;
+      color: #33cc88;
+      box-shadow: 0 0 20px #66ffaa;
     }
 
     .panel {
@@ -149,7 +147,6 @@
       min-width: 60px;
     }
 
-    .palette-title,
     .multi-title {
       font-size: 14px;
       font-weight: bold;
@@ -172,14 +169,15 @@
     }
 
     .symbol.selected {
-      background: #007bff;
-      color: #fff;
+      background: #E0F5FF;
+      color: #3399ff;
+      box-shadow: 0 0 20px #3399ff;
     }
 
     .symbol.multi {
       width: 46px;
       height: 46px;
-      font-size: 32px;
+      font-size: 26px;
       border: 2px dashed #333;
     }
 
@@ -213,20 +211,19 @@
 
     /* ======== セーブスロット ======== */
     .slot-buttons div {
-      margin-bottom: 6px;
       display: flex;
-      align-items: stretch;
-      justify-content: center;
       gap: 4px;
+      width: 100%;
+      justify-content: stretch;
+      align-items: center;
+      margin-bottom: 6px;
+      box-sizing: border-box;
     }
 
     .slot-name {
-      max-width: 180px;
+      flex: 1;
       height: 28px;
       box-sizing: border-box;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
     }
 
     .slot-buttons button {
@@ -271,7 +268,7 @@
 </head>
 <body>
 
-  <h2>エクサスケイル防具 回路シミュレーター v1.4</h2>
+  <h2>エクサスケイル防具 回路シミュレーター v1.41</h2>
 
   <div class="container">
     <div class="left-frame" id="boards"></div>
@@ -288,9 +285,10 @@
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
-          <li>v1.4：回路修正 + その他調整</li>
-          <li>v1.3：セーブスロット機能追加 + その他調整</li>
-          <li>v1.2：ローカル保存機能追加 + その他調整</li>
+          <li>v1.41：各種修正</li>
+          <li>v1.4：回路修正</li>
+          <li>v1.3：セーブスロット機能追加 + 各種修正</li>
+          <li>v1.2：ローカル保存機能追加 + 各種修正</li>
           <li>v1.1：部位・数値・複製回路機能追加</li>
           <li>v1.0：シミュ仮公開</li>
         </ul>
@@ -344,8 +342,7 @@
       groupDiv.className = "num-group";
 
       const titleDiv = document.createElement("div");
-      titleDiv.className = "num-title";
-      groupDiv.appendChild(titleDiv);
+            groupDiv.appendChild(titleDiv);
 
       group.forEach(value => {
         const label = document.createElement("label");
@@ -369,10 +366,17 @@
 
     document.querySelectorAll(".symbol").forEach(s => {
       s.onclick = () => {
-        document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
-        s.classList.add("selected");
-        selected = s.textContent;
-        selectedIsMulti = s.classList.contains("multi");
+        if (s.classList.contains("selected")) {
+          s.classList.remove("selected");
+          selected = "";
+          selectedIsMulti = false;
+       } else {
+
+          document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
+          s.classList.add("selected");
+          selected = s.textContent;
+          selectedIsMulti = s.classList.contains("multi");
+        }
       };
     });
 
@@ -438,7 +442,7 @@
       const sumDiv = document.createElement("div");
       sumDiv.style.marginTop = "6px";
       sumDiv.style.fontWeight = "bold";
-      sumDiv.textContent = "接続済み: 0";
+      sumDiv.textContent = "接続済み : 0";
       wrap.appendChild(sumDiv);
 
       const grid = Array.from({ length: 4 }, () => Array(4).fill(null).map(() => ({ symbol: "", number: "", multi: false })));
@@ -495,7 +499,7 @@
           const circleImages = { top: "top.png", bottom: "bottom.png", glove: "glove.png", shoes: "shoes.png" };
           let symbolHTML = s.symbol;
 
-          if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="circle-img">`;
+          if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="img">`;
 
           c.innerHTML = `
             <div class="symbol-display">${symbolHTML}</div>
@@ -503,7 +507,6 @@
             <div class="number-display">${s.number || ""}</div>
           `;
           c.className = "cell";
-          if (s.multi) c.classList.add("multi-cell");
         });
 
         updateBoard();
@@ -558,7 +561,7 @@
 
         if (invalid) {
           board.querySelectorAll(".cell").forEach(c => c.className = "cell");
-          sumDiv.textContent = "接続済み: 0";
+          sumDiv.textContent = "接続済み : 0";
           return;
         }
 
@@ -587,10 +590,10 @@
             if (!isNaN(n)) sum += n;
           }
 
-          if (connections[s.symbol]) c.classList.add("connected", "highlight-" + color);
+          if (connections[s.symbol]) c.classList.add("highlight-" + color);
         });
 
-        sumDiv.textContent = "接続済み: " + sum.toFixed(2);
+        sumDiv.textContent = "接続済み : " + sum.toFixed(2);
       }
 
       wrap.drawBoard = drawBoard;
