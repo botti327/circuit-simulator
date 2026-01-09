@@ -4,287 +4,359 @@
   <meta charset="UTF-8">
   <title>エクサスケイル防具 回路シミュレーター</title>
   <style>
-    /* ======== 基本レイアウト ======== */
-    body {
-      font-family: monospace;
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-      background: #fff;
-      color: #000;
-      text-align: center;
-    }
+/* ======== 基本レイアウト ======== */
+body {
+  font-family: monospace;
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+  background: #fff;
+  color: #000;
+  text-align: center;
+}
 
-    h3 {
-      text-align: left;
-      margin-bottom: 4px;
-    }
+h3 {
+  text-align: left;
+  margin-bottom: 4px;
+}
 
-    .container {
-      display: flex;
-      gap: 30px;
-      justify-content: center;
-      align-items: stretch;
-    }
+/* ======== コンテナ ======== */
+.container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 30px;
+}
 
-    .left-frame,
-    .side {
-      background: #f5f5f5;
-      padding: 16px;
-      border-radius: 10px;
-      border: 2px solid #333;
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    }
+.description-column {
+  flex: 0 0 350px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 12px;
+  align-items: flex-end;
+}
 
-    .left-frame {
-      display: grid;
-      grid-template-columns: repeat(2, auto);
-      gap: 12px;
-    }
+.left-frame {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  column-gap: 60px;  
+  row-gap: 0; 
+  height: 750px;
+  align-items: flex-start;
+  flex: 0 0 500px;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+}
 
-    .side {
-      max-width: 350px;
-      width: 350px;
-      box-sizing: border-box;
-    }
+.side {
+  flex: 0 0 300px;
+  max-width: 300px;
+  height: 750px;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  align-self: flex-start;
+}
 
-    /* ======== メインボード ======== */
-    .board-wrap {
-      text-align: center;
-      background: #f5f5f5;
-      padding: 12px;
-      border-radius: 10px;
-    }
+/* ======== ボード ======== */
+.board-wrap {
+  text-align: center;
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 0px;
+}
 
-    .board {
-      display: grid;
-      grid-template-columns: repeat(4, 56px);
-      grid-template-rows: repeat(4, 56px);
-      gap: 2px;
-      padding: 5px;
-      background: #e0e0e0;
-      border-radius: 5px;
-    }
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 56px);
+  grid-template-rows: repeat(4, 56px);
+  gap: 2px;
+  padding: 5px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
 
-    .cell {
-      position: relative;
-      border: 1px solid #333;
-      font-size: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-      background: #fff;
-      border-radius: 5px;
-    }
+.board-wrap div[style*="margin-top: 4px"] {
+  margin-top: 2px;
+  font-size: 12px;
+  overflow-y: auto;
+  height: 75px;
+  min-height: 75px;
+  text-align: left;
+}
 
-    .symbol-display {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
 
-    .number-display {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      font-size: 11px;
-      color: #000;
-    }
+/* ======== セル ======== */
+.cell {
+  position: relative;
+  border: 1px solid #333;
+  font-size: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  background: #fff;
+  border-radius: 5px;
+}
 
-    .img {
-      width: 52px;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 5px;
-    }
+.symbol-display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
 
-    .connected {
-      font-weight: bold;
-    }
+.number-display {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 11px;
+  color: #000;
+}
 
-    .highlight-red {
-      background: #fff0f0;
-      color: #ff6666;
-      box-shadow: 0 0 20px #ff8888;
-    }
+.img {
+  width: 52px;
+  object-fit: contain;
+  pointer-events: none;
+  border-radius: 5px;
+}
 
-    .highlight-blue {
-      background: #f0f8ff;
-      color: #3399ff;
-      box-shadow: 0 0 20px #66b3ff;
-    }
+.connected {
+  font-weight: bold;
+}
 
-    .highlight-green {
-      background: #f0fff4;
-      color: #33cc88;
-      box-shadow: 0 0 20px #66ffaa;
-    }
+.highlight-red {
+  background: #fff0f0;
+  color: #ff6666;
+  box-shadow: 0 0 20px #ff8888;
+}
 
-    .panel {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      margin-bottom: 6px;
-    }
+.highlight-blue {
+  background: #f0f8ff;
+  color: #3399ff;
+  box-shadow: 0 0 20px #66b3ff;
+}
 
-    /* ======== 回路選択 ======== */
-    .palette {
-      display: flex;
-      gap: 18px;
-      margin-top: 10px;
-      justify-content: center;
-    }
+.highlight-green {
+  background: #f0fff4;
+  color: #33cc88;
+  box-shadow: 0 0 20px #66ffaa;
+}
 
-    .palette-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      min-width: 60px;
-    }
+/* ======== パネル ======== */
+.panel {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
 
-    .palette-title,
-    .multi-title {
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 4px;
-      text-align: center;
-      height: 22px;
-      line-height: 1.5;
-    }
+/* ======== 回路選択 ======== */
+.palette {
+  display: flex;
+  gap: 18px;
+  margin-top: 10px;
+  justify-content: center;
+}
 
-    .symbol {
-      width: 48px;
-      height: 48px;
-      border: 1px solid #333;
-      font-size: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-    }
+.palette-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 60px;
+}
 
-    .symbol.selected {
-      background: #f0f8ff;
-      color: #3399ff;
-      box-shadow: 0 0 20px #3399ff;
-    }
+.palette-title,
+.multi-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-align: center;
+  height: 22px;
+  line-height: 1.5;
+}
 
-    .symbol.multi {
-      width: 46px;
-      height: 46px;
-      font-size: 26px;
-      border: 2px dashed #333;
-    }
+.symbol {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
 
-    .delete-btn {
-      margin-top: auto;
-    }
+.symbol.selected {
+  background: #f0f8ff;
+  color: #3399ff;
+  box-shadow: 0 0 20px #3399ff;
+}
 
-    .multi-label {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      font-size: 11px;
-      font-weight: bold;
-      color: #000;
-    }
+.symbol.multi {
+  width: 46px;
+  height: 46px;
+  font-size: 26px;
+  border: 2px dashed #333;
+}
 
-    /* ======== 文字 ======== */
-    .char-display {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      font-size: 11px;
-      font-weight: bold;
-      color: #000;
-      pointer-events: none;
-    }
+.delete-btn {
+  margin-top: auto;
+}
 
-    /* ======== 数値選択 ======== */
-    .num-palette {
-      display: flex;
-      gap: 20px;
-      margin-top: 6px;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-    }
+.multi-label {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+}
 
-    .num-group {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
+/* ======== 文字 ======== */
+.char-display {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  pointer-events: none;
+}
 
-    /* ======== セーブスロット ======== */
-    .slot-buttons div {
-      display: flex;
-      gap: 4px;
-      width: 100%;
-      justify-content: stretch;
-      align-items: center;
-      margin-bottom: 6px;
-      box-sizing: border-box;
-    }
+/* ======== 数値選択 ======== */
+.num-palette {
+  display: flex;
+  gap: 20px;
+  margin-top: 6px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
 
-    .slot-name {
-      flex: 1;
-      height: 28px;
-      box-sizing: border-box;
-    }
+.num-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
 
-    .slot-buttons button {
-      height: 28px;
-      box-sizing: border-box;
-    }
+/* ======== セーブスロット ======== */
+.slot-buttons div {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: stretch;
+  align-items: center;
+  margin-bottom: 6px;
+  box-sizing: border-box;
+}
 
-    /* ======== 更新履歴 ======== */
-    #changelog {
-      position: relative;
-      margin-top: 12px;
-      width: 100%;
-      height: 80px;
-      background: #fefefe;
-      border: 2px solid #333;
-      border-radius: 4px;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 12px;
-      overflow-y: auto;
-      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-      box-sizing: border-box;
-    }
+.slot-name {
+  flex: 1;
+  height: 28px;
+  box-sizing: border-box;
+}
 
-    #changelog h4 {
-      margin: 0 0 6px 0;
-      font-size: 14px;
-      text-align: left;
-    }
+.slot-buttons button {
+  height: 28px;
+  box-sizing: border-box;
+}
 
-    #changelog ul {
-      padding-left: 6px;
-      margin: 0;
-      list-style: none;
-      text-align: left;
-    }
+/* ======== 更新履歴 ======== */
+.description {
+  background: #f0f0f0;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.4;
+}
 
-    #changelog li {
-      margin-bottom: 4px;
-    }
+#changelog {
+  width: 100%;
+  height: 180px;
+  background: #fefefe;
+  border: 2px solid #333;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  overflow-y: auto;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+#changelog h4 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  text-align: left;
+}
+
+#changelog ul {
+  padding-left: 6px;
+  margin: 0;
+  list-style: none;
+  text-align: left;
+}
+
+#changelog li {
+  margin-bottom: 4px;
+}
+
+
   </style>
 </head>
 <body>
 
-  <h2>エクサスケイル防具 回路シミュレーター v1.6</h2>
-
 <div class="container">
+  <div class="description-column">
+    <div class="description">
+      <h2>エクサスケイル防具 <br> 回路シミュレーター v1.6</h2>
+      <h3>使い方・説明</h3>
+      <p>右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
+        [削]を選択するか右クリックで、配置した回路を削除できます。<br>
+        追加効果が空白の場合は「指定なし」として計算されます。<br>
+        [自由入力]欄で任意の文字で追加効果を指定することも可能です。<br>
+        <br>
+
+      </ul>
+    </div>
+
+    <div id="changelog">
+      <h4>更新履歴</h4>
+      <ul id="changelogList">
+        <li>v1.6：追加効果</li>
+        <li>v1.5：レイアウト + 色調整</li>
+        <li>v1.4：回路修正 + その他調整</li>
+        <li>v1.3：セーブスロット機能追加 + その他調整</li>
+        <li>v1.2：ローカル保存機能追加 + その他調整</li>
+        <li>v1.1：部位・数値・複製回路機能追加</li>
+        <li>v1.0：シミュ仮公開</li>
+      </ul>
+    </div>
+  </div>
+
   <div class="left-frame" id="boards"></div>
+
 
   <div class="side">
     <div class="palette" id="palette"></div>
@@ -326,21 +398,9 @@
     <h3>セーブ</h3>
     <div class="slot-buttons" id="slotButtons"></div>
 
-    <div id="changelog">
-      <h4>更新履歴</h4>
-      <ul id="changelogList">
-        <li>v1.6：追加効果</li>
-        <li>v1.5：レイアウト + 色調整</li>
-        <li>v1.4：回路修正 + その他調整</li>
-        <li>v1.3：セーブスロット機能追加 + その他調整</li>
-        <li>v1.2：ローカル保存機能追加 + その他調整</li>
-        <li>v1.1：部位・数値・複製回路機能追加</li>
-        <li>v1.0：シミュ仮公開</li>
-      </ul>
-    </div>
   </div>
 </div>
-
+</div>
 <script>
   const slider = document.getElementById("numSlider");
   const numValue = document.getElementById("numValue");
@@ -592,7 +652,7 @@
 
     /* ======== 接続計算 ======== */
     function updateBoard() {
-      // 接続探索と値計算
+
       const dx = { l: -1, r: 1, u: 0, d: 0 };
       const dy = { l: 0, r: 0, u: -1, d: 1 };
       const opp = { l: "r", r: "l", u: "d", d: "u" };
@@ -692,6 +752,7 @@
       });
 
       wrap.charSumDiv.innerHTML = Object.entries(charSum)
+        .sort((a, b) => b[1] - a[1])
         .map(([k, v]) => `${k}:${v.toFixed(2)}`)
         .join("<br>");
     }
