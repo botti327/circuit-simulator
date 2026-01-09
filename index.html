@@ -290,12 +290,23 @@
     <div class="palette" id="palette"></div>
 
     <h3>追加効果</h3>
+    <select id="charSelect" style="width:180px;">
+      <option value="">--選択してください--</option>
+      <option value="持続ダメ">持続ダメ</option>
+      <option value="以上">以上</option>
+      <option value="以下">以下</option>
+      <option value="D">D</option>
+      <option value="E">E</option>
+      <option value="F">F</option>
+      <option value="G">G</option>
+      <option value="H">H</option>
+    </select>
     <input
       id="charInput"
       type="text"
       maxlength="10"
-      style="width:260px; text-align:center;"
-      placeholder="任意"
+      style="width:80px; text-align:center;"
+      placeholder="自由入力"
     />
 
     <h3>数値</h3>
@@ -303,7 +314,7 @@
       <input
         id="numSlider"
         type="range"
-        min="0"
+        min="0.1"
         max="1"
         step="0.1"
         value="0.5"
@@ -339,7 +350,9 @@
   });
 
   function getSelectedChar() {
-    return document.getElementById("charInput").value.trim();
+    const select = document.getElementById("charSelect");
+    const input = document.getElementById("charInput");
+    return input.value.trim() || select.value;
   }
 
   function getSelectedNumber() {
@@ -526,9 +539,9 @@
           saveBoards();
         };
         c.oncontextmenu = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 右クリックメニューを無効化
         const cell = grid[y][x];
-        if (cell.symbol === "img") return;
+        if (cell.symbol === "img") return; // 画像は削除不可
         grid[y][x] = { symbol: "", number: "", char: "", multi: false };
         drawBoard();
         saveBoards();
@@ -780,6 +793,3 @@
     ul.prepend(li);
   }
 </script>
-
-
-
