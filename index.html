@@ -223,6 +223,7 @@
   color: #000;
   pointer-events: none;
 }
+
     /* ======== セーブスロット ======== */
     .slot-buttons div {
       display: flex;
@@ -282,7 +283,7 @@
 </head>
 <body>
 
-  <h2>エクサスケイル防具 回路シミュレーター v1.51</h2>
+  <h2>エクサスケイル防具 回路シミュレーター v1.51β</h2>
 
   <div class="container">
     <div class="left-frame" id="boards"></div>
@@ -299,14 +300,17 @@
 />
       <h3>数値選択</h3>
     <div class="num-palette">
-      <label><input type="radio" name="num" value="0">0</label>
-      <label><input type="radio" name="num" value="0.5" checked>0.5</label>
-      <label><input type="radio" name="num" value="0.6">0.6</label>
-      <label><input type="radio" name="num" value="0.7">0.7</label>
-      <label><input type="radio" name="num" value="0.8">0.8</label>
-      <label><input type="radio" name="num" value="0.9">0.9</label>
-      <label><input type="radio" name="num" value="1.0">1.0</label>
-    </div>
+  <input
+    id="numSlider"
+    type="range"
+    min="0"
+    max="1"
+    step="0.1"
+    value="0.5"
+    style="width: 260px;"
+  />
+  <span id="numValue">0.5</span>
+</div>
 
 
       <h3>セーブ</h3>
@@ -334,9 +338,14 @@
 }
 
 function getSelectedNumber() {
-  const n = document.querySelector('input[name="num"]:checked');
-  return n ? n.value : "";
+  return document.getElementById("numSlider").value;
 }
+const slider = document.getElementById("numSlider");
+const numValue = document.getElementById("numValue");
+
+slider.addEventListener("input", () => {
+  numValue.textContent = slider.value;
+});
     /* ======== 回路 ======== */
     const paletteData = [
       { title: "増幅回路", symbols: ["┃", "━", "削"], multi: false },
