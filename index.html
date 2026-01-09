@@ -525,6 +525,14 @@
           drawBoard();
           saveBoards();
         };
+        c.oncontextmenu = (e) => {
+        e.preventDefault(); // 右クリックメニューを無効化
+        const cell = grid[y][x];
+        if (cell.symbol === "img") return; // 画像は削除不可
+        grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+        drawBoard();
+        saveBoards();
+      };
         board.appendChild(c);
       }
 
@@ -772,4 +780,5 @@
     ul.prepend(li);
   }
 </script>
+
 
