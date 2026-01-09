@@ -355,9 +355,20 @@
     return input.value.trim() || select.value;
   }
 
-  function getSelectedNumber() {
-    return document.getElementById("numSlider").value;
-  }
+  const charInput = document.getElementById("charInput");
+  const charSelect = document.getElementById("charSelect");
+
+  charInput.addEventListener("input", () => {
+    if (charInput.value.trim() !== "") {
+      charSelect.value = "";
+    }
+  });
+
+  charSelect.addEventListener("change", () => {
+    if (charSelect.value !== "") {
+      charInput.value = "";
+    }
+  });
 
   /* ======== 回路 ======== */
   const paletteData = [
