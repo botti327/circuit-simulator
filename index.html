@@ -327,20 +327,21 @@ h3 {
   <div class="container">
     <div class="description-column">
       <div class="description">
-        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.62</h2>
+        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.61</h2>
         <h3>使い方・説明</h3>
         <p>
           右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
           [削]を選択するか右クリックで、配置した回路を削除できます。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
-          [自由入力]欄で任意の文字で追加効果を指定することも可能です。<br><br>
+          [自由入力]欄で任意の文字で追加効果を指定することも可能です。<br>
+          <br>
+          セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合がありますのでファイル出力でデータを保存して下さい。
         </p>
       </div>
 
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
-          <li>v1.62：その他調整</li>
           <li>v1.61：その他調整</li>
           <li>v1.6：追加効果</li>
           <li>v1.5：レイアウト + 色調整</li>
@@ -377,7 +378,7 @@ h3 {
         style="width:80px; text-align:center;"
         placeholder="自由入力"
       />
-
+<!-------------------------------------------------------------------------->
       <h3>数値</h3>
       <div class="num-palette">
         <input
@@ -391,6 +392,18 @@ h3 {
         />
         <span id="numValue">0.5</span>
       </div>
+<!-------------------------------------------------------------------------->
+<!--
+      <h3>数値</h3>
+      <div class="num-palette" id="numPalette">
+      <label><input type="radio" name="num" value="0.5"> 0.5</label>
+      <label><input type="radio" name="num" value="0.6"> 0.6</label>
+      <label><input type="radio" name="num" value="0.7" checked> 0.7</label>
+      <label><input type="radio" name="num" value="0.8"> 0.8</label>
+      <label><input type="radio" name="num" value="0.9"> 0.9</label>
+      <label><input type="radio" name="num" value="1.0"> 1.0</label>
+</div>
+-->
 
       <h3>セーブ</h3>
       <div class="slot-buttons" id="slotButtons"></div>
@@ -472,6 +485,7 @@ const connections = {
 };
 
 /* ======== 数値 ======== */
+/*--------------------------------------------------------------------------*/
 const slider = document.getElementById("numSlider");
 const numValue = document.getElementById("numValue");
 
@@ -482,7 +496,13 @@ function getSelectedNumber() {
 slider.addEventListener("input", () => {
   numValue.textContent = slider.value;
 });
-
+/*--------------------------------------------------------------------------*/
+/*
+function getSelectedNumber() {
+  const checked = document.querySelector('input[name="num"]:checked');
+  return checked ? parseFloat(checked.value) : 0;
+}
+*/
 /* ======== 追加効果 ======== */
 const charInput = document.getElementById("charInput");
 const charSelect = document.getElementById("charSelect");
@@ -886,7 +906,7 @@ document.querySelectorAll(".loadBtn").forEach(btn => {
   };
 });
 
-  /* ======== EX/IN ======== */
+/* ======== EX/IN ======== */
 const exportAllBtn = document.createElement("button");
 exportAllBtn.textContent = "ファイル出力";
 const importAllBtn = document.createElement("button");
@@ -896,11 +916,17 @@ importAllFile.type = "file";
 importAllFile.accept = ".txt";
 importAllFile.style.display = "none";
 
+const fileBtnContainer = document.createElement("div");
+exportAllBtn.style.width = "150px";
+exportAllBtn.style.height = "36px";
+importAllBtn.style.width = "150px";
+importAllBtn.style.height = "36px";
+
 document.querySelector(".side").appendChild(exportAllBtn);
 document.querySelector(".side").appendChild(importAllBtn);
 document.querySelector(".side").appendChild(importAllFile);
 
-  /* ======== EX ======== */
+/* ======== EX ======== */
 exportAllBtn.onclick = () => {
   try {
     const slotsData = {};
@@ -923,23 +949,34 @@ exportAllBtn.onclick = () => {
 
     const exportData = { boards: boardsData, slots: slotsData };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "text/plain" });
+
+    const baseName = "circuitSimulator";
+    let fileName = baseName + ".txt";
+    let counter = 1;
+
+    while (localStorage.getItem("exported_" + fileName)) {
+      counter++;
+      fileName = `${baseName}(${counter}).txt`;
+    }
+    localStorage.setItem("exported_" + fileName, "1");
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    const fileName = "circuitSimulator_full.txt";
     a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
 
     const now = new Date().toLocaleString();
     addChangelog(`${fileName} を保存しました ${now}`);
+
   } catch (err) {
     alert("エクスポート出来ませんでした: " + err.message);
     console.error(err);
   }
 };
 
-  /* ======== IN ======== */
+/* ======== IN ======== */
 importAllBtn.onclick = () => importAllFile.click();
 
 importAllFile.onchange = (e) => {
@@ -950,7 +987,6 @@ importAllFile.onchange = (e) => {
     try {
       const parsed = JSON.parse(evt.target.result);
 
-      // ボード
       if (parsed.boards && Array.isArray(parsed.boards)) {
         parsed.boards.forEach((d, i) => {
           for (let y = 0; y < 4; y++)
@@ -962,7 +998,6 @@ importAllFile.onchange = (e) => {
         });
       }
 
-      // スロット
       if (parsed.slots) {
         for (let i = 1; i <= 5; i++) {
           if (parsed.slots[i]) {
@@ -993,6 +1028,4 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
-
-
 
