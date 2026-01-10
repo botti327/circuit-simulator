@@ -740,7 +740,8 @@ function updateBoard() {
             connections[s.symbol]?.[d] && connections[t.symbol]?.[opp[d]]) {
           const half = parseFloat(t.number) / 2;
           value += half;
-          if (t.char) cellCharValue[t.char] = (cellCharValue[t.char] || 0) + half;
+          const key = t.char && t.char.trim() !== "" ? t.char : "指定なし";
+          cellCharValue[key] = (cellCharValue[key] || 0) + half;
         }
       }
     } else {
@@ -992,5 +993,6 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
+
 
 
