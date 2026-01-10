@@ -4,771 +4,911 @@
   <meta charset="UTF-8">
   <title>エクサスケイル防具 回路シミュレーター</title>
   <style>
-/* ======== 基本レイアウト ======== */
 body {
-  font-family: monospace;
-  padding: 20px;
-  max-width: 1200px;
-  margin: auto;
-  background: #fff;
-  color: #000;
-  text-align: center;
+    font-family: monospace;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    background: #fff;
+    color: #000;
+    text-align: center;
 }
 
 h3 {
-  text-align: left;
-  margin-bottom: 4px;
+    text-align: left;
+    margin-bottom: 4px;
 }
 
 /* ======== コンテナ ======== */
 .container {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 30px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 30px;
 }
 
 .description-column {
-  flex: 0 0 350px;
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  gap: 12px;
-  align-items: flex-end;
+    flex: 0 0 350px;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    gap: 12px;
+    align-items: flex-end;
 }
 
 .left-frame {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  column-gap: 60px;  
-  row-gap: 0; 
-  height: 750px;
-  align-items: flex-start;
-  flex: 0 0 500px;
-  background: #f5f5f5;
-  padding: 16px;
-  border-radius: 10px;
-  border: 2px solid #333;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    column-gap: 60px;  
+    row-gap: 0; 
+    height: 750px;
+    align-items: flex-start;
+    flex: 0 0 500px;
+    background: #f5f5f5;
+    padding: 16px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .side {
-  flex: 0 0 300px;
-  max-width: 300px;
-  height: 750px;
-  background: #f5f5f5;
-  padding: 16px;
-  border-radius: 10px;
-  border: 2px solid #333;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  align-self: flex-start;
+    flex: 0 0 300px;
+    max-width: 300px;
+    height: 750px;
+    background: #f5f5f5;
+    padding: 16px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    align-self: flex-start;
 }
 
 /* ======== ボード ======== */
 .board-wrap {
-  text-align: center;
-  background: #f5f5f5;
-  padding: 12px;
-  border-radius: 10px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin-bottom: 0px;
+    text-align: center;
+    background: #f5f5f5;
+    padding: 12px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 0px;
 }
 
 .board {
-  display: grid;
-  grid-template-columns: repeat(4, 56px);
-  grid-template-rows: repeat(4, 56px);
-  gap: 2px;
-  padding: 5px;
-  background: #e0e0e0;
-  border-radius: 5px;
-  margin: 0 auto;
-  flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 56px);
+    grid-template-rows: repeat(4, 56px);
+    gap: 2px;
+    padding: 5px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    margin: 0 auto;
+    flex-shrink: 0;
 }
 
 .board-wrap div[style*="margin-top: 4px"] {
-  margin-top: 2px;
-  font-size: 12px;
-  overflow-y: auto;
-  height: 75px;
-  min-height: 75px;
-  text-align: left;
+    margin-top: 2px;
+    font-size: 12px;
+    overflow-y: auto;
+    height: 75px;
+    min-height: 75px;
+    text-align: left;
 }
-
 
 /* ======== セル ======== */
 .cell {
-  position: relative;
-  border: 1px solid #333;
-  font-size: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
-  background: #fff;
-  border-radius: 5px;
+    position: relative;
+    border: 1px solid #333;
+    font-size: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    background: #fff;
+    border-radius: 5px;
 }
 
 .symbol-display {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
 }
 
 .number-display {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  font-size: 11px;
-  color: #000;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 11px;
+    color: #000;
 }
 
 .img {
-  width: 52px;
-  object-fit: contain;
-  pointer-events: none;
-  border-radius: 5px;
+    width: 52px;
+    object-fit: contain;
+    pointer-events: none;
+    border-radius: 5px;
 }
 
 .connected {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .highlight-red {
-  background: #fff0f0;
-  color: #ff6666;
-  box-shadow: 0 0 20px #ff8888;
+    background: #fff0f0;
+    color: #ff6666;
+    box-shadow: 0 0 20px #ff8888;
 }
 
 .highlight-blue {
-  background: #f0f8ff;
-  color: #3399ff;
-  box-shadow: 0 0 20px #66b3ff;
+    background: #f0f8ff;
+    color: #3399ff;
+    box-shadow: 0 0 20px #66b3ff;
 }
 
 .highlight-green {
-  background: #f0fff4;
-  color: #33cc88;
-  box-shadow: 0 0 20px #66ffaa;
+    background: #f0fff4;
+    color: #33cc88;
+    box-shadow: 0 0 20px #66ffaa;
 }
 
 /* ======== パネル ======== */
 .panel {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin-bottom: 6px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 6px;
 }
 
 /* ======== 回路選択 ======== */
 .palette {
-  display: flex;
-  gap: 18px;
-  margin-top: 10px;
-  justify-content: center;
+    display: flex;
+    gap: 18px;
+    margin-top: 10px;
+    justify-content: center;
 }
 
 .palette-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  min-width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 60px;
 }
 
 .palette-title,
 .multi-title {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 4px;
-  text-align: center;
-  height: 22px;
-  line-height: 1.5;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-align: center;
+    height: 22px;
+    line-height: 1.5;
 }
 
 .symbol {
-  width: 48px;
-  height: 48px;
-  border: 1px solid #333;
-  font-size: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
+    width: 48px;
+    height: 48px;
+    border: 1px solid #333;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
 }
 
 .symbol.selected {
-  background: #f0f8ff;
-  color: #3399ff;
-  box-shadow: 0 0 20px #3399ff;
+    background: #f0f8ff;
+    color: #3399ff;
+    box-shadow: 0 0 20px #3399ff;
 }
 
 .symbol.multi {
-  width: 46px;
-  height: 46px;
-  font-size: 26px;
-  border: 2px dashed #333;
+    width: 46px;
+    height: 46px;
+    font-size: 26px;
+    border: 2px dashed #333;
 }
 
 .delete-btn {
-  margin-top: auto;
+    margin-top: auto;
 }
 
 .multi-label {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
 }
 
 /* ======== 文字 ======== */
 .char-display {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
-  pointer-events: none;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    pointer-events: none;
 }
 
 /* ======== 数値選択 ======== */
 .num-palette {
-  display: flex;
-  gap: 20px;
-  margin-top: 6px;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 20px;
+    margin-top: 6px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
 }
 
 .num-group {
-  display: flex;
-  gap: 6px;
-  align-items: center;
+    display: flex;
+    gap: 6px;
+    align-items: center;
 }
 
 /* ======== セーブスロット ======== */
 .slot-buttons div {
-  display: flex;
-  gap: 4px;
-  width: 100%;
-  justify-content: stretch;
-  align-items: center;
-  margin-bottom: 6px;
-  box-sizing: border-box;
+    display: flex;
+    gap: 4px;
+    width: 100%;
+    justify-content: stretch;
+    align-items: center;
+    margin-bottom: 6px;
+    box-sizing: border-box;
 }
 
 .slot-name {
-  flex: 1;
-  height: 28px;
-  box-sizing: border-box;
+    flex: 1;
+    height: 28px;
+    box-sizing: border-box;
 }
 
 .slot-buttons button {
-  height: 28px;
-  box-sizing: border-box;
+    height: 28px;
+    box-sizing: border-box;
 }
 
 /* ======== 更新履歴 ======== */
 .description {
-  background: #f0f0f0;
-  padding: 16px;
-  border-radius: 10px;
-  border: 2px solid #333;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  text-align: left;
-  font-size: 14px;
-  line-height: 1.4;
+    background: #f0f0f0;
+    padding: 16px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 #changelog {
-  width: 100%;
-  height: 180px;
-  background: #fefefe;
-  border: 2px solid #333;
-  border-radius: 4px;
-  padding: 10px;
-  font-family: monospace;
-  font-size: 12px;
-  overflow-y: auto;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-  box-sizing: border-box;
+    width: 100%;
+    height: 180px;
+    background: #fefefe;
+    border: 2px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 12px;
+    overflow-y: auto;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
 }
 
 #changelog h4 {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  text-align: left;
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    text-align: left;
 }
 
 #changelog ul {
-  padding-left: 6px;
-  margin: 0;
-  list-style: none;
-  text-align: left;
+    padding-left: 6px;
+    margin: 0;
+    list-style: none;
+    text-align: left;
 }
 
 #changelog li {
-  margin-bottom: 4px;
+    margin-bottom: 4px;
 }
-
 
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="description-column">
-    <div class="description">
-      <h2>エクサスケイル防具 <br> 回路シミュレーター v1.61</h2>
-      <h3>使い方・説明</h3>
-      <p>右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
-        [削]を選択するか右クリックで、配置した回路を削除できます。<br>
-        追加効果が空白の場合は「指定なし」として計算されます。<br>
-        [自由入力]欄で任意の文字で追加効果を指定することも可能です。<br>
-        <br>
+  <div class="container">
+    <div class="description-column">
+      <div class="description">
+        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.61</h2>
+        <h3>使い方・説明</h3>
+        <p>
+          右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
+          [削]を選択するか右クリックで、配置した回路を削除できます。<br>
+          追加効果が空白の場合は「指定なし」として計算されます。<br>
+          [自由入力]欄で任意の文字で追加効果を指定することも可能です。<br><br>
+        </p>
+      </div>
 
-      </ul>
+      <div id="changelog">
+        <h4>更新履歴</h4>
+        <ul id="changelogList">
+          <li>v1.61：その他調整</li>
+          <li>v1.6：追加効果</li>
+          <li>v1.5：レイアウト + 色調整</li>
+          <li>v1.4：回路修正 + その他調整</li>
+          <li>v1.3：セーブスロット機能追加 + その他調整</li>
+          <li>v1.2：ローカル保存機能追加 + その他調整</li>
+          <li>v1.1：部位・数値・複製回路機能追加</li>
+          <li>v1.0：シミュ仮公開</li>
+        </ul>
+      </div>
     </div>
 
-    <div id="changelog">
-      <h4>更新履歴</h4>
-      <ul id="changelogList">
-        <li>v1.61：その他調整</li>
-        <li>v1.6：追加効果</li>
-        <li>v1.5：レイアウト + 色調整</li>
-        <li>v1.4：回路修正 + その他調整</li>
-        <li>v1.3：セーブスロット機能追加 + その他調整</li>
-        <li>v1.2：ローカル保存機能追加 + その他調整</li>
-        <li>v1.1：部位・数値・複製回路機能追加</li>
-        <li>v1.0：シミュ仮公開</li>
-      </ul>
-    </div>
-  </div>
+    <div class="left-frame" id="boards"></div>
 
-  <div class="left-frame" id="boards"></div>
+    <div class="side">
+      <div class="palette" id="palette"></div>
 
-
-  <div class="side">
-    <div class="palette" id="palette"></div>
-
-    <h3>追加効果</h3>
-    <select id="charSelect" style="width:180px;">
-      <option value=""></option>
-      <option value="持続ダメ">持続ダメージ</option>
-      <option value="CT初期化">スキルのCT初期化</option>
-      <option value="両極化">両極化</option>
-      <option value="以上">HP50%以上の敵攻撃時、ダメージ増加</option>
-      <option value="以下">HP50%以下の敵攻撃時、ダメージ増加</option>
-      <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
-      <option value="ボスダメ">ボスに与えるダメージ増加</option>
-      <option value="PT動作速度">PTメンバーの動作速度</option>
-    </select>
-    <input
-      id="charInput"
-      type="text"
-      maxlength="10"
-      style="width:80px; text-align:center;"
-      placeholder="自由入力"
-    />
-
-    <h3>数値</h3>
-    <div class="num-palette">
+      <h3>追加効果</h3>
+      <select id="charSelect" style="width:180px;">
+        <option value=""></option>
+        <option value="持続ダメ">持続ダメージ</option>
+        <option value="CT初期化">スキルのCT初期化</option>
+        <option value="両極化">両極化</option>
+        <option value="以上">HP50%以上の敵攻撃時、ダメージ増加</option>
+        <option value="以下">HP50%以下の敵攻撃時、ダメージ増加</option>
+        <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
+        <option value="ボスダメ">ボスに与えるダメージ増加</option>
+        <option value="PT動作速度">PTメンバーの動作速度</option>
+      </select>
       <input
-        id="numSlider"
-        type="range"
-        min="0.1"
-        max="1"
-        step="0.1"
-        value="0.5"
-        style="width: 200px;"
+        id="charInput"
+        type="text"
+        maxlength="10"
+        style="width:80px; text-align:center;"
+        placeholder="自由入力"
       />
-      <span id="numValue">0.5</span>
+
+      <h3>数値</h3>
+      <div class="num-palette">
+        <input
+          id="numSlider"
+          type="range"
+          min="0.1"
+          max="1"
+          step="0.1"
+          value="0.5"
+          style="width: 200px;"
+        />
+        <span id="numValue">0.5</span>
+      </div>
+
+      <h3>セーブ</h3>
+      <div class="slot-buttons" id="slotButtons"></div>
+
     </div>
-
-    <h3>セーブ</h3>
-    <div class="slot-buttons" id="slotButtons"></div>
-
   </div>
-</div>
-</div>
+</body>
 <script>
-  const slider = document.getElementById("numSlider");
-  const numValue = document.getElementById("numValue");
+/* ======== 初期 ======== */
+const partPos = { top: [3, 3], bottom: [0, 3], glove: [3, 0], shoes: [0, 0] };
+const boardsEl = document.getElementById("boards");
+const initialParts = ["top", "bottom", "glove", "shoes"];
+let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || null;
 
-  slider.addEventListener("input", () => {
-    numValue.textContent = slider.value;
+/* ======== 回路 ======== */
+const paletteData = [
+  { title: "増幅回路", symbols: ["┃", "━", "削"], multi: false },
+  { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
+  { title: "増幅回路", symbols: ["┳", "┫", "┻", "┣"], multi: false, hideTitle: true },
+  { title: "複製回路", symbols: ["┳", "┫", "┻", "┣"], multi: true }
+];
+
+const paletteEl = document.getElementById("palette");
+paletteData.forEach(group => {
+  const div = document.createElement("div");
+  div.className = "palette-group";
+
+  const titleDiv = document.createElement("div");
+  titleDiv.className = "multi-title";
+  if (group.hideTitle) titleDiv.style.visibility = "hidden";
+  titleDiv.textContent = group.title;
+  div.appendChild(titleDiv);
+
+  group.symbols.forEach(sym => {
+    const s = document.createElement("div");
+    s.className = "symbol";
+    if (group.multi) s.classList.add("multi");
+    if (sym === "削") s.classList.add("delete-btn");
+    s.textContent = sym;
+    div.appendChild(s);
   });
 
-    function getSelectedNumber() {
-      return parseFloat(slider.value) || 0;
-}
+  paletteEl.appendChild(div);
+});
 
-  function getSelectedChar() {
-    const select = document.getElementById("charSelect");
-    const input = document.getElementById("charInput");
-    return input.value.trim() || select.value;
-  }
+  /* ======== 回路選択 ======== */
+let selected = "";
+let selectedIsMulti = false;
 
-  const charInput = document.getElementById("charInput");
-  const charSelect = document.getElementById("charSelect");
-
-  charInput.addEventListener("input", () => {
-    if (charInput.value.trim() !== "") {
-      charSelect.value = "";
+document.querySelectorAll(".symbol").forEach(s => {
+  s.onclick = () => {
+    if (s.classList.contains("selected")) {
+      s.classList.remove("selected");
+      selected = "";
+      selectedIsMulti = false;
+    } else {
+      document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
+      s.classList.add("selected");
+      selected = s.textContent;
+      selectedIsMulti = s.classList.contains("multi");
     }
-  });
-
-  charSelect.addEventListener("change", () => {
-    if (charSelect.value !== "") {
-      charInput.value = "";
-    }
-  });
-
-  /* ======== 回路 ======== */
-  const paletteData = [
-    { title: "増幅回路", symbols: ["┃", "━", "削"], multi: false },
-    { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
-    { title: "増幅回路", symbols: ["┳", "┫", "┻", "┣"], multi: false, hideTitle: true },
-    { title: "複製回路", symbols: ["┳", "┫", "┻", "┣"], multi: true }
-  ];
-
-  const paletteEl = document.getElementById("palette");
-  paletteData.forEach(group => {
-    const div = document.createElement("div");
-    div.className = "palette-group";
-
-    const titleDiv = document.createElement("div");
-    titleDiv.className = "multi-title";
-    if (group.hideTitle) titleDiv.style.visibility = "hidden";
-    titleDiv.textContent = group.title;
-    div.appendChild(titleDiv);
-
-    group.symbols.forEach(sym => {
-      const s = document.createElement("div");
-      s.className = "symbol";
-      if (group.multi) s.classList.add("multi");
-      if (sym === "削") s.classList.add("delete-btn");
-      s.textContent = sym;
-      div.appendChild(s);
-    });
-
-    paletteEl.appendChild(div);
-  });
-
-  /* ======== 選択管理 ======== */
-  let selected = "";
-  let selectedIsMulti = false;
-
-  document.querySelectorAll(".symbol").forEach(s => {
-    s.onclick = () => {
-      if (s.classList.contains("selected")) {
-        s.classList.remove("selected");
-        selected = "";
-        selectedIsMulti = false;
-      } else {
-        document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
-        s.classList.add("selected");
-        selected = s.textContent;
-        selectedIsMulti = s.classList.contains("multi");
-      }
-    };
-  });
+  };
+});
 
   /* ======== 回路接続 ======== */
-  const size = 4;
-  const boards = [];
-  const connections = {
-    "┃": { l: 0, r: 0, u: 1, d: 1 },
-    "━": { l: 1, r: 1, u: 0, d: 0 },
-    "┗": { l: 0, r: 1, u: 1, d: 0 },
-    "┏": { l: 0, r: 1, u: 0, d: 1 },
-    "┓": { l: 1, r: 0, u: 0, d: 1 },
-    "┛": { l: 1, r: 0, u: 1, d: 0 },
-    "┳": { l: 1, r: 1, u: 0, d: 1 },
-    "┻": { l: 1, r: 1, u: 1, d: 0 },
-    "┣": { l: 0, r: 1, u: 1, d: 1 },
-    "┫": { l: 1, r: 0, u: 1, d: 1 }
-  };
+const size = 4;
+const boards = [];
+const connections = {
+  "┃": { l: 0, r: 0, u: 1, d: 1 },
+  "━": { l: 1, r: 1, u: 0, d: 0 },
+  "┗": { l: 0, r: 1, u: 1, d: 0 },
+  "┏": { l: 0, r: 1, u: 0, d: 1 },
+  "┓": { l: 1, r: 0, u: 0, d: 1 },
+  "┛": { l: 1, r: 0, u: 1, d: 0 },
+  "┳": { l: 1, r: 1, u: 0, d: 1 },
+  "┻": { l: 1, r: 1, u: 1, d: 0 },
+  "┣": { l: 0, r: 1, u: 1, d: 1 },
+  "┫": { l: 1, r: 0, u: 1, d: 1 }
+};
 
-  const partPos = { top: [3, 3], bottom: [0, 3], glove: [3, 0], shoes: [0, 0] };
-  const boardsEl = document.getElementById("boards");
-  const initialParts = ["top", "bottom", "glove", "shoes"];
-  let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || null;
+/* ======== 数値 ======== */
+const slider = document.getElementById("numSlider");
+const numValue = document.getElementById("numValue");
 
-  /* ======== 各ボード生成 ======== */
-  for (let i = 0; i < 4; i++) {
-    const wrap = document.createElement("div");
-    wrap.className = "board-wrap";
+function getSelectedNumber() {
+  return parseFloat(slider.value) || 0;
+}
 
-    const panel = document.createElement("div");
-    panel.className = "panel";
-    panel.innerHTML = `
-      <select class="color">
-        <option value="red">赤</option>
-        <option value="blue">青</option>
-        <option value="green">緑</option>
-      </select>
-      <select class="part">
-        <option value="top">上衣</option>
-        <option value="bottom">下衣</option>
-        <option value="glove">手袋</option>
-        <option value="shoes">靴</option>
-      </select>
-    `;
-    wrap.appendChild(panel);
+slider.addEventListener("input", () => {
+  numValue.textContent = slider.value;
+});
 
-    const clearBtn = document.createElement("button");
-    clearBtn.textContent = "回路クリア";
-    clearBtn.className = "clear-board-btn";
-    panel.appendChild(clearBtn);
+/* ======== 追加効果 ======== */
+const charInput = document.getElementById("charInput");
+const charSelect = document.getElementById("charSelect");
 
-    const board = document.createElement("div");
-    board.className = "board";
-    wrap.appendChild(board);
+function getSelectedChar() {
+  return charInput.value.trim() || charSelect.value;
+}
 
-    const charSumDiv = document.createElement("div");
-    charSumDiv.style.marginTop = "4px";
-    charSumDiv.style.fontSize = "12px";
-    charSumDiv.textContent = "A:0 / B:0 / C:0 / D:0";
-    wrap.appendChild(charSumDiv);
-    wrap.charSumDiv = charSumDiv;
+charInput.addEventListener("input", () => {
+  if (charInput.value.trim() !== "") charSelect.value = "";
+});
 
-    const grid = Array.from({ length: 4 }, () =>
-      Array(4).fill(null).map(() => ({
-        symbol: "",
-        number: "",
-        char: "",
-        multi: false
-      }))
-    );
+charSelect.addEventListener("change", () => {
+  if (charSelect.value !== "") charInput.value = "";
+});
 
-    let part = savedData?.[i]?.part || initialParts[i];
-    const [px, py] = partPos[part];
-    grid[py][px] = { symbol: "img", number: "", multi: false };
-    panel.querySelector(".part").value = part;
-    panel.querySelector(".color").value = savedData?.[i]?.color || "red";
+  /* ======== 生成 ======== */
+for (let i = 0; i < 4; i++) {
+  let part = savedData?.[i]?.part || initialParts[i];
+  const [px, py] = partPos[part];
 
-    if (savedData?.[i]?.grid) {
-      for (let y = 0; y < 4; y++)
-        for (let x = 0; x < 4; x++)
-          if (savedData[i].grid[y][x].symbol !== "img")
-            grid[y][x] = { ...savedData[i].grid[y][x] };
+  const grid = Array.from({ length: 4 }, () =>
+    Array(4).fill(null).map(() => ({
+      symbol: "",
+      number: "",
+      char: "",
+      multi: false
+    }))
+  );
+
+  grid[py][px] = { symbol: "img", number: "", multi: false };
+
+  if (savedData?.[i]?.grid) {
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        if (savedData[i].grid[y][x].symbol !== "img") {
+          grid[y][x] = { ...savedData[i].grid[y][x] };
+        }
+      }
     }
+  }
 
-    /* ======== イベント ======== */
-    panel.querySelector(".part").onchange = () => {
-      const p = panel.querySelector(".part").value;
-      for (let y = 0; y < 4; y++)
-        for (let x = 0; x < 4; x++)
-          if (grid[y][x].symbol === "img") grid[y][x].symbol = "";
-      const [x, y] = partPos[p];
-      grid[y][x] = { symbol: "img", number: "", multi: false };
+  const wrap = document.createElement("div");
+  wrap.className = "board-wrap";
+  wrap.charSumDiv = null;
+
+  const panel = document.createElement("div");
+  panel.className = "panel";
+  panel.innerHTML = `
+    <select class="color">
+      <option value="red">赤</option>
+      <option value="blue">青</option>
+      <option value="green">緑</option>
+    </select>
+    <select class="part">
+      <option value="top">上衣</option>
+      <option value="bottom">下衣</option>
+      <option value="glove">手袋</option>
+      <option value="shoes">靴</option>
+    </select>
+  `;
+  wrap.appendChild(panel);
+
+  const clearBtn = document.createElement("button");
+  clearBtn.textContent = "回路クリア";
+  clearBtn.className = "clear-board-btn";
+  panel.appendChild(clearBtn);
+
+  const board = document.createElement("div");
+  board.className = "board";
+  wrap.appendChild(board);
+
+  const charSumDiv = document.createElement("div");
+  charSumDiv.style.marginTop = "4px";
+  charSumDiv.style.fontSize = "12px";
+  charSumDiv.textContent = "A:0 / B:0 / C:0 / D:0";
+  wrap.appendChild(charSumDiv);
+  wrap.charSumDiv = charSumDiv;
+
+  panel.querySelector(".part").value = part;
+  panel.querySelector(".color").value = savedData?.[i]?.color || "red";
+
+/* ======== イベント ======== */
+panel.querySelector(".part").onchange = () => {
+  const p = panel.querySelector(".part").value;
+  for (let y = 0; y < 4; y++)
+    for (let x = 0; x < 4; x++)
+      if (grid[y][x].symbol === "img") grid[y][x].symbol = "";
+  const [x, y] = partPos[p];
+  grid[y][x] = { symbol: "img", number: "", multi: false };
+  drawBoard();
+  saveBoards();
+};
+
+panel.querySelector(".color").onchange = () => {
+  drawBoard();
+  saveBoards();
+};
+
+clearBtn.onclick = () => {
+  if (confirm("回路を全て削除しますか？")) {
+    for (let y = 0; y < 4; y++)
+      for (let x = 0; x < 4; x++)
+        if (grid[y][x].symbol !== "img")
+          grid[y][x] = { symbol: "", number: "", multi: false };
+    drawBoard();
+    saveBoards();
+  }
+};
+
+for (let y = 0; y < 4; y++) {
+  for (let x = 0; x < 4; x++) {
+    const c = document.createElement("div");
+    c.className = "cell";
+
+    c.onclick = () => {
+      const cell = grid[y][x];
+      if (cell.symbol === "img") return;
+
+      if (selected === "削") {
+        grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+      } else if (selected) {
+        const isMulti = selectedIsMulti;
+        const char = getSelectedChar();
+        grid[y][x] = {
+          symbol: selected,
+          number: isMulti ? "" : getSelectedNumber(),
+          char: isMulti ? "" : char,
+          multi: isMulti
+        };
+      }
+
       drawBoard();
       saveBoards();
     };
 
-    panel.querySelector(".color").onchange = () => { drawBoard(); saveBoards(); };
-
-    clearBtn.onclick = () => {
-      if (confirm("回路を全て削除しますか？")) {
-        for (let y = 0; y < 4; y++)
-          for (let x = 0; x < 4; x++)
-            if (grid[y][x].symbol !== "img")
-              grid[y][x] = { symbol: "", number: "", multi: false };
-        drawBoard();
-        saveBoards();
-      }
+    c.oncontextmenu = (e) => {
+      e.preventDefault();
+      const cell = grid[y][x];
+      if (cell.symbol === "img") return;
+      grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+      drawBoard();
+      saveBoards();
     };
 
-    for (let y = 0; y < 4; y++)
-      for (let x = 0; x < 4; x++) {
-        const c = document.createElement("div");
-        c.className = "cell";
-        c.onclick = () => {
-          const cell = grid[y][x];
-          if (cell.symbol === "img") return;
-
-          if (selected === "削") {
-            grid[y][x] = { symbol: "", number: "", char: "", multi: false };
-          } else if (selected) {
-            const isMulti = selectedIsMulti;
-
-            const char = getSelectedChar();
-
-            grid[y][x] = {
-              symbol: selected,
-              number: isMulti ? "" : getSelectedNumber(),
-              char: isMulti ? "" : char,
-              multi: isMulti
-            };
-          }
-
-          drawBoard();
-          saveBoards();
-        };
-        c.oncontextmenu = (e) => {
-        e.preventDefault();
-        const cell = grid[y][x];
-        if (cell.symbol === "img") return;
-        grid[y][x] = { symbol: "", number: "", char: "", multi: false };
-        drawBoard();
-        saveBoards();
-      };
-        board.appendChild(c);
-      }
+    board.appendChild(c);
+  }
+}
 
     /* ======== 描画関数 ======== */
-    function drawBoard() {
-      board.querySelectorAll(".cell").forEach((c, i) => {
-        const y = Math.floor(i / 4), x = i % 4, s = grid[y][x];
-        const part = panel.querySelector(".part").value;
-        const circleImages = { top: "top.png", bottom: "bottom.png", glove: "glove.png", shoes: "shoes.png" };
-        let symbolHTML = s.symbol;
+function drawBoard() {
+  board.querySelectorAll(".cell").forEach((c, i) => {
+    const y = Math.floor(i / 4);
+    const x = i % 4;
+    const s = grid[y][x];
+    const part = panel.querySelector(".part").value;
+    const circleImages = { top: "top.png", bottom: "bottom.png", glove: "glove.png", shoes: "shoes.png" };
+    let symbolHTML = s.symbol;
 
-        if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="img">`;
+    if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="img">`;
 
-        c.innerHTML = `
-          <div class="symbol-display">${symbolHTML}</div>
-          ${s.multi ? `<div class="multi-label">複</div>` : ``}
-          <div class="char-display">${s.char || ""}</div>
-          <div class="number-display">${s.number || ""}</div>
-        `;
-        c.className = "cell";
-        if (s.multi) c.classList.add("multi-cell");
-      });
+    c.innerHTML = `
+      <div class="symbol-display">${symbolHTML}</div>
+      ${s.multi ? `<div class="multi-label">複</div>` : ``}
+      <div class="char-display">${s.char || ""}</div>
+      <div class="number-display">${s.number || ""}</div>
+    `;
+    c.className = "cell";
+    if (s.multi) c.classList.add("multi-cell");
+  });
 
-      updateBoard();
-    }
+  updateBoard();
+}
 
-    /* ======== 接続計算 ======== */
-    function updateBoard() {
+    /* ======== 接続 ======== */
+function updateBoard() {
+  const dx = { l: -1, r: 1, u: 0, d: 0 };
+  const dy = { l: 0, r: 0, u: -1, d: 1 };
+  const opp = { l: "r", r: "l", u: "d", d: "u" };
 
-      const dx = { l: -1, r: 1, u: 0, d: 0 };
-      const dy = { l: 0, r: 0, u: -1, d: 1 };
-      const opp = { l: "r", r: "l", u: "d", d: "u" };
+  let cx = -1, cy = -1;
+  for (let y = 0; y < 4; y++)
+    for (let x = 0; x < 4; x++)
+      if (grid[y][x].symbol === "img") { cx = x; cy = y; }
 
-      let cx = -1, cy = -1;
-      for (let y = 0; y < 4; y++)
-        for (let x = 0; x < 4; x++)
-          if (grid[y][x].symbol === "img") { cx = x; cy = y; }
+  if (cx === -1) return;
 
-      if (cx === -1) return;
+  const visited = Array.from({ length: 4 }, () => Array(4).fill(false));
+  const stack = [[cx, cy]];
+  visited[cy][cx] = true;
+  let invalid = false;
 
-      const visited = Array.from({ length: 4 }, () => Array(4).fill(false));
-      const stack = [[cx, cy]];
-      visited[cy][cx] = true;
-      let invalid = false;
+  while (stack.length && !invalid) {
+    const [x, y] = stack.pop();
+    const s = grid[y][x];
 
-      while (stack.length && !invalid) {
-        const [x, y] = stack.pop();
-        const s = grid[y][x];
+    for (const d in dx) {
+      const nx = x + dx[d];
+      const ny = y + dy[d];
 
-        for (const d in dx) {
-          const nx = x + dx[d];
-          const ny = y + dy[d];
+      if (connections[s.symbol]?.[d]) {
+        if (nx < 0 || nx >= 4 || ny < 0 || ny >= 4) { invalid = true; break; }
+      }
 
-          if (connections[s.symbol]?.[d]) {
-            if (nx < 0 || nx >= 4 || ny < 0 || ny >= 4) { invalid = true; break; }
-          }
+      const t = grid[ny]?.[nx];
+      if (!t) continue;
 
-          const t = grid[ny]?.[nx];
-          if (!t) continue;
-
-          if (s.symbol === "img") {
-            if (t.symbol && connections[t.symbol]) {
-              if (!connections[t.symbol]?.[opp[d]]) { invalid = true; break; }
-              if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
-            }
-            continue;
-          }
-
-          if (connections[s.symbol]?.[d]) {
-            if (!t.symbol) { invalid = true; break; }
-            if (t.symbol === "img") {
-              if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
-            } else {
-              if (!connections[t.symbol]?.[opp[d]]) { invalid = true; break; }
-              if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
-            }
-          }
+      if (s.symbol === "img") {
+        if (t.symbol && connections[t.symbol]) {
+          if (!connections[t.symbol]?.[opp[d]]) { invalid = true; break; }
+          if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
         }
+        continue;
       }
 
-      if (invalid) {
-        board.querySelectorAll(".cell").forEach(c => c.className = "cell");
-        wrap.charSumDiv.textContent = "";
-        return;
-      }
-
-      const color = panel.querySelector(".color").value;
-      const charSum = {};
-
-      board.querySelectorAll(".cell").forEach((c, i) => {
-        const y = Math.floor(i / 4);
-        const x = i % 4;
-        const s = grid[y][x];
-
-        c.className = "cell";
-        if (!visited[y][x]) return;
-
-        let value = 0;
-        const cellCharValue = {};
-
-        if (s.multi) {
-          for (const d in dx) {
-            const nx = x + dx[d];
-            const ny = y + dy[d];
-            const t = grid[ny]?.[nx];
-
-            if (t && visited[ny][nx] && !t.multi && t.number &&
-                connections[s.symbol]?.[d] && connections[t.symbol]?.[opp[d]]) {
-              const half = parseFloat(t.number) / 2;
-              value += half;
-              if (t.char) cellCharValue[t.char] = (cellCharValue[t.char] || 0) + half;
-            }
-          }
+      if (connections[s.symbol]?.[d]) {
+        if (!t.symbol) { invalid = true; break; }
+        if (t.symbol === "img") {
+          if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
         } else {
-          const n = parseFloat(s.number);
-          if (!isNaN(n)) {
-            value = n;
-            const key = s.char && s.char.trim() !== "" ? s.char : "指定なし";
-            cellCharValue[key] = value;
-          }
+          if (!connections[t.symbol]?.[opp[d]]) { invalid = true; break; }
+          if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
         }
-
-        for (const ch in cellCharValue) charSum[ch] = (charSum[ch] || 0) + cellCharValue[ch];
-
-        if (connections[s.symbol]) c.classList.add("connected", "highlight-" + color);
-      });
-
-      wrap.charSumDiv.innerHTML = Object.entries(charSum)
-        .sort((a, b) => b[1] - a[1])
-        .map(([k, v]) => `${k}:${v.toFixed(2)}`)
-        .join("<br>");
+      }
     }
-
-    wrap.drawBoard = drawBoard;
-    wrap.grid = grid;
-    wrap.panel = panel;
-    boards.push(wrap);
-    boardsEl.appendChild(wrap);
-    drawBoard();
   }
 
+  if (invalid) {
+    board.querySelectorAll(".cell").forEach(c => c.className = "cell");
+    wrap.charSumDiv.textContent = "";
+    return;
+  }
+
+  const color = panel.querySelector(".color").value;
+  const charSum = {};
+
+  board.querySelectorAll(".cell").forEach((c, i) => {
+    const y = Math.floor(i / 4);
+    const x = i % 4;
+    const s = grid[y][x];
+
+    c.className = "cell";
+    if (!visited[y][x]) return;
+
+    let value = 0;
+    const cellCharValue = {};
+
+    if (s.multi) {
+      for (const d in dx) {
+        const nx = x + dx[d];
+        const ny = y + dy[d];
+        const t = grid[ny]?.[nx];
+
+        if (t && visited[ny][nx] && !t.multi && t.number &&
+            connections[s.symbol]?.[d] && connections[t.symbol]?.[opp[d]]) {
+          const half = parseFloat(t.number) / 2;
+          value += half;
+          if (t.char) cellCharValue[t.char] = (cellCharValue[t.char] || 0) + half;
+        }
+      }
+    } else {
+      const n = parseFloat(s.number);
+      if (!isNaN(n)) {
+        value = n;
+        const key = s.char && s.char.trim() !== "" ? s.char : "指定なし";
+        cellCharValue[key] = value;
+      }
+    }
+
+    for (const ch in cellCharValue) charSum[ch] = (charSum[ch] || 0) + cellCharValue[ch];
+
+    if (connections[s.symbol]) c.classList.add("connected", "highlight-" + color);
+  });
+
+  wrap.charSumDiv.innerHTML = Object.entries(charSum)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${k}:${v.toFixed(2)}`)
+    .join("<br>");
+}
+
+wrap.drawBoard = drawBoard;
+wrap.grid = grid;
+wrap.panel = panel;
+boards.push(wrap);
+boardsEl.appendChild(wrap);
+drawBoard();
+}
+
   /* ======== ローカル保存 ======== */
-  function saveBoards() {
-    const data = boards.map(b => ({
+function saveBoards() {
+  const data = boards.map(b => ({
+    grid: b.grid.map(row =>
+      row.map(cell => ({
+        symbol: cell.symbol || "",
+        number: cell.number || "",
+        char: cell.char || "",
+        multi: !!cell.multi
+      }))
+    ),
+    color: b.panel.querySelector(".color").value || "red",
+    part: b.panel.querySelector(".part").value || "top"
+  }));
+
+  localStorage.setItem("circuitBoards", JSON.stringify(data));
+}
+
+/* ======== セーブスロット ======== */
+const slotCount = 5;
+const slotContainer = document.getElementById("slotButtons");
+
+for (let i = 1; i <= slotCount; i++) {
+  const div = document.createElement("div");
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "slot-name";
+  input.value = "スロット" + i;
+  div.appendChild(input);
+
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "saveBtn";
+  saveBtn.dataset.slot = i;
+  saveBtn.textContent = "保存";
+  div.appendChild(saveBtn);
+
+  const loadBtn = document.createElement("button");
+  loadBtn.className = "loadBtn";
+  loadBtn.dataset.slot = i;
+  loadBtn.textContent = "読み込み";
+  div.appendChild(loadBtn);
+
+  slotContainer.appendChild(div);
+}
+
+document.querySelectorAll(".slot-buttons div").forEach((slotDiv, index) => {
+  const slot = index + 1;
+  const storedName = localStorage.getItem("circuitBoards_slot" + slot + "_name");
+  if (storedName) slotDiv.querySelector(".slot-name").value = storedName;
+});
+
+document.querySelectorAll(".saveBtn").forEach(btn => {
+  btn.onclick = () => {
+    const slot = btn.dataset.slot;
+    const slotDiv = btn.parentElement;
+    const slotName = slotDiv.querySelector(".slot-name").value || "スロット" + slot;
+
+    try {
+      const saveData = boards.map(b => ({
+        grid: b.grid.map(row =>
+          row.map(cell => ({
+            symbol: cell.symbol || "",
+            number: cell.number || "",
+            char: cell.char || "",
+            multi: !!cell.multi
+          }))
+        ),
+        color: b.panel.querySelector(".color").value || "red",
+        part: b.panel.querySelector(".part").value || "top"
+      }));
+
+      localStorage.setItem("circuitBoards_slot" + slot, JSON.stringify(saveData));
+      localStorage.setItem("circuitBoards_slot" + slot + "_name", slotName);
+      addChangelog(slotName + " に保存しました: " + new Date().toLocaleString());
+    } catch (e) {
+      alert("保存に失敗しました: " + e.message);
+      console.error(e);
+    }
+  };
+});
+
+document.querySelectorAll(".loadBtn").forEach(btn => {
+  btn.onclick = () => {
+    const slot = btn.dataset.slot;
+    const data = localStorage.getItem("circuitBoards_slot" + slot);
+    const slotName = localStorage.getItem("circuitBoards_slot" + slot + "_name") || ("スロット" + slot);
+
+    if (!data) {
+      alert(slotName + " は空です");
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(data);
+
+      parsed.forEach((d, i) => {
+        for (let y = 0; y < 4; y++)
+          for (let x = 0; x < 4; x++)
+            boards[i].grid[y][x] = { ...d.grid[y][x] };
+
+        boards[i].panel.querySelector(".color").value = d.color || "red";
+        boards[i].panel.querySelector(".part").value = d.part || "top";
+        boards[i].drawBoard();
+      });
+
+      addChangelog(slotName + " から読み込みました: " + new Date().toLocaleString());
+    } catch (e) {
+      alert(slotName + " のデータが壊れています: " + e.message);
+      console.error(e);
+    }
+  };
+});
+
+  /* ======== EX/IN ======== */
+const exportAllBtn = document.createElement("button");
+exportAllBtn.textContent = "ファイル出力";
+const importAllBtn = document.createElement("button");
+importAllBtn.textContent = "ファイル読み込み";
+const importAllFile = document.createElement("input");
+importAllFile.type = "file";
+importAllFile.accept = ".txt";
+importAllFile.style.display = "none";
+
+document.querySelector(".side").appendChild(exportAllBtn);
+document.querySelector(".side").appendChild(importAllBtn);
+document.querySelector(".side").appendChild(importAllFile);
+
+  /* ======== EX ======== */
+exportAllBtn.onclick = () => {
+  try {
+    const slotsData = {};
+    for (let i = 1; i <= 5; i++) {
+      const slotName = localStorage.getItem("circuitBoards_slot" + i + "_name") || ("スロット" + i);
+      const slotData = localStorage.getItem("circuitBoards_slot" + i) || null;
+      slotsData[i] = { name: slotName, data: slotData };
+    }
+
+    const boardsData = boards.map(b => ({
       grid: b.grid.map(r => r.map(c => ({
         symbol: c.symbol || "",
         number: c.number || "",
@@ -778,78 +918,39 @@ h3 {
       color: b.panel.querySelector(".color").value || "red",
       part: b.panel.querySelector(".part").value || "top"
     }));
-    localStorage.setItem("circuitBoards", JSON.stringify(data));
+
+    const exportData = { boards: boardsData, slots: slotsData };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const fileName = "circuitSimulator_full.txt";
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    const now = new Date().toLocaleString();
+    addChangelog(`${fileName} を保存しました ${now}`);
+  } catch (err) {
+    alert("エクスポート出来ませんでした: " + err.message);
+    console.error(err);
   }
+};
 
-  /* ======== セーブスロット ======== */
-  const slotCount = 5;
-  const slotContainer = document.getElementById("slotButtons");
+  /* ======== IN ======== */
+importAllBtn.onclick = () => importAllFile.click();
 
-  for (let i = 1; i <= slotCount; i++) {
-    const div = document.createElement("div");
+importAllFile.onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const parsed = JSON.parse(evt.target.result);
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.className = "slot-name";
-    input.value = "スロット" + i;
-    div.appendChild(input);
-
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "saveBtn";
-    saveBtn.dataset.slot = i;
-    saveBtn.textContent = "保存";
-    div.appendChild(saveBtn);
-
-    const loadBtn = document.createElement("button");
-    loadBtn.className = "loadBtn";
-    loadBtn.dataset.slot = i;
-    loadBtn.textContent = "読み込み";
-    div.appendChild(loadBtn);
-
-    slotContainer.appendChild(div);
-  }
-
-  document.querySelectorAll(".slot-buttons div").forEach((slotDiv, index) => {
-    const slot = index + 1;
-    const storedName = localStorage.getItem("circuitBoards_slot" + slot + "_name");
-    if (storedName) slotDiv.querySelector(".slot-name").value = storedName;
-  });
-
-  document.querySelectorAll(".saveBtn").forEach(btn => {
-    btn.onclick = () => {
-      const slot = btn.dataset.slot;
-      const slotDiv = btn.parentElement;
-      const slotName = slotDiv.querySelector(".slot-name").value || "スロット" + slot;
-      try {
-        const saveData = boards.map(b => ({
-          grid: b.grid.map(r => r.map(c => ({
-            symbol: c.symbol || "",
-            number: c.number || "",
-            char: c.char || "",
-            multi: !!c.multi
-          }))),
-          color: b.panel.querySelector(".color").value || "red",
-          part: b.panel.querySelector(".part").value || "top"
-        }));
-        localStorage.setItem("circuitBoards_slot" + slot, JSON.stringify(saveData));
-        localStorage.setItem("circuitBoards_slot" + slot + "_name", slotName);
-        addChangelog(slotName + " に保存しました: " + new Date().toLocaleString());
-      } catch (e) {
-        alert("保存に失敗しました: " + e.message);
-        console.error(e);
-      }
-    };
-  });
-
-  document.querySelectorAll(".loadBtn").forEach(btn => {
-    btn.onclick = () => {
-      const slot = btn.dataset.slot;
-      const data = localStorage.getItem("circuitBoards_slot" + slot);
-      const slotName = localStorage.getItem("circuitBoards_slot" + slot + "_name") || ("スロット" + slot);
-      if (!data) { alert(slotName + " は空です"); return; }
-      try {
-        const parsed = JSON.parse(data);
-        parsed.forEach((d, i) => {
+      // ボード
+      if (parsed.boards && Array.isArray(parsed.boards)) {
+        parsed.boards.forEach((d, i) => {
           for (let y = 0; y < 4; y++)
             for (let x = 0; x < 4; x++)
               boards[i].grid[y][x] = { ...d.grid[y][x] };
@@ -857,21 +958,37 @@ h3 {
           boards[i].panel.querySelector(".part").value = d.part || "top";
           boards[i].drawBoard();
         });
-        addChangelog(slotName + " から読み込みました: " + new Date().toLocaleString());
-      } catch (e) {
-        alert(slotName + " のデータが壊れています: " + e.message);
-        console.error(e);
       }
-    };
-  });
 
-  /* ======== 更新履歴 ======== */
-  function addChangelog(text) {
-    const ul = document.getElementById("changelogList");
-    const li = document.createElement("li");
-    li.textContent = text;
-    ul.prepend(li);
-  }
+      // スロット
+      if (parsed.slots) {
+        for (let i = 1; i <= 5; i++) {
+          if (parsed.slots[i]) {
+            localStorage.setItem("circuitBoards_slot" + i, parsed.slots[i].data || null);
+            localStorage.setItem("circuitBoards_slot" + i + "_name", parsed.slots[i].name || ("スロット" + i));
+            const slotDiv = document.querySelectorAll(".slot-buttons div")[i - 1];
+            slotDiv.querySelector(".slot-name").value = parsed.slots[i].name || ("スロット" + i);
+          }
+        }
+      }
+
+      const now = new Date().toLocaleString();
+      addChangelog(`${file.name} を読み込みました ${now}`);
+    } catch (err) {
+      alert("ファイルが正しくありません: " + err.message);
+      console.error(err);
+    }
+  };
+  reader.readAsText(file, "UTF-8");
+  importAllFile.value = "";
+};
+
+/* ======== 更新履歴 ======== */
+ function addChangelog(text) {
+  const ul = document.getElementById("changelogList");
+  const li = document.createElement("li");
+  li.textContent = text;
+  ul.prepend(li);
+}
 </script>
-
 
