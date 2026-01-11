@@ -167,34 +167,35 @@ h3 {
 
 /* ======== てんぷれ ======== */
 .template-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    justify-content: center;
-    margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .template-btn {
-    width: 48px;
-    height: 48px;
-    border: 1px solid #333;
-    display: flex;
-    background: #fff;
-    color: #ff6666;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    font-family: monospace;
-    font-size: 26px;
-    margin: 9px;
-    border-radius: 5px;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  display: flex;
+  background: #fff;
+  color: #ff6666;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  font-family: monospace;
+  font-size: 26px;
+  margin: 9px;
+  border-radius: 5px;
+  background: #fff;
 }
 
 .template-btn.selected {
-    background: #f0f8ff;
-    box-shadow: 0 0 10px #3399ff;
+  background: #f0f8ff;
+  box-shadow: 0 0 10px #3399ff;
 }
 
 /* ======== 回路選択 ======== */
@@ -203,6 +204,7 @@ h3 {
     gap: 18px;
     margin-top: 10px;
     justify-content: center;
+
 }
 
 .palette-group {
@@ -243,12 +245,15 @@ h3 {
     box-shadow: 0 0 20px #3399ff;
 }
 
+/*-----------------------↓ふくせー↓-----------------------*/
 .symbol.multi {
     width: 46px;
     height: 46px;
     font-size: 26px;
     border: 2px dashed #333;
 }
+
+/*-----------------------↑ふくせー↑-----------------------*/
 
 .delete-btn {
     margin-top: auto;
@@ -360,7 +365,7 @@ h3 {
   <div class="container">
     <div class="description-column">
       <div class="description">
-        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.72</h2>
+        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.73</h2>
         <h3>使い方・説明</h3>
         <p>
           右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
@@ -368,13 +373,15 @@ h3 {
           追加効果が空白の場合は「指定なし」として計算されます。<br>
            [自由入力]で任意の文字で追加効果を指定することも可能です。<br>
           <br>
-          セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合がありますのでファイル出力でデータを保存して下さい。
+          セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。<br>
+          ファイル出力でデータを保存して下さい。
         </p>
       </div>
 
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v1.73：その他調整</li>
           <li>v1.72：その他調整</li>
           <li>v1.71：その他調整</li>
           <li>v1.7：テンプレ追加</li>
@@ -402,16 +409,16 @@ h3 {
       <h3>追加効果</h3>
       <select id="charSelect" style="width:180px;">
         <option value=""></option>
-        <option value="">---------------上衣---------------</option>
+        <option value="">----------------上衣----------------</option>
         <option value="持続ダメ">持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
-        <option value="">---------------下衣---------------</option>
+        <option value="">----------------下衣-----------</option>
         <option value="両極化">両極化</op-----tion>
         <option value="以上ダメ">HP50%以上の敵攻撃時、ダメージ増加</option>
         <option value="以下ダメ">HP50%以下の敵攻撃時、ダメージ増加</option>
-        <option value="">---------------手袋---------------</option>
+        <option value="">----------------手袋----------------</option>
         <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
-        <option value="">---------------靴---------------</option>
+        <option value="">----------------靴----------------</option>
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
@@ -524,7 +531,7 @@ templates.forEach((tpl, idx) => {
 
   templateBtnContainer.appendChild(btn);
 });
-  /* ======== 回路選択 ======== */
+/* ======== 回路選択 ======== */
 let selected = "";
 let selectedIsMulti = false;
 
@@ -769,8 +776,8 @@ function drawBoard() {
   if (s.multi) {
     c.style.background = "#ffffaa";
   } else {
-    c.style.background = "#fff"; // 通常セルの背景色
-  } 
+    c.style.background = "#fff";
+  }
 /* ======== ↑複製接続色変え↑ ======== */
 
   if (s.multi) c.classList.add("multi-cell");
@@ -1017,13 +1024,11 @@ const importAllFile = document.createElement("input");
 importAllFile.type = "file";
 importAllFile.accept = ".txt";
 importAllFile.style.display = "none";
-
 const fileBtnContainer = document.createElement("div");
 exportAllBtn.style.width = "150px";
 exportAllBtn.style.height = "36px";
 importAllBtn.style.width = "150px";
 importAllBtn.style.height = "36px";
-
 document.querySelector(".side").appendChild(exportAllBtn);
 document.querySelector(".side").appendChild(importAllBtn);
 document.querySelector(".side").appendChild(importAllFile);
@@ -1037,7 +1042,6 @@ exportAllBtn.onclick = () => {
       const slotData = localStorage.getItem("circuitBoards_slot" + i) || null;
       slotsData[i] = { name: slotName, data: slotData };
     }
-
     const boardsData = boards.map(b => ({
       grid: b.grid.map(r => r.map(c => ({
         symbol: c.symbol || "",
@@ -1048,30 +1052,16 @@ exportAllBtn.onclick = () => {
       color: b.panel.querySelector(".color").value || "red",
       part: b.panel.querySelector(".part").value || "top"
     }));
-
     const exportData = { boards: boardsData, slots: slotsData };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "text/plain" });
-
-    const baseName = "circuitSimulator";
-    let fileName = baseName + ".txt";
-    let counter = 1;
-
-    while (localStorage.getItem("exported_" + fileName)) {
-      counter++;
-      fileName = `${baseName}(${counter}).txt`;
-    }
-    localStorage.setItem("exported_" + fileName, "1");
-
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = fileName;
+    a.download = "circuitSimulator.txt"; 
     a.click();
     URL.revokeObjectURL(url);
-
-    const now = new Date().toLocaleString();
-    addChangelog(`${fileName} を保存しました : ${now}`);
-
+     const now = new Date().toLocaleString();
+    addChangelog(`ファイルを保存しました : ${now}`);
   } catch (err) {
     alert("エクスポート出来ませんでした : " + err.message);
     console.error(err);
@@ -1080,7 +1070,6 @@ exportAllBtn.onclick = () => {
 
 /* ======== IN ======== */
 importAllBtn.onclick = () => importAllFile.click();
-
 importAllFile.onchange = (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -1088,7 +1077,6 @@ importAllFile.onchange = (e) => {
   reader.onload = (evt) => {
     try {
       const parsed = JSON.parse(evt.target.result);
-
       if (parsed.boards && Array.isArray(parsed.boards)) {
         parsed.boards.forEach((d, i) => {
           for (let y = 0; y < 4; y++)
@@ -1099,7 +1087,6 @@ importAllFile.onchange = (e) => {
           boards[i].drawBoard();
         });
       }
-
       if (parsed.slots) {
         for (let i = 1; i <= 5; i++) {
           if (parsed.slots[i]) {
@@ -1110,7 +1097,6 @@ importAllFile.onchange = (e) => {
           }
         }
       }
-
       const now = new Date().toLocaleString();
       addChangelog(`${file.name} を読み込みました : ${now}`);
     } catch (err) {
@@ -1130,10 +1116,3 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
-
-
-
-
-
-
-
