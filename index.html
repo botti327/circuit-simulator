@@ -772,6 +772,8 @@ function drawBoard() {
 /* ======== ↓複製接続色変え↓ ======== */
   if (s.multi) {
     c.style.background = "#ffffaa";
+  } else {
+    c.style.background = "#fff"; // 通常セルの背景色
   } 
 /* ======== ↑複製接続色変え↑ ======== */
 
@@ -1132,4 +1134,5 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
+
 
