@@ -165,6 +165,37 @@ h3 {
     margin-bottom: 6px;
 }
 
+/* ======== てんぷれ ======== */
+.template-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.template-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  display: flex;
+  color: #ff6666;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  font-family: monospace;
+  font-size: 26px;
+  margin: 9px;
+  border-radius: 5px;
+  background: #fff;
+}
+.template-btn.selected {
+  background: #f0f8ff;
+  box-shadow: 0 0 10px #3399ff;
+}
+
 /* ======== 回路選択 ======== */
 .palette {
     display: flex;
@@ -178,7 +209,7 @@ h3 {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    min-width: 60px;
+    min-width: 50px;
 }
 
 .palette-title,
@@ -319,7 +350,6 @@ h3 {
 #changelog li {
     margin-bottom: 4px;
 }
-
   </style>
 </head>
 <body>
@@ -327,13 +357,13 @@ h3 {
   <div class="container">
     <div class="description-column">
       <div class="description">
-        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.62</h2>
+        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.7</h2>
         <h3>使い方・説明</h3>
         <p>
           右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
-          [削]を選択するか右クリックで、配置した回路を削除できます。<br>
+           [削]を選択か右クリックで、配置した回路を削除できます。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
-          [自由入力]欄で任意の文字で追加効果を指定することも可能です。<br>
+           [自由入力]で任意の文字で追加効果を指定することも可能です。<br>
           <br>
           セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合がありますのでファイル出力でデータを保存して下さい。
         </p>
@@ -342,6 +372,7 @@ h3 {
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v1.7：テンプレ追加</li>
           <li>v1.62：その他調整</li>
           <li>v1.61：その他調整</li>
           <li>v1.6：追加効果</li>
@@ -358,6 +389,9 @@ h3 {
     <div class="left-frame" id="boards"></div>
 
     <div class="side">
+
+      <h3>テンプレート</h3>
+      <div class="template-buttons" id="templateButtons"></div>
       <div class="palette" id="palette"></div>
 
       <h3>追加効果</h3>
@@ -366,8 +400,8 @@ h3 {
         <option value="持続ダメ">持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
         <option value="両極化">両極化</option>
-        <option value="以上">HP50%以上の敵攻撃時、ダメージ増加</option>
-        <option value="以下">HP50%以下の敵攻撃時、ダメージ増加</option>
+        <option value="以上ダメ">HP50%以上の敵攻撃時、ダメージ増加</option>
+        <option value="以下ダメ">HP50%以下の敵攻撃時、ダメージ増加</option>
         <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
@@ -419,7 +453,7 @@ const boardsEl = document.getElementById("boards");
 const initialParts = ["top", "bottom", "glove", "shoes"];
 let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || null;
 
-/* ======== 回路 ======== */
+/* ======== 回路/テンプレ ======== */
 const paletteData = [
   { title: "増幅回路", symbols: ["┃", "━", "削"], multi: false },
   { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
@@ -450,6 +484,37 @@ paletteData.forEach(group => {
   paletteEl.appendChild(div);
 });
 
+const templates = [
+  {grid:[["┏","┓","┏","┓"],["┃","┗","┛","┃"],["┃","┏","┓","┃"],["┗","┛","┗","┛"]]},
+  {grid:[["┏","━","━","┓"],["┗","┓","┏","┛"],["┏","┛","┗","┓"],["┗","━","━","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┣","┫","┣","┫"],["┣","┫","┣","┫"],["┗","┻","┻","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┣","┻","┻","┫"],["┣","┳","┳","┫"],["┗","┻","┻","┛"]]},
+];
+
+function createTemplateLabel(grid) {
+  return '<pre style="margin:0; font-size:12px; line-height:12px;">' +
+         grid.map(row => row.join('')).join('\n') +
+         '</pre>';
+}
+const templateBtnContainer = document.getElementById("templateButtons");
+let selectedTemplate = null;
+
+templates.forEach((tpl, idx) => {
+  const btn = document.createElement("div");
+  btn.className = "template-btn";
+  btn.innerHTML = createTemplateLabel(tpl.grid);
+  btn.onclick = () => {
+    document.querySelectorAll(".template-btn").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    selectedTemplate = tpl;
+
+    document.querySelectorAll(".symbol").forEach(s => s.classList.remove("selected"));
+    selected = "";
+    selectedIsMulti = false;
+  };
+
+  templateBtnContainer.appendChild(btn);
+});
   /* ======== 回路選択 ======== */
 let selected = "";
 let selectedIsMulti = false;
@@ -465,6 +530,9 @@ document.querySelectorAll(".symbol").forEach(s => {
       s.classList.add("selected");
       selected = s.textContent;
       selectedIsMulti = s.classList.contains("multi");
+
+      document.querySelectorAll(".template-btn").forEach(btn => btn.classList.remove("selected"));
+      selectedTemplate = null;
     }
   };
 });
@@ -504,6 +572,7 @@ function getSelectedNumber() {
   return checked ? parseFloat(checked.value) : 0;
 }
 */
+
 /* ======== 追加効果 ======== */
 const charInput = document.getElementById("charInput");
 const charSelect = document.getElementById("charSelect");
@@ -623,6 +692,20 @@ for (let y = 0; y < 4; y++) {
       const cell = grid[y][x];
       if (cell.symbol === "img") return;
 
+      if (selectedTemplate) {
+        for (let ty = 0; ty < 4; ty++) {
+          for (let tx = 0; tx < 4; tx++) {
+            const tSymbol = selectedTemplate.grid[ty][tx];
+            if (grid[ty][tx].symbol !== "img") {
+              grid[ty][tx] = { symbol: tSymbol, number: getSelectedNumber(), char: getSelectedChar(), multi: false };
+            }
+          }
+        }
+        drawBoard();
+        saveBoards();
+        return;
+      }
+
       if (selected === "削") {
         grid[y][x] = { symbol: "", number: "", char: "", multi: false };
       } else if (selected) {
@@ -653,7 +736,7 @@ for (let y = 0; y < 4; y++) {
   }
 }
 
-    /* ======== 描画関数 ======== */
+/* ======== 描画 ======== */
 function drawBoard() {
   board.querySelectorAll(".cell").forEach((c, i) => {
     const y = Math.floor(i / 4);
@@ -678,7 +761,7 @@ function drawBoard() {
   updateBoard();
 }
 
-    /* ======== 接続 ======== */
+/* ======== 接続 ======== */
 function updateBoard() {
   const dx = { l: -1, r: 1, u: 0, d: 0 };
   const dy = { l: 0, r: 0, u: -1, d: 1 };
@@ -793,7 +876,7 @@ boardsEl.appendChild(wrap);
 drawBoard();
 }
 
-  /* ======== ローカル保存 ======== */
+/* ======== ローカル保存 ======== */
 function saveBoards() {
   const data = boards.map(b => ({
     grid: b.grid.map(row =>
@@ -867,9 +950,9 @@ document.querySelectorAll(".saveBtn").forEach(btn => {
 
       localStorage.setItem("circuitBoards_slot" + slot, JSON.stringify(saveData));
       localStorage.setItem("circuitBoards_slot" + slot + "_name", slotName);
-      addChangelog(slotName + " に保存しました: " + new Date().toLocaleString());
+      addChangelog(slotName + " に保存しました : " + new Date().toLocaleString());
     } catch (e) {
-      alert("保存に失敗しました: " + e.message);
+      alert("保存に失敗しました : " + e.message);
       console.error(e);
     }
   };
@@ -899,9 +982,9 @@ document.querySelectorAll(".loadBtn").forEach(btn => {
         boards[i].drawBoard();
       });
 
-      addChangelog(slotName + " から読み込みました: " + new Date().toLocaleString());
+      addChangelog(slotName + " から読み込みました : " + new Date().toLocaleString());
     } catch (e) {
-      alert(slotName + " のデータが壊れています: " + e.message);
+      alert(slotName + " のデータが壊れています : " + e.message);
       console.error(e);
     }
   };
@@ -969,10 +1052,10 @@ exportAllBtn.onclick = () => {
     URL.revokeObjectURL(url);
 
     const now = new Date().toLocaleString();
-    addChangelog(`${fileName} を保存しました ${now}`);
+    addChangelog(`${fileName} を保存しました : ${now}`);
 
   } catch (err) {
-    alert("エクスポート出来ませんでした: " + err.message);
+    alert("エクスポート出来ませんでした : " + err.message);
     console.error(err);
   }
 };
@@ -1011,9 +1094,9 @@ importAllFile.onchange = (e) => {
       }
 
       const now = new Date().toLocaleString();
-      addChangelog(`${file.name} を読み込みました ${now}`);
+      addChangelog(`${file.name} を読み込みました : ${now}`);
     } catch (err) {
-      alert("ファイルが正しくありません: " + err.message);
+      alert("ファイルが正しくありません : " + err.message);
       console.error(err);
     }
   };
@@ -1029,5 +1112,3 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
-
-
