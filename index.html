@@ -253,10 +253,15 @@ h3 {
     border: 2px dashed #333;
 }
 
-/*-----------------------↑ふくせー↑-----------------------*/
-
-.delete-btn {
-    margin-top: auto;
+.num-edit-btn.selected {
+    background: #f0fff4;
+    color: #33cc88;
+    box-shadow: 0 0 20px #33cc88;
+}
+.delete-btn.selected  {
+    background: #fff0f0;
+    color: #ff6666;
+    box-shadow: 0 0 20px #ff6666;
 }
 
 .multi-label {
@@ -268,7 +273,7 @@ h3 {
     color: #000;
 }
 
-/* ======== 文字 ======== */
+/* ======== 合計 ======== */
 .char-display {
     position: absolute;
     top: 2px;
@@ -277,6 +282,32 @@ h3 {
     font-weight: bold;
     color: #000;
     pointer-events: none;
+}
+
+.sum-header {
+  font-weight: bold;
+  margin-bottom: 2px;
+    text-align:center;
+}
+
+.sum-name {
+  text-align: left;
+}
+
+.sum-total{
+  text-align:center;
+}
+
+.sum-multi {
+  text-align: center ;
+}
+
+.sum-grid {
+  display: grid;
+  grid-template-columns: auto 60px 60px;
+  column-gap: 6px;
+  font-family: monospace;
+  font-size: 12px;
 }
 
 /* ======== 数値選択 ======== */
@@ -369,13 +400,15 @@ h3 {
         <h3>使い方・説明</h3>
         <p>
           右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
-           [削]を選択か右クリックで、配置した回路を削除できます。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
-           [自由入力]で任意の文字で追加効果を指定することも可能です。<br>
+          [自由入力]で任意の文字で追加効果を指定することも可能です。<br>
+          <br>
+          [削]を選択か右クリックで、配置した回路を削除できます。<br>
+          [変]を選択で配置した回路はそのままで、効果と数値だけを変更できます。<br>
           <br>
           セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。<br>
           ファイル出力でデータを保存して下さい。
-          ファイルには、現在の回路とスロットデータが保存されます。
+          ファイルは、現在の回路とスロットデータが保存されます。
         </p>
       </div>
 
@@ -410,16 +443,16 @@ h3 {
       <h3>追加効果</h3>
       <select id="charSelect" style="width:180px;">
         <option value=""></option>
-        <option value="">----------------上衣----------------</option>
+        <option value="">----------上衣----------</option>
         <option value="持続ダメ">持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
-        <option value="">----------------下衣-----------</option>
+        <option value="">----------下衣-----</option>
         <option value="両極化">両極化</op-----tion>
         <option value="以上ダメ">HP50%以上の敵攻撃時、ダメージ増加</option>
         <option value="以下ダメ">HP50%以下の敵攻撃時、ダメージ増加</option>
-        <option value="">----------------手袋----------------</option>
+        <option value="">----------手袋----------</option>
         <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
-        <option value="">----------------靴----------------</option>
+        <option value="">----------靴----------</option>
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
@@ -472,7 +505,7 @@ let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || n
 
 /* ======== 回路/テンプレ ======== */
 const paletteData = [
-  { title: "増幅回路", symbols: ["┃", "━", "削"], multi: false },
+  { title: "増幅回路", symbols: ["┃", "━", "変","削"], multi: false },
   { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
   { title: "増幅回路", symbols: ["┳", "┫", "┻", "┣"], multi: false, hideTitle: true },
   { title: "複製回路", symbols: ["┳", "┫", "┻", "┣"], multi: true }
@@ -492,8 +525,11 @@ paletteData.forEach(group => {
   group.symbols.forEach(sym => {
     const s = document.createElement("div");
     s.className = "symbol";
-    if (group.multi) s.classList.add("multi");
+
+    if (sym === "変") s.classList.add("num-edit-btn");
     if (sym === "削") s.classList.add("delete-btn");
+    if (group.multi) s.classList.add("multi");
+
     s.textContent = sym;
     div.appendChild(s);
   });
@@ -532,12 +568,27 @@ templates.forEach((tpl, idx) => {
 
   templateBtnContainer.appendChild(btn);
 });
-/* ======== 回路選択 ======== */
+  /* ======== 回路選択 ======== */
 let selected = "";
 let selectedIsMulti = false;
+let numberEditMode = false;
 
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
+
+    if (s.classList.contains("num-edit-btn")) {
+      document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
+      s.classList.add("selected");
+
+      numberEditMode = true;
+      selected = "";
+      selectedIsMulti = false;
+      selectedTemplate = null;
+      return;
+    }
+
+    numberEditMode = false;
+
     if (s.classList.contains("selected")) {
       s.classList.remove("selected");
       selected = "";
@@ -545,6 +596,7 @@ document.querySelectorAll(".symbol").forEach(s => {
     } else {
       document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
       s.classList.add("selected");
+
       selected = s.textContent;
       selectedIsMulti = s.classList.contains("multi");
 
@@ -665,7 +717,7 @@ for (let i = 0; i < 4; i++) {
   const charSumDiv = document.createElement("div");
   charSumDiv.style.marginTop = "4px";
   charSumDiv.style.fontSize = "12px";
-  charSumDiv.textContent = "A:0 / B:0 / C:0 / D:0";
+  charSumDiv.textContent = "";
   wrap.appendChild(charSumDiv);
   wrap.charSumDiv = charSumDiv;
 
@@ -708,6 +760,16 @@ for (let y = 0; y < 4; y++) {
     c.onclick = () => {
       const cell = grid[y][x];
       if (cell.symbol === "img") return;
+
+      if (numberEditMode) {
+          if (!cell.symbol || cell.multi) return;
+
+          cell.number = getSelectedNumber();
+          cell.char = getSelectedChar();
+          drawBoard();
+          saveBoards();
+          return;
+      }
 
       if (selectedTemplate) {
         for (let ty = 0; ty < 4; ty++) {
@@ -777,7 +839,7 @@ function drawBoard() {
   if (s.multi) {
     c.style.background = "#ffffaa";
   } else {
-    c.style.background = "#fff";
+    c.style.background = "";
   }
 /* ======== ↑複製接続色変え↑ ======== */
 
@@ -794,9 +856,14 @@ function updateBoard() {
   const opp = { l: "r", r: "l", u: "d", d: "u" };
 
   let cx = -1, cy = -1;
-  for (let y = 0; y < 4; y++)
-    for (let x = 0; x < 4; x++)
-      if (grid[y][x].symbol === "img") { cx = x; cy = y; }
+  for (let y = 0; y < 4; y++) {
+    for (let x = 0; x < 4; x++) {
+      if (grid[y][x].symbol === "img") {
+        cx = x;
+        cy = y;
+      }
+    }
+  }
 
   if (cx === -1) return;
 
@@ -808,13 +875,14 @@ function updateBoard() {
   while (stack.length && !invalid) {
     const [x, y] = stack.pop();
     const s = grid[y][x];
-
     for (const d in dx) {
       const nx = x + dx[d];
       const ny = y + dy[d];
-
       if (connections[s.symbol]?.[d]) {
-        if (nx < 0 || nx >= 4 || ny < 0 || ny >= 4) { invalid = true; break; }
+        if (nx < 0 || nx >= 4 || ny < 0 || ny >= 4) {
+          invalid = true;
+          break;
+        }
       }
 
       const t = grid[ny]?.[nx];
@@ -822,24 +890,40 @@ function updateBoard() {
 
       if (s.symbol === "img") {
         if (t.symbol && connections[t.symbol]) {
-          if (!connections[t.symbol]?.[opp[d]]) { invalid = true; break; }
-          if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
+          if (!connections[t.symbol]?.[opp[d]]) {
+            invalid = true;
+            break;
+          }
+          if (!visited[ny][nx]) {
+            visited[ny][nx] = true;
+            stack.push([nx, ny]);
+          }
         }
         continue;
       }
-
       if (connections[s.symbol]?.[d]) {
-        if (!t.symbol) { invalid = true; break; }
+        if (!t.symbol) {
+          invalid = true;
+          break;
+        }
         if (t.symbol === "img") {
-          if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
+          if (!visited[ny][nx]) {
+            visited[ny][nx] = true;
+            stack.push([nx, ny]);
+          }
         } else {
-          if (!connections[t.symbol]?.[opp[d]]) { invalid = true; break; }
-          if (!visited[ny][nx]) { visited[ny][nx] = true; stack.push([nx, ny]); }
+          if (!connections[t.symbol]?.[opp[d]]) {
+            invalid = true;
+            break;
+          }
+          if (!visited[ny][nx]) {
+            visited[ny][nx] = true;
+            stack.push([nx, ny]);
+          }
         }
       }
     }
   }
-
   if (invalid) {
     board.querySelectorAll(".cell").forEach(c => c.className = "cell");
     wrap.charSumDiv.textContent = "";
@@ -847,7 +931,8 @@ function updateBoard() {
   }
 
   const color = panel.querySelector(".color").value;
-  const charSum = {};
+  const charSumTotal = {};
+  const charSumMulti = {};
 
   board.querySelectorAll(".cell").forEach((c, i) => {
     const y = Math.floor(i / 4);
@@ -856,20 +941,21 @@ function updateBoard() {
 
     c.className = "cell";
     if (!visited[y][x]) return;
-
-    let value = 0;
     const cellCharValue = {};
-
     if (s.multi) {
       for (const d in dx) {
         const nx = x + dx[d];
         const ny = y + dy[d];
         const t = grid[ny]?.[nx];
-
-        if (t && visited[ny][nx] && !t.multi && t.number &&
-            connections[s.symbol]?.[d] && connections[t.symbol]?.[opp[d]]) {
+        if (
+          t &&
+          visited[ny][nx] &&
+          !t.multi &&
+          t.number &&
+          connections[s.symbol]?.[d] &&
+          connections[t.symbol]?.[opp[d]]
+        ) {
           const half = parseFloat(t.number) / 2;
-          value += half;
           const key = t.char && t.char.trim() !== "" ? t.char : "指定なし";
           cellCharValue[key] = (cellCharValue[key] || 0) + half;
         }
@@ -877,21 +963,43 @@ function updateBoard() {
     } else {
       const n = parseFloat(s.number);
       if (!isNaN(n)) {
-        value = n;
         const key = s.char && s.char.trim() !== "" ? s.char : "指定なし";
-        cellCharValue[key] = value;
+        cellCharValue[key] = n;
       }
     }
-
-    for (const ch in cellCharValue) charSum[ch] = (charSum[ch] || 0) + cellCharValue[ch];
-
-    if (connections[s.symbol]) c.classList.add("connected", "highlight-" + color);
+    for (const ch in cellCharValue) {
+      charSumTotal[ch] = (charSumTotal[ch] || 0) + cellCharValue[ch];
+      if (s.multi) {
+        charSumMulti[ch] = (charSumMulti[ch] || 0) + cellCharValue[ch];
+      }
+    }
+    if (connections[s.symbol]) {
+      c.classList.add("connected", "highlight-" + color);
+    }
   });
 
-  wrap.charSumDiv.innerHTML = Object.entries(charSum)
-    .sort((a, b) => b[1] - a[1])
-    .map(([k, v]) => `${k}:${v.toFixed(2)}`)
-    .join("<br>");
+  wrap.charSumDiv.innerHTML = `
+    <div class="sum-grid sum-header">
+      <div></div>
+      <div>複製追加分</div>
+      <div>合計</div>
+    </div>
+    <div class="sum-grid">
+      ${
+        Object.entries(charSumTotal)
+          .sort((a, b) => b[1] - a[1])
+          .map(([k, v]) => {
+            const multi = charSumMulti[k] || 0;
+            return `
+              <div class="sum-name">${k}</div>
+              <div class="sum-multi">${multi.toFixed(2)}</div>
+              <div class="sum-total">${v.toFixed(2)}</div>
+            `;
+          })
+          .join("")
+      }
+    </div>
+  `;
 }
 
 wrap.drawBoard = drawBoard;
@@ -1025,11 +1133,13 @@ const importAllFile = document.createElement("input");
 importAllFile.type = "file";
 importAllFile.accept = ".txt";
 importAllFile.style.display = "none";
+
 const fileBtnContainer = document.createElement("div");
 exportAllBtn.style.width = "150px";
 exportAllBtn.style.height = "36px";
 importAllBtn.style.width = "150px";
 importAllBtn.style.height = "36px";
+
 document.querySelector(".side").appendChild(exportAllBtn);
 document.querySelector(".side").appendChild(importAllBtn);
 document.querySelector(".side").appendChild(importAllFile);
@@ -1037,12 +1147,14 @@ document.querySelector(".side").appendChild(importAllFile);
 /* ======== EX ======== */
 exportAllBtn.onclick = () => {
   try {
+    // 保存するデータを作成
     const slotsData = {};
     for (let i = 1; i <= 5; i++) {
       const slotName = localStorage.getItem("circuitBoards_slot" + i + "_name") || ("スロット" + i);
       const slotData = localStorage.getItem("circuitBoards_slot" + i) || null;
       slotsData[i] = { name: slotName, data: slotData };
     }
+
     const boardsData = boards.map(b => ({
       grid: b.grid.map(r => r.map(c => ({
         symbol: c.symbol || "",
@@ -1053,16 +1165,20 @@ exportAllBtn.onclick = () => {
       color: b.panel.querySelector(".color").value || "red",
       part: b.panel.querySelector(".part").value || "top"
     }));
+
     const exportData = { boards: boardsData, slots: slotsData };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "text/plain" });
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "circuitSimulator.txt"; 
+    a.download = "circuitSimulator.txt";
     a.click();
     URL.revokeObjectURL(url);
+
      const now = new Date().toLocaleString();
     addChangelog(`ファイルを保存しました : ${now}`);
+
   } catch (err) {
     alert("エクスポート出来ませんでした : " + err.message);
     console.error(err);
@@ -1071,6 +1187,7 @@ exportAllBtn.onclick = () => {
 
 /* ======== IN ======== */
 importAllBtn.onclick = () => importAllFile.click();
+
 importAllFile.onchange = (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -1078,6 +1195,7 @@ importAllFile.onchange = (e) => {
   reader.onload = (evt) => {
     try {
       const parsed = JSON.parse(evt.target.result);
+
       if (parsed.boards && Array.isArray(parsed.boards)) {
         parsed.boards.forEach((d, i) => {
           for (let y = 0; y < 4; y++)
@@ -1088,6 +1206,7 @@ importAllFile.onchange = (e) => {
           boards[i].drawBoard();
         });
       }
+
       if (parsed.slots) {
         for (let i = 1; i <= 5; i++) {
           if (parsed.slots[i]) {
@@ -1098,6 +1217,7 @@ importAllFile.onchange = (e) => {
           }
         }
       }
+
       const now = new Date().toLocaleString();
       addChangelog(`${file.name} を読み込みました : ${now}`);
     } catch (err) {
