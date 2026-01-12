@@ -88,15 +88,6 @@ h3 {
     flex-shrink: 0;
 }
 
-.board-wrap div[style*="margin-top: 4px"] {
-    margin-top: 2px;
-    font-size: 12px;
-    overflow-y: auto;
-    height: 75px;
-    min-height: 75px;
-    text-align: left;
-}
-
 /* ======== セル ======== */
 .cell {
     position: relative;
@@ -142,25 +133,25 @@ h3 {
 .highlight-red {
     background: #fff0f0;
     color: #ff6666;
-    box-shadow: 0 0 20px #ff8888;
+    box-shadow: 0 0 30px #ff6666;
 }
 
 .highlight-blue {
     background: #f0f8ff;
     color: #3399ff;
-    box-shadow: 0 0 20px #66b3ff;
+    box-shadow: 0 0 30px #66b3ff;
 }
 
 .highlight-green {
     background: #f0fff4;
     color: #33cc88;
-    box-shadow: 0 0 20px #66ffaa;
+    box-shadow: 0 0 30px #66ffaa;
 }
 
-/* ======== パネル ======== */
+/* ======== 色/部位 ======== */
 .panel {
     display: flex;
-    gap: 6px;
+    gap: 15px;
     justify-content: center;
     margin-bottom: 6px;
 }
@@ -190,7 +181,6 @@ h3 {
   font-size: 26px;
   margin: 9px;
   border-radius: 5px;
-  background: #fff;
 }
 
 .template-btn.selected {
@@ -245,7 +235,6 @@ h3 {
     box-shadow: 0 0 20px #3399ff;
 }
 
-/*-----------------------↓ふくせー↓-----------------------*/
 .symbol.multi {
     width: 46px;
     height: 46px;
@@ -274,6 +263,7 @@ h3 {
 }
 
 /* ======== 合計 ======== */
+
 .char-display {
     position: absolute;
     top: 2px;
@@ -283,13 +273,19 @@ h3 {
     color: #000;
     pointer-events: none;
 }
-
+.char-sum-div {
+  height: 70px; 
+  max-height: 80px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-top: 4px;
+  font-size: 12px;
+}
 .sum-header {
   font-weight: bold;
   margin-bottom: 2px;
     text-align:center;
 }
-
 .sum-name {
   text-align: left;
 }
@@ -361,7 +357,7 @@ h3 {
 
 #changelog {
     width: 100%;
-    height: 180px;
+    height: 160px;
     background: #fefefe;
     border: 2px solid #333;
     border-radius: 4px;
@@ -401,10 +397,14 @@ h3 {
         <p>
           右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
-          [自由入力]で任意の文字で追加効果を指定することも可能です。<br>
+          リストに無い追加効果を付けたい場合は自由入力欄に入力して下さい。<br>
           <br>
-          [削]を選択か右クリックで、配置した回路を削除できます。<br>
-          [変]を選択で配置した回路はそのままで、効果と数値だけを変更できます。<br>
+          [変]<br>
+          配置された回路はそのままで、追加効果と数値を変更できます。<br>
+          <br>
+          [削]<br>
+          配置した回路を削除できます。右クリックでも削除できます。<br>
+          <br>
           <br>
           セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。<br>
           ファイル出力でデータを保存して下さい。
@@ -443,25 +443,25 @@ h3 {
       <h3>追加効果</h3>
       <select id="charSelect" style="width:180px;">
         <option value=""></option>
-        <option value="">----------上衣----------</option>
+        <option value="">-----------------上衣-----------------</option>
         <option value="持続ダメ">持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
-        <option value="">----------下衣-----</option>
-        <option value="両極化">両極化</op-----tion>
+        <option value="">-----------------下衣------------</option>
+        <option value="両極化">両極化</option>
         <option value="以上ダメ">HP50%以上の敵攻撃時、ダメージ増加</option>
         <option value="以下ダメ">HP50%以下の敵攻撃時、ダメージ増加</option>
-        <option value="">----------手袋----------</option>
+        <option value="">-----------------手袋-----------------</option>
         <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
-        <option value="">----------靴----------</option>
+        <option value="">-----------------靴-----------------</option>
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
       <input
         id="charInput"
         type="text"
-        maxlength="10"
-        style="width:80px; text-align:center;"
-        placeholder="自由入力"
+        maxlength="8"
+        style="width:100px; text-align:center;"
+        placeholder="自由入力 (任意)"
       />
 <!-------------------------------------------------------------------------->
       <h3>数値</h3>
@@ -557,51 +557,51 @@ templates.forEach((tpl, idx) => {
   btn.className = "template-btn";
   btn.innerHTML = createTemplateLabel(tpl.grid);
   btn.onclick = () => {
-    document.querySelectorAll(".template-btn").forEach(b => b.classList.remove("selected"));
-    btn.classList.add("selected");
-    selectedTemplate = tpl;
-
-    document.querySelectorAll(".symbol").forEach(s => s.classList.remove("selected"));
-    selected = "";
-    selectedIsMulti = false;
-  };
+  selectButton(btn, "template", tpl);
+};
 
   templateBtnContainer.appendChild(btn);
 });
   /* ======== 回路選択 ======== */
-let selected = "";
-let selectedIsMulti = false;
-let numberEditMode = false;
+const selectState = {
+  type: null,
+  value: null,
+  isMulti: false
+};
+
+function clearAllSelections() {
+  document.querySelectorAll(".symbol, .template-btn")
+    .forEach(b => b.classList.remove("selected"));
+
+  selectState.type = null;
+  selectState.value = null;
+  selectState.isMulti = false;
+}
+
+function selectButton(el, type, value = null, isMulti = false) {
+  const alreadySelected = el.classList.contains("selected");
+
+  clearAllSelections();
+  if (alreadySelected) return;
+
+  el.classList.add("selected");
+
+  selectState.type = type;
+  selectState.value = value;
+  selectState.isMulti = isMulti;
+}
 
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
-
     if (s.classList.contains("num-edit-btn")) {
-      document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
-      s.classList.add("selected");
-
-      numberEditMode = true;
-      selected = "";
-      selectedIsMulti = false;
-      selectedTemplate = null;
-      return;
-    }
-
-    numberEditMode = false;
-
-    if (s.classList.contains("selected")) {
-      s.classList.remove("selected");
-      selected = "";
-      selectedIsMulti = false;
+      selectButton(s, "numEdit");
     } else {
-      document.querySelectorAll(".symbol").forEach(x => x.classList.remove("selected"));
-      s.classList.add("selected");
-
-      selected = s.textContent;
-      selectedIsMulti = s.classList.contains("multi");
-
-      document.querySelectorAll(".template-btn").forEach(btn => btn.classList.remove("selected"));
-      selectedTemplate = null;
+      selectButton(
+        s,
+        "symbol",
+        s.textContent,
+        s.classList.contains("multi")
+      );
     }
   };
 });
@@ -715,8 +715,7 @@ for (let i = 0; i < 4; i++) {
   wrap.appendChild(board);
 
   const charSumDiv = document.createElement("div");
-  charSumDiv.style.marginTop = "4px";
-  charSumDiv.style.fontSize = "12px";
+  charSumDiv.className = "char-sum-div";
   charSumDiv.textContent = "";
   wrap.appendChild(charSumDiv);
   wrap.charSumDiv = charSumDiv;
@@ -758,49 +757,48 @@ for (let y = 0; y < 4; y++) {
     c.className = "cell";
 
     c.onclick = () => {
-      const cell = grid[y][x];
-      if (cell.symbol === "img") return;
-
-      if (numberEditMode) {
-          if (!cell.symbol || cell.multi) return;
-
-          cell.number = getSelectedNumber();
-          cell.char = getSelectedChar();
-          drawBoard();
-          saveBoards();
-          return;
-      }
-
-      if (selectedTemplate) {
-        for (let ty = 0; ty < 4; ty++) {
-          for (let tx = 0; tx < 4; tx++) {
-            const tSymbol = selectedTemplate.grid[ty][tx];
-            if (grid[ty][tx].symbol !== "img") {
-              grid[ty][tx] = { symbol: tSymbol, number: getSelectedNumber(), char: getSelectedChar(), multi: false };
-            }
-          }
+  const cell = grid[y][x];
+  if (cell.symbol === "img") return;
+  if (selectState.type === "numEdit") {
+    if (!cell.symbol || cell.multi) return;
+    cell.number = getSelectedNumber();
+    cell.char = getSelectedChar();
+    drawBoard();
+    saveBoards();
+    return;
+  }
+  if (selectState.type === "template") {
+    for (let ty = 0; ty < 4; ty++) {
+      for (let tx = 0; tx < 4; tx++) {
+        if (grid[ty][tx].symbol !== "img") {
+          grid[ty][tx] = {
+            symbol: selectState.value.grid[ty][tx],
+            number: getSelectedNumber(),
+            char: getSelectedChar(),
+            multi: false
+          };
         }
-        drawBoard();
-        saveBoards();
-        return;
       }
-
-      if (selected === "削") {
-        grid[y][x] = { symbol: "", number: "", char: "", multi: false };
-      } else if (selected) {
-        const isMulti = selectedIsMulti;
-        const char = getSelectedChar();
-        grid[y][x] = {
-          symbol: selected,
-          number: isMulti ? "" : getSelectedNumber(),
-          char: isMulti ? "" : char,
-          multi: isMulti
-        };
-      }
-
-      drawBoard();
-      saveBoards();
-    };
+    }
+    drawBoard();
+    saveBoards();
+    return;
+  }
+  if (selectState.type === "symbol") {
+    if (selectState.value === "削") {
+      grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+    } else {
+      grid[y][x] = {
+        symbol: selectState.value,
+        number: selectState.isMulti ? "" : getSelectedNumber(),
+        char: selectState.isMulti ? "" : getSelectedChar(),
+        multi: selectState.isMulti
+      };
+    }
+    drawBoard();
+    saveBoards();
+  }
+};
 
     c.oncontextmenu = (e) => {
       e.preventDefault();
@@ -834,15 +832,11 @@ function drawBoard() {
       <div class="number-display">${s.number || ""}</div>
     `;
     c.className = "cell";
-
-/* ======== ↓複製接続色変え↓ ======== */
   if (s.multi) {
     c.style.background = "#ffffaa";
   } else {
     c.style.background = "";
   }
-/* ======== ↑複製接続色変え↑ ======== */
-
   if (s.multi) c.classList.add("multi-cell");
 });
 
@@ -854,6 +848,9 @@ function updateBoard() {
   const dx = { l: -1, r: 1, u: 0, d: 0 };
   const dy = { l: 0, r: 0, u: -1, d: 1 };
   const opp = { l: "r", r: "l", u: "d", d: "u" };
+  const charOrder = Array.from(charSelect.options)
+  .map(o => o.value)
+  .filter(v => v !== "");
 
   let cx = -1, cy = -1;
   for (let y = 0; y < 4; y++) {
@@ -981,18 +978,29 @@ function updateBoard() {
   wrap.charSumDiv.innerHTML = `
     <div class="sum-grid sum-header">
       <div></div>
-      <div>複製追加分</div>
+      <div>複製増加分</div>
       <div>合計</div>
     </div>
     <div class="sum-grid">
       ${
         Object.entries(charSumTotal)
-          .sort((a, b) => b[1] - a[1])
+          .sort((a, b) => {
+            if (b[1] !== a[1]) return b[1] - a[1];
+            const ia = charOrder.indexOf(a[0]);
+            const ib = charOrder.indexOf(b[0]);
+            if (a[0] === "指定なし") return 1;
+            if (b[0] === "指定なし") return -1;
+
+            return ia - ib;
+          })
+
           .map(([k, v]) => {
             const multi = charSumMulti[k] || 0;
             return `
               <div class="sum-name">${k}</div>
-              <div class="sum-multi">${multi.toFixed(2)}</div>
+              <div class="sum-multi">
+                ${multi > 0 ? multi.toFixed(2) : ""}
+              </div>
               <div class="sum-total">${v.toFixed(2)}</div>
             `;
           })
