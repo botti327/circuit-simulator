@@ -516,7 +516,8 @@ h3 {
         <span id="numValue">0.5</span>
       </div>
 <!-------------------------------------------------------------------------->
-<!--
+
+<!--------------------------------------------------------------------------
       <h3>数値</h3>
       <div class="num-palette" id="numPalette">
       <label><input type="radio" name="num" value="0.5"> 0.5</label>
@@ -526,7 +527,7 @@ h3 {
       <label><input type="radio" name="num" value="0.9"> 0.9</label>
       <label><input type="radio" name="num" value="1.0"> 1.0</label>
 </div>
--->
+-------------------------------------------------------------------------->
 
       <h3>セーブ</h3>
       <div class="slot-buttons" id="slotButtons"></div>
@@ -705,12 +706,12 @@ slider.addEventListener("input", () => {
   numValue.textContent = slider.value;
 });
 /*--------------------------------------------------------------------------*/
-/*
+/*--------------------------------------------------------------------------
 function getSelectedNumber() {
   const checked = document.querySelector('input[name="num"]:checked');
   return checked ? parseFloat(checked.value) : 0;
 }
-*/
+--------------------------------------------------------------------------*/
 
 /* ======== 追加効果 ======== */
 const charInput = document.getElementById("charInput");
@@ -1318,5 +1319,6 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
+
 
 
