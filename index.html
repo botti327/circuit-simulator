@@ -385,6 +385,35 @@ h3 {
 #changelog li {
     margin-bottom: 4px;
 }
+.template-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.template-header h3 {
+  margin: 0;
+}
+
+.template-pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.template-pager button {
+  height: 24px;
+  padding: 0 6px;
+  cursor: pointer;
+}
+
+.template-pager span {
+  font-size: 12px;
+  min-width: 40px;
+  text-align: center;
+}
+
   </style>
 </head>
 <body>
@@ -436,8 +465,17 @@ h3 {
 
     <div class="side">
 
-      <h3>テンプレート</h3>
-      <div class="template-buttons" id="templateButtons"></div>
+      <div class="template-header">
+  <h3>テンプレート</h3>
+
+  <div class="template-pager">
+    <button id="prevTemplate">◀</button>
+    <span id="templatePageLabel">1 / 1</span>
+    <button id="nextTemplate">▶</button>
+  </div>
+</div>
+
+<div class="template-buttons" id="templateButtons"></div>
       <div class="palette" id="palette"></div>
 
       <h3>追加効果</h3>
@@ -510,7 +548,8 @@ const paletteData = [
   { title: "増幅回路", symbols: ["┳", "┫", "┻", "┣"], multi: false, hideTitle: true },
   { title: "複製回路", symbols: ["┳", "┫", "┻", "┣"], multi: true }
 ];
-
+const TEMPLATES_PER_PAGE = 4;
+let currentTemplatePage = 0;
 const paletteEl = document.getElementById("palette");
 paletteData.forEach(group => {
   const div = document.createElement("div");
@@ -542,6 +581,11 @@ const templates = [
   {grid:[["┏","━","━","┓"],["┗","┓","┏","┛"],["┏","┛","┗","┓"],["┗","━","━","┛"]]},
   {grid:[["┏","┳","┳","┓"],["┣","┫","┣","┫"],["┣","┫","┣","┫"],["┗","┻","┻","┛"]]},
   {grid:[["┏","┳","┳","┓"],["┣","┻","┻","┫"],["┣","┳","┳","┫"],["┗","┻","┻","┛"]]},
+
+  {grid:[["┏","━","━","┓"],["┃","  ","  ","┃"],["┃","  ","  ","┃"],["┗","━","━","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┣","┛","┗","┫"],["┣","┓","┏","┫"],["┗","┻","┻","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┃","┃","┃","┃"],["┃","┃","┃","┃"],["┗","┻","┻","┛"]]},
+  {grid:[["┏","━","━","┓"],["┣","━","━","┫"],["┣","━","━","┫"],["┗","━","━","┛"]]},
 ];
 
 function createTemplateLabel(grid) {
@@ -552,16 +596,27 @@ function createTemplateLabel(grid) {
 const templateBtnContainer = document.getElementById("templateButtons");
 let selectedTemplate = null;
 
-templates.forEach((tpl, idx) => {
-  const btn = document.createElement("div");
-  btn.className = "template-btn";
-  btn.innerHTML = createTemplateLabel(tpl.grid);
-  btn.onclick = () => {
-  selectButton(btn, "template", tpl);
-};
+function renderTemplatePage() {
+  templateBtnContainer.innerHTML = "";
 
-  templateBtnContainer.appendChild(btn);
-});
+  const start = currentTemplatePage * TEMPLATES_PER_PAGE;
+  const end = start + TEMPLATES_PER_PAGE;
+  const pageTemplates = templates.slice(start, end);
+
+  pageTemplates.forEach(tpl => {
+    const btn = document.createElement("div");
+    btn.className = "template-btn";
+    btn.innerHTML = createTemplateLabel(tpl.grid);
+    btn.onclick = () => {
+      selectButton(btn, "template", tpl);
+    };
+    templateBtnContainer.appendChild(btn);
+  });
+
+  const totalPages = Math.ceil(templates.length / TEMPLATES_PER_PAGE);
+  document.getElementById("templatePageLabel").textContent =
+    (currentTemplatePage + 1) + " / " + totalPages;
+}
   /* ======== 回路選択 ======== */
 const selectState = {
   type: null,
@@ -590,7 +645,22 @@ function selectButton(el, type, value = null, isMulti = false) {
   selectState.value = value;
   selectState.isMulti = isMulti;
 }
+document.getElementById("prevTemplate").onclick = () => {
+  if (currentTemplatePage > 0) {
+    currentTemplatePage--;
+    clearAllSelections();
+    renderTemplatePage();
+  }
+};
 
+document.getElementById("nextTemplate").onclick = () => {
+  const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
+  if (currentTemplatePage < maxPage) {
+    currentTemplatePage++;
+    clearAllSelections();
+    renderTemplatePage();
+  }
+};
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
     if (s.classList.contains("num-edit-btn")) {
@@ -659,6 +729,7 @@ charSelect.addEventListener("change", () => {
 });
 
   /* ======== 生成 ======== */
+  renderTemplatePage();
 for (let i = 0; i < 4; i++) {
   let part = savedData?.[i]?.part || initialParts[i];
   const [px, py] = partPos[part];
