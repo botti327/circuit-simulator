@@ -721,11 +721,13 @@ function getSelectedChar() {
 }
 
 charInput.addEventListener("input", () => {
-  if (charInput.value.trim() !== "") charSelect.value = "";
+  if (charInput.value.trim() !== "") {
+    charSelect.selectedIndex = 0;
+  }
 });
 
 charSelect.addEventListener("change", () => {
-  if (charSelect.value !== "") charInput.value = "";
+  charInput.value = "";
 });
 
   /* ======== 生成 ======== */
@@ -1316,4 +1318,5 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
+
 
