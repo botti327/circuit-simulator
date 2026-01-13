@@ -100,6 +100,7 @@ h3 {
     user-select: none;
     background: #fff;
     border-radius: 5px;
+    font-weight: bold;
 }
 
 .symbol-display {
@@ -181,11 +182,44 @@ h3 {
   font-size: 26px;
   margin: 9px;
   border-radius: 5px;
+
 }
 
 .template-btn.selected {
   background: #f0f8ff;
   box-shadow: 0 0 10px #3399ff;
+}
+
+.template-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.template-header h3 {
+  margin: 0;
+}
+
+.template-pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.template-pager button {
+  height: 24px;
+  padding: 0 10px;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+.template-pager span {
+  font-size: 12px;
+  min-width: 50px;
+  text-align: center;
 }
 
 /* ======== 回路選択 ======== */
@@ -385,35 +419,6 @@ h3 {
 #changelog li {
     margin-bottom: 4px;
 }
-.template-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.template-header h3 {
-  margin: 0;
-}
-
-.template-pager {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.template-pager button {
-  height: 24px;
-  padding: 0 6px;
-  cursor: pointer;
-}
-
-.template-pager span {
-  font-size: 12px;
-  min-width: 40px;
-  text-align: center;
-}
-
   </style>
 </head>
 <body>
@@ -434,7 +439,9 @@ h3 {
           [削]<br>
           配置した回路を削除できます。右クリックでも削除できます。<br>
           <br>
-          セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。<br>
+          <br>
+          <br>
+          ※ セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。<br>
           ファイル出力でデータを保存して下さい。
           ファイルは、現在の回路とスロットデータが保存されます。
         </p>
@@ -447,7 +454,7 @@ h3 {
           <li>v1.73：その他調整</li>
           <li>v1.72：その他調整</li>
           <li>v1.71：その他調整</li>
-          <li>v1.7：テンプレ追加</li>
+          <li>v1.7：テンプレ機能追加</li>
           <li>v1.62：その他調整</li>
           <li>v1.61：その他調整</li>
           <li>v1.6：追加効果</li>
@@ -466,31 +473,30 @@ h3 {
     <div class="side">
 
       <div class="template-header">
-  <h3>テンプレート</h3>
+      <h3>テンプレート</h3>
+        <div class="template-pager">
+          <button id="prevTemplate">◀</button>
+          <span id="templatePageLabel">1 / 1</span>
+          <button id="nextTemplate">▶</button>
+        </div>
+      </div>
 
-  <div class="template-pager">
-    <button id="prevTemplate">◀</button>
-    <span id="templatePageLabel">1 / 1</span>
-    <button id="nextTemplate">▶</button>
-  </div>
-</div>
-
-<div class="template-buttons" id="templateButtons"></div>
+      <div class="template-buttons" id="templateButtons"></div>
       <div class="palette" id="palette"></div>
 
       <h3>追加効果</h3>
       <select id="charSelect" style="width:180px;">
         <option value=""></option>
-        <option value="">-----------------上衣-----------------</option>
+        <option value="">------------上衣------------</option>
         <option value="持続ダメ">持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
-        <option value="">-----------------下衣------------</option>
+        <option value="">------------下衣------------</option>
         <option value="両極化">両極化</option>
         <option value="以上ダメ">HP50%以上の敵攻撃時、ダメージ増加</option>
         <option value="以下ダメ">HP50%以下の敵攻撃時、ダメージ増加</option>
-        <option value="">-----------------手袋-----------------</option>
+        <option value="">------------手袋------------</option>
         <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
-        <option value="">-----------------靴-----------------</option>
+        <option value="">------------靴------------</option>
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
@@ -550,6 +556,7 @@ const paletteData = [
 ];
 const TEMPLATES_PER_PAGE = 4;
 let currentTemplatePage = 0;
+
 const paletteEl = document.getElementById("palette");
 paletteData.forEach(group => {
   const div = document.createElement("div");
@@ -661,6 +668,7 @@ document.getElementById("nextTemplate").onclick = () => {
     renderTemplatePage();
   }
 };
+
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
     if (s.classList.contains("num-edit-btn")) {
@@ -676,7 +684,7 @@ document.querySelectorAll(".symbol").forEach(s => {
   };
 });
 
-  /* ======== 回路接続 ======== */
+/* ======== 回路接続 ======== */
 const size = 4;
 const boards = [];
 const connections = {
@@ -730,8 +738,8 @@ charSelect.addEventListener("change", () => {
   charInput.value = "";
 });
 
-  /* ======== 生成 ======== */
-  renderTemplatePage();
+/* ======== 生成 ======== */
+renderTemplatePage();
 for (let i = 0; i < 4; i++) {
   let part = savedData?.[i]?.part || initialParts[i];
   const [px, py] = partPos[part];
@@ -843,9 +851,20 @@ for (let y = 0; y < 4; y++) {
   if (selectState.type === "template") {
     for (let ty = 0; ty < 4; ty++) {
       for (let tx = 0; tx < 4; tx++) {
-        if (grid[ty][tx].symbol !== "img") {
+        if (grid[ty][tx].symbol === "img") continue;
+
+        const sym = selectState.value.grid[ty][tx];
+
+        if (!sym || sym.trim() === "") {
           grid[ty][tx] = {
-            symbol: selectState.value.grid[ty][tx],
+            symbol: "",
+            number: "",
+            char: "",
+            multi: false
+          };
+        } else {
+          grid[ty][tx] = {
+            symbol: sym,
             number: getSelectedNumber(),
             char: getSelectedChar(),
             multi: false
@@ -857,6 +876,7 @@ for (let y = 0; y < 4; y++) {
     saveBoards();
     return;
   }
+
   if (selectState.type === "symbol") {
     if (selectState.value === "削") {
       grid[y][x] = { symbol: "", number: "", char: "", multi: false };
@@ -1318,8 +1338,4 @@ importAllFile.onchange = (e) => {
   ul.prepend(li);
 }
 </script>
-
-
-
-
 
