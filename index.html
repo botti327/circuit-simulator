@@ -395,7 +395,7 @@ h3 {
 
 #changelog {
     width: 100%;
-    height: 160px;
+    height: 85px;
     background: #fefefe;
     border: 2px solid #333;
     border-radius: 4px;
@@ -430,7 +430,7 @@ h3 {
   <div class="container">
     <div class="description-column">
       <div class="description">
-        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.74</h2>
+        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.75</h2>
         <h3>使い方・説明</h3>
         <p>
           右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
@@ -438,15 +438,19 @@ h3 {
           リストに無い追加効果を付けたい場合は自由入力欄に入力して下さい。<br>
           <br>
           [変]<br>
-          配置された回路はそのままで、追加効果と数値を変更できます。<br>
+          押すごとにモードが変わり、配置された回路はそのままで、追加効果と数値を変更できます。<br>
+          [数]<br>
+          数値だけを変えるモード<br>
+          [効]<br>
+          追加効果だけを変えるモード<br>
+          [数/効]<br>
+          数値を追加効果の両方を変えるモード<br>
           <br>
           [削]<br>
           配置した回路を削除できます。右クリックでも削除できます。<br>
           <br>
-          <br>
-          <br>
           ※ セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。<br>
-          ファイル出力でデータを保存して下さい。<br>
+          ファイル出力でデータを保存して下さい。
           ファイルは、現在の回路とスロットデータが保存されます。
         </p>
       </div>
@@ -454,6 +458,7 @@ h3 {
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v1.75：テンプレ追加 + 変更モード実装</li>
           <li>v1.74：テンプレ追加 + その他調整</li>
           <li>v1.73：その他調整</li>
           <li>v1.72：その他調整</li>
@@ -546,23 +551,62 @@ h3 {
   </div>
 </body>
 <script>
-/* ======== 初期 ======== */
+/* 
+   1. 初期設定
+ */
 const partPos = { top: [3, 3], bottom: [0, 3], glove: [3, 0], shoes: [0, 0] };
 const boardsEl = document.getElementById("boards");
 const initialParts = ["top", "bottom", "glove", "shoes"];
 let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || null;
 
-/* ======== 回路/テンプレ ======== */
+const size = 4;
+
+const connections = {
+  "┃": { l: 0, r: 0, u: 1, d: 1 },
+  "━": { l: 1, r: 1, u: 0, d: 0 },
+  "┗": { l: 0, r: 1, u: 1, d: 0 },
+  "┏": { l: 0, r: 1, u: 0, d: 1 },
+  "┓": { l: 1, r: 0, u: 0, d: 1 },
+  "┛": { l: 1, r: 0, u: 1, d: 0 },
+  "┳": { l: 1, r: 1, u: 0, d: 1 },
+  "┻": { l: 1, r: 1, u: 1, d: 0 },
+  "┣": { l: 0, r: 1, u: 1, d: 1 },
+  "┫": { l: 1, r: 0, u: 1, d: 1 }
+};
+
+
+/* 
+   2. テンプレ
+ */
 const paletteData = [
   { title: "増幅回路", symbols: ["┃", "━", "変","削"], multi: false },
   { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
   { title: "増幅回路", symbols: ["┳", "┫", "┻", "┣"], multi: false, hideTitle: true },
   { title: "複製回路", symbols: ["┳", "┫", "┻", "┣"], multi: true }
 ];
+
+const templates = [
+  {grid:[["┏","┓","┏","┓"],["┃","┗","┛","┃"],["┃","┏","┓","┃"],["┗","┛","┗","┛"]]},
+  {grid:[["┏","━","━","┓"],["┗","┓","┏","┛"],["┏","┛","┗","┓"],["┗","━","━","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┣","┫","┣","┫"],["┣","┫","┣","┫"],["┗","┻","┻","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┣","┻","┻","┫"],["┣","┳","┳","┫"],["┗","┻","┻","┛"]]},
+
+  {grid:[["┏","━","━","┓"],["┃","　","　","┃"],["┃","　","　","┃"],["┗","━","━","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┣","┛","┗","┫"],["┣","┓","┏","┫"],["┗","┻","┻","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┃","┃","┃","┃"],["┃","┃","┃","┃"],["┗","┻","┻","┛"]]},
+  {grid:[["┏","━","━","┓"],["┣","━","━","┫"],["┣","━","━","┫"],["┗","━","━","┛"]]},
+
+  {grid:[["┏","┓","┏","┓"],["┃","┃","┃","┃"],["┃","┗","┛","┃"],["┗","━","━","┛"]]},
+  {grid:[["┏","━","━","┓"],["┃","┏","┓","┃"],["┃","┃","┃","┃"],["┗","┛","┗","┛"]]},
+  {grid:[["┏","━","━","┓"],["┗","━","┓","┃"],["┏","━","┛","┃"],["┗","━","━","┛"]]},
+  {grid:[["┏","━","━","┓"],["┃","┏","━","┛"],["┃","┗","━","┓"],["┗","━","━","┛"]]},
+];
+
 const TEMPLATES_PER_PAGE = 4;
 let currentTemplatePage = 0;
-
 const paletteEl = document.getElementById("palette");
+const templateBtnContainer = document.getElementById("templateButtons");
+
 paletteData.forEach(group => {
   const div = document.createElement("div");
   div.className = "palette-group";
@@ -576,11 +620,9 @@ paletteData.forEach(group => {
   group.symbols.forEach(sym => {
     const s = document.createElement("div");
     s.className = "symbol";
-
     if (sym === "変") s.classList.add("num-edit-btn");
     if (sym === "削") s.classList.add("delete-btn");
     if (group.multi) s.classList.add("multi");
-
     s.textContent = sym;
     div.appendChild(s);
   });
@@ -588,25 +630,11 @@ paletteData.forEach(group => {
   paletteEl.appendChild(div);
 });
 
-const templates = [
-  {grid:[["┏","┓","┏","┓"],["┃","┗","┛","┃"],["┃","┏","┓","┃"],["┗","┛","┗","┛"]]},
-  {grid:[["┏","━","━","┓"],["┗","┓","┏","┛"],["┏","┛","┗","┓"],["┗","━","━","┛"]]},
-  {grid:[["┏","┳","┳","┓"],["┣","┫","┣","┫"],["┣","┫","┣","┫"],["┗","┻","┻","┛"]]},
-  {grid:[["┏","┳","┳","┓"],["┣","┻","┻","┫"],["┣","┳","┳","┫"],["┗","┻","┻","┛"]]},
-
-  {grid:[["┏","━","━","┓"],["┃","  ","  ","┃"],["┃","  ","  ","┃"],["┗","━","━","┛"]]},
-  {grid:[["┏","┳","┳","┓"],["┣","┛","┗","┫"],["┣","┓","┏","┫"],["┗","┻","┻","┛"]]},
-  {grid:[["┏","┳","┳","┓"],["┃","┃","┃","┃"],["┃","┃","┃","┃"],["┗","┻","┻","┛"]]},
-  {grid:[["┏","━","━","┓"],["┣","━","━","┫"],["┣","━","━","┫"],["┗","━","━","┛"]]},
-];
-
 function createTemplateLabel(grid) {
   return '<pre style="margin:0; font-size:12px; line-height:12px;">' +
          grid.map(row => row.join('')).join('\n') +
          '</pre>';
 }
-const templateBtnContainer = document.getElementById("templateButtons");
-let selectedTemplate = null;
 
 function renderTemplatePage() {
   templateBtnContainer.innerHTML = "";
@@ -629,57 +657,84 @@ function renderTemplatePage() {
   document.getElementById("templatePageLabel").textContent =
     (currentTemplatePage + 1) + " / " + totalPages;
 }
-  /* ======== 回路選択 ======== */
+
+
+/* 
+   3. 選択状態・入力
+ */
 const selectState = {
   type: null,
   value: null,
-  isMulti: false
+  isMulti: false,
+  editMode: 0
 };
 
 function clearAllSelections() {
   document.querySelectorAll(".symbol, .template-btn")
     .forEach(b => b.classList.remove("selected"));
 
+  const changeBtn = document.querySelector(".num-edit-btn");
+  if (changeBtn) {
+    changeBtn.textContent = "変";
+    changeBtn.style.fontSize = "26px";
+  }
+
   selectState.type = null;
   selectState.value = null;
   selectState.isMulti = false;
+  selectState.editMode = 0;
 }
 
 function selectButton(el, type, value = null, isMulti = false) {
   const alreadySelected = el.classList.contains("selected");
-
   clearAllSelections();
   if (alreadySelected) return;
 
   el.classList.add("selected");
-
   selectState.type = type;
   selectState.value = value;
   selectState.isMulti = isMulti;
 }
 
-document.getElementById("prevTemplate").onclick = () => {
-  const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
+function handleChangeButton(btn) {
+  document.querySelectorAll(".symbol, .template-btn")
+    .forEach(b => b.classList.remove("selected"));
 
-  if (currentTemplatePage > 0) {
-    currentTemplatePage--;
-  } else {
-    currentTemplatePage = maxPage;
+  btn.classList.add("selected");
+  selectState.type = "numEdit";
+
+  selectState.editMode = (selectState.editMode + 1) % 4;
+
+  if (selectState.editMode === 0) {
+    selectState.type = null;
+    btn.textContent = "変";
+    btn.style.fontSize = "26px";
+    btn.classList.remove("selected");
+    return;
   }
 
+  if (selectState.editMode === 1) {
+    btn.textContent = "数";
+    btn.style.fontSize = "26px";
+  } else if (selectState.editMode === 2) {
+    btn.textContent = "効";
+    btn.style.fontSize = "26px";
+  } else if (selectState.editMode === 3) {
+    btn.textContent = "数/効";
+    btn.style.fontSize = "16px";
+  }
+}
+
+document.getElementById("prevTemplate").onclick = () => {
+  const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
+  currentTemplatePage = currentTemplatePage > 0 ? currentTemplatePage - 1 : maxPage;
   clearAllSelections();
   renderTemplatePage();
 };
 
 document.getElementById("nextTemplate").onclick = () => {
   const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
-
-  if (currentTemplatePage < maxPage) {
-    currentTemplatePage++;
-  } else {
-    currentTemplatePage = 0;
-  }
-
+  currentTemplatePage = currentTemplatePage < maxPage ? currentTemplatePage + 1 : 0;
   clearAllSelections();
   renderTemplatePage();
 };
@@ -687,57 +742,18 @@ document.getElementById("nextTemplate").onclick = () => {
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
     if (s.classList.contains("num-edit-btn")) {
-      selectButton(s, "numEdit");
+      handleChangeButton(s);
     } else {
-      selectButton(
-        s,
-        "symbol",
-        s.textContent,
-        s.classList.contains("multi")
-      );
+      selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
     }
   };
 });
-
-/* ======== 回路接続 ======== */
-const size = 4;
-const boards = [];
-const connections = {
-  "┃": { l: 0, r: 0, u: 1, d: 1 },
-  "━": { l: 1, r: 1, u: 0, d: 0 },
-  "┗": { l: 0, r: 1, u: 1, d: 0 },
-  "┏": { l: 0, r: 1, u: 0, d: 1 },
-  "┓": { l: 1, r: 0, u: 0, d: 1 },
-  "┛": { l: 1, r: 0, u: 1, d: 0 },
-  "┳": { l: 1, r: 1, u: 0, d: 1 },
-  "┻": { l: 1, r: 1, u: 1, d: 0 },
-  "┣": { l: 0, r: 1, u: 1, d: 1 },
-  "┫": { l: 1, r: 0, u: 1, d: 1 }
-};
-
-/* ======== 数値 ======== */
-/*--------------------------------------------------------------------------*/
-/*
-const slider = document.getElementById("numSlider");
-const numValue = document.getElementById("numValue");
-
-function getSelectedNumber() {
-  return parseFloat(slider.value) || 0;
-}
-
-slider.addEventListener("input", () => {
-  numValue.textContent = slider.value;
-});
-*/
-/*--------------------------------------------------------------------------*/
 
 function getSelectedNumber() {
   const checked = document.querySelector('input[name="num"]:checked');
   return checked ? parseFloat(checked.value) : 0;
 }
 
-
-/* ======== 追加効果 ======== */
 const charInput = document.getElementById("charInput");
 const charSelect = document.getElementById("charSelect");
 
@@ -755,8 +771,13 @@ charSelect.addEventListener("change", () => {
   charInput.value = "";
 });
 
-/* ======== 生成 ======== */
+
+/* 
+   4. ボード生成・描画・接続
+ */
 renderTemplatePage();
+const boards = [];
+
 for (let i = 0; i < 4; i++) {
   let part = savedData?.[i]?.part || initialParts[i];
   const [px, py] = partPos[part];
@@ -821,314 +842,313 @@ for (let i = 0; i < 4; i++) {
   panel.querySelector(".part").value = part;
   panel.querySelector(".color").value = savedData?.[i]?.color || "red";
 
-/* ======== イベント ======== */
-panel.querySelector(".part").onchange = () => {
-  const p = panel.querySelector(".part").value;
-  for (let y = 0; y < 4; y++)
-    for (let x = 0; x < 4; x++)
-      if (grid[y][x].symbol === "img") grid[y][x].symbol = "";
-  const [x, y] = partPos[p];
-  grid[y][x] = { symbol: "img", number: "", multi: false };
-  drawBoard();
-  saveBoards();
-};
-
-panel.querySelector(".color").onchange = () => {
-  drawBoard();
-  saveBoards();
-};
-
-clearBtn.onclick = () => {
-  if (confirm("回路を全て削除しますか？")) {
+  panel.querySelector(".part").onchange = () => {
+    const p = panel.querySelector(".part").value;
     for (let y = 0; y < 4; y++)
       for (let x = 0; x < 4; x++)
-        if (grid[y][x].symbol !== "img")
-          grid[y][x] = { symbol: "", number: "", multi: false };
+        if (grid[y][x].symbol === "img") grid[y][x].symbol = "";
+    const [x, y] = partPos[p];
+    grid[y][x] = { symbol: "img", number: "", multi: false };
     drawBoard();
     saveBoards();
-  }
-};
+  };
 
-for (let y = 0; y < 4; y++) {
-  for (let x = 0; x < 4; x++) {
-    const c = document.createElement("div");
-    c.className = "cell";
-
-    c.onclick = () => {
-  const cell = grid[y][x];
-  if (cell.symbol === "img") return;
-  if (selectState.type === "numEdit") {
-    if (!cell.symbol || cell.multi) return;
-    cell.number = getSelectedNumber();
-    cell.char = getSelectedChar();
+  panel.querySelector(".color").onchange = () => {
     drawBoard();
     saveBoards();
-    return;
-  }
-  if (selectState.type === "template") {
-    for (let ty = 0; ty < 4; ty++) {
-      for (let tx = 0; tx < 4; tx++) {
-        if (grid[ty][tx].symbol === "img") continue;
+  };
 
-        const sym = selectState.value.grid[ty][tx];
-
-        if (!sym || sym.trim() === "") {
-          grid[ty][tx] = {
-            symbol: "",
-            number: "",
-            char: "",
-            multi: false
-          };
-        } else {
-          grid[ty][tx] = {
-            symbol: sym,
-            number: getSelectedNumber(),
-            char: getSelectedChar(),
-            multi: false
-          };
-        }
-      }
-    }
-    drawBoard();
-    saveBoards();
-    return;
-  }
-
-  if (selectState.type === "symbol") {
-    if (selectState.value === "削") {
-      grid[y][x] = { symbol: "", number: "", char: "", multi: false };
-    } else {
-      grid[y][x] = {
-        symbol: selectState.value,
-        number: selectState.isMulti ? "" : getSelectedNumber(),
-        char: selectState.isMulti ? "" : getSelectedChar(),
-        multi: selectState.isMulti
-      };
-    }
-    drawBoard();
-    saveBoards();
-  }
-};
-
-    c.oncontextmenu = (e) => {
-      e.preventDefault();
-      const cell = grid[y][x];
-      if (cell.symbol === "img") return;
-      grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+  clearBtn.onclick = () => {
+    if (confirm("回路を全て削除しますか？")) {
+      for (let y = 0; y < 4; y++)
+        for (let x = 0; x < 4; x++)
+          if (grid[y][x].symbol !== "img")
+            grid[y][x] = { symbol: "", number: "", multi: false };
       drawBoard();
       saveBoards();
-    };
+    }
+  };
 
-    board.appendChild(c);
-  }
-}
-
-/* ======== 描画 ======== */
-function drawBoard() {
-  board.querySelectorAll(".cell").forEach((c, i) => {
-    const y = Math.floor(i / 4);
-    const x = i % 4;
-    const s = grid[y][x];
-    const part = panel.querySelector(".part").value;
-    const circleImages = { top: "top.png", bottom: "bottom.png", glove: "glove.png", shoes: "shoes.png" };
-    let symbolHTML = s.symbol;
-
-    if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="img">`;
-
-    c.innerHTML = `
-      <div class="symbol-display">${symbolHTML}</div>
-      ${s.multi ? `<div class="multi-label">複</div>` : ``}
-      <div class="char-display">${s.char || ""}</div>
-      <div class="number-display">${s.number || ""}</div>
-    `;
-    c.className = "cell";
-  if (s.multi) {
-    c.style.background = "#ffffaa";
-  } else {
-    c.style.background = "";
-  }
-  if (s.multi) c.classList.add("multi-cell");
-});
-
-  updateBoard();
-}
-
-/* ======== 接続 ======== */
-function updateBoard() {
-  const dx = { l: -1, r: 1, u: 0, d: 0 };
-  const dy = { l: 0, r: 0, u: -1, d: 1 };
-  const opp = { l: "r", r: "l", u: "d", d: "u" };
-  const charOrder = Array.from(charSelect.options)
-  .map(o => o.value)
-  .filter(v => v !== "");
-
-  let cx = -1, cy = -1;
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 4; x++) {
-      if (grid[y][x].symbol === "img") {
-        cx = x;
-        cy = y;
-      }
+      const c = document.createElement("div");
+      c.className = "cell";
+
+      c.onclick = () => {
+        const cell = grid[y][x];
+        if (cell.symbol === "img") return;
+        if (selectState.type === "numEdit") {
+          if (!cell.symbol || cell.multi) return;
+            if (selectState.editMode === 1) {
+              cell.number = getSelectedNumber();
+            } else if (selectState.editMode === 2) {
+              cell.char = getSelectedChar();
+            } else if (selectState.editMode === 3) {
+              cell.number = getSelectedNumber();
+              cell.char = getSelectedChar();
+            }
+            drawBoard();
+            saveBoards();
+            return;
+          }
+        if (selectState.type === "template") {
+          for (let ty = 0; ty < 4; ty++) {
+            for (let tx = 0; tx < 4; tx++) {
+              if (grid[ty][tx].symbol === "img") continue;
+              const sym = selectState.value.grid[ty][tx];
+              if (!sym || sym.trim() === "") {
+                grid[ty][tx] = { symbol: "", number: "", char: "", multi: false };
+              } else {
+                grid[ty][tx] = {
+                  symbol: sym,
+                  number: getSelectedNumber(),
+                  char: getSelectedChar(),
+                  multi: false
+                };
+              }
+            }
+          }
+          drawBoard();
+          saveBoards();
+          return;
+        }
+
+        if (selectState.type === "symbol") {
+          if (selectState.value === "削") {
+            grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+          } else {
+            grid[y][x] = {
+              symbol: selectState.value,
+              number: selectState.isMulti ? "" : getSelectedNumber(),
+              char: selectState.isMulti ? "" : getSelectedChar(),
+              multi: selectState.isMulti
+            };
+          }
+          drawBoard();
+          saveBoards();
+        }
+      };
+
+      c.oncontextmenu = (e) => {
+        e.preventDefault();
+        const cell = grid[y][x];
+        if (cell.symbol === "img") return;
+        grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+        drawBoard();
+        saveBoards();
+      };
+
+      board.appendChild(c);
     }
   }
 
-  if (cx === -1) return;
+  function drawBoard() {
+    board.querySelectorAll(".cell").forEach((c, i) => {
+      const y = Math.floor(i / 4);
+      const x = i % 4;
+      const s = grid[y][x];
+      const part = panel.querySelector(".part").value;
+      const circleImages = { top: "top.png", bottom: "bottom.png", glove: "glove.png", shoes: "shoes.png" };
+      let symbolHTML = s.symbol;
 
-  const visited = Array.from({ length: 4 }, () => Array(4).fill(false));
-  const stack = [[cx, cy]];
-  visited[cy][cx] = true;
-  let invalid = false;
+      if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="img">`;
 
-  while (stack.length && !invalid) {
-    const [x, y] = stack.pop();
-    const s = grid[y][x];
-    for (const d in dx) {
-      const nx = x + dx[d];
-      const ny = y + dy[d];
-      if (connections[s.symbol]?.[d]) {
-        if (nx < 0 || nx >= 4 || ny < 0 || ny >= 4) {
-          invalid = true;
-          break;
-        }
+      c.innerHTML = `
+        <div class="symbol-display">${symbolHTML}</div>
+        ${s.multi ? `<div class="multi-label">複</div>` : ``}
+        <div class="char-display">${s.char || ""}</div>
+        <div class="number-display">${s.number || ""}</div>
+      `;
+      c.className = "cell";
+      if (s.multi) {
+        c.style.background = "#ffffaa";
+      } else {
+        c.style.background = "";
       }
+      if (s.multi) c.classList.add("multi-cell");
+    });
 
-      const t = grid[ny]?.[nx];
-      if (!t) continue;
+    updateBoard();
+  }
 
-      if (s.symbol === "img") {
-        if (t.symbol && connections[t.symbol]) {
-          if (!connections[t.symbol]?.[opp[d]]) {
-            invalid = true;
-            break;
-          }
-          if (!visited[ny][nx]) {
-            visited[ny][nx] = true;
-            stack.push([nx, ny]);
-          }
-        }
-        continue;
-      }
-      if (connections[s.symbol]?.[d]) {
-        if (!t.symbol) {
-          invalid = true;
-          break;
-        }
-        if (t.symbol === "img") {
-          if (!visited[ny][nx]) {
-            visited[ny][nx] = true;
-            stack.push([nx, ny]);
-          }
-        } else {
-          if (!connections[t.symbol]?.[opp[d]]) {
-            invalid = true;
-            break;
-          }
-          if (!visited[ny][nx]) {
-            visited[ny][nx] = true;
-            stack.push([nx, ny]);
-          }
+  function updateBoard() {
+    const dx = { l: -1, r: 1, u: 0, d: 0 };
+    const dy = { l: 0, r: 0, u: -1, d: 1 };
+    const opp = { l: "r", r: "l", u: "d", d: "u" };
+    const charOrder = Array.from(charSelect.options)
+      .map(o => o.value)
+      .filter(v => v !== "");
+
+    let cx = -1, cy = -1;
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        if (grid[y][x].symbol === "img") {
+          cx = x;
+          cy = y;
         }
       }
     }
-  }
-  if (invalid) {
-    board.querySelectorAll(".cell").forEach(c => c.className = "cell");
-    wrap.charSumDiv.textContent = "";
-    return;
-  }
 
-  const color = panel.querySelector(".color").value;
-  const charSumTotal = {};
-  const charSumMulti = {};
+    if (cx === -1) return;
 
-  board.querySelectorAll(".cell").forEach((c, i) => {
-    const y = Math.floor(i / 4);
-    const x = i % 4;
-    const s = grid[y][x];
+    const visited = Array.from({ length: 4 }, () => Array(4).fill(false));
+    const stack = [[cx, cy]];
+    visited[cy][cx] = true;
+    let invalid = false;
 
-    c.className = "cell";
-    if (!visited[y][x]) return;
-    const cellCharValue = {};
-    if (s.multi) {
+    while (stack.length && !invalid) {
+      const [x, y] = stack.pop();
+      const s = grid[y][x];
       for (const d in dx) {
         const nx = x + dx[d];
         const ny = y + dy[d];
+        if (connections[s.symbol]?.[d]) {
+          if (nx < 0 || nx >= 4 || ny < 0 || ny >= 4) {
+            invalid = true;
+            break;
+          }
+        }
+
         const t = grid[ny]?.[nx];
-        if (
-          t &&
-          visited[ny][nx] &&
-          !t.multi &&
-          t.number &&
-          connections[s.symbol]?.[d] &&
-          connections[t.symbol]?.[opp[d]]
-        ) {
-          const half = parseFloat(t.number) / 2;
-          const key = t.char && t.char.trim() !== "" ? t.char : "指定なし";
-          cellCharValue[key] = (cellCharValue[key] || 0) + half;
+        if (!t) continue;
+
+        if (s.symbol === "img") {
+          if (t.symbol && connections[t.symbol]) {
+            if (!connections[t.symbol]?.[opp[d]]) {
+              invalid = true;
+              break;
+            }
+            if (!visited[ny][nx]) {
+              visited[ny][nx] = true;
+              stack.push([nx, ny]);
+            }
+          }
+          continue;
+        }
+        if (connections[s.symbol]?.[d]) {
+          if (!t.symbol) {
+            invalid = true;
+            break;
+          }
+          if (t.symbol === "img") {
+            if (!visited[ny][nx]) {
+              visited[ny][nx] = true;
+              stack.push([nx, ny]);
+            }
+          } else {
+            if (!connections[t.symbol]?.[opp[d]]) {
+              invalid = true;
+              break;
+            }
+            if (!visited[ny][nx]) {
+              visited[ny][nx] = true;
+              stack.push([nx, ny]);
+            }
+          }
         }
       }
-    } else {
-      const n = parseFloat(s.number);
-      if (!isNaN(n)) {
-        const key = s.char && s.char.trim() !== "" ? s.char : "指定なし";
-        cellCharValue[key] = n;
-      }
     }
-    for (const ch in cellCharValue) {
-      charSumTotal[ch] = (charSumTotal[ch] || 0) + cellCharValue[ch];
+
+    if (invalid) {
+      board.querySelectorAll(".cell").forEach(c => c.className = "cell");
+      wrap.charSumDiv.textContent = "";
+      return;
+    }
+
+    const color = panel.querySelector(".color").value;
+    const charSumTotal = {};
+    const charSumMulti = {};
+
+    board.querySelectorAll(".cell").forEach((c, i) => {
+      const y = Math.floor(i / 4);
+      const x = i % 4;
+      const s = grid[y][x];
+
+      c.className = "cell";
+      if (!visited[y][x]) return;
+
+      const cellCharValue = {};
       if (s.multi) {
-        charSumMulti[ch] = (charSumMulti[ch] || 0) + cellCharValue[ch];
+        for (const d in dx) {
+          const nx = x + dx[d];
+          const ny = y + dy[d];
+          const t = grid[ny]?.[nx];
+          if (
+            t &&
+            visited[ny][nx] &&
+            !t.multi &&
+            t.number &&
+            connections[s.symbol]?.[d] &&
+            connections[t.symbol]?.[opp[d]]
+          ) {
+            const half = parseFloat(t.number) / 2;
+            const key = t.char && t.char.trim() !== "" ? t.char : "指定なし";
+            cellCharValue[key] = (cellCharValue[key] || 0) + half;
+          }
+        }
+      } else {
+        const n = parseFloat(s.number);
+        if (!isNaN(n)) {
+          const key = s.char && s.char.trim() !== "" ? s.char : "指定なし";
+          cellCharValue[key] = n;
+        }
       }
-    }
-    if (connections[s.symbol]) {
-      c.classList.add("connected", "highlight-" + color);
-    }
-  });
 
-  wrap.charSumDiv.innerHTML = `
-    <div class="sum-grid sum-header">
-      <div></div>
-      <div>複製増加分</div>
-      <div>合計</div>
-    </div>
-    <div class="sum-grid">
-      ${
-        Object.entries(charSumTotal)
-          .sort((a, b) => {
-            if (b[1] !== a[1]) return b[1] - a[1];
-            const ia = charOrder.indexOf(a[0]);
-            const ib = charOrder.indexOf(b[0]);
-            if (a[0] === "指定なし") return 1;
-            if (b[0] === "指定なし") return -1;
-
-            return ia - ib;
-          })
-
-          .map(([k, v]) => {
-            const multi = charSumMulti[k] || 0;
-            return `
-              <div class="sum-name">${k}</div>
-              <div class="sum-multi">
-                ${multi > 0 ? multi.toFixed(2) : ""}
-              </div>
-              <div class="sum-total">${v.toFixed(2)}</div>
-            `;
-          })
-          .join("")
+      for (const ch in cellCharValue) {
+        charSumTotal[ch] = (charSumTotal[ch] || 0) + cellCharValue[ch];
+        if (s.multi) {
+          charSumMulti[ch] = (charSumMulti[ch] || 0) + cellCharValue[ch];
+        }
       }
-    </div>
-  `;
+
+      if (connections[s.symbol]) {
+        c.classList.add("connected", "highlight-" + color);
+      }
+    });
+
+    wrap.charSumDiv.innerHTML = `
+      <div class="sum-grid sum-header">
+        <div></div>
+        <div>複製増加分</div>
+        <div>合計</div>
+      </div>
+      <div class="sum-grid">
+        ${
+          Object.entries(charSumTotal)
+            .sort((a, b) => {
+              if (b[1] !== a[1]) return b[1] - a[1];
+              const ia = charOrder.indexOf(a[0]);
+              const ib = charOrder.indexOf(b[0]);
+              if (a[0] === "指定なし") return 1;
+              if (b[0] === "指定なし") return -1;
+              return ia - ib;
+            })
+            .map(([k, v]) => {
+              const multi = charSumMulti[k] || 0;
+              return `
+                <div class="sum-name">${k}</div>
+                <div class="sum-multi">${multi > 0 ? multi.toFixed(2) : ""}</div>
+                <div class="sum-total">${v.toFixed(2)}</div>
+              `;
+            })
+            .join("")
+        }
+      </div>
+    `;
+  }
+
+  wrap.drawBoard = drawBoard;
+  wrap.grid = grid;
+  wrap.panel = panel;
+  boards.push(wrap);
+  boardsEl.appendChild(wrap);
+  drawBoard();
 }
 
-wrap.drawBoard = drawBoard;
-wrap.grid = grid;
-wrap.panel = panel;
-boards.push(wrap);
-boardsEl.appendChild(wrap);
-drawBoard();
-}
 
-/* ======== ローカル保存 ======== */
+/* 
+   5. 保存・スロット・EX/IN・履歴
+ */
 function saveBoards() {
   const data = boards.map(b => ({
     grid: b.grid.map(row =>
@@ -1146,7 +1166,7 @@ function saveBoards() {
   localStorage.setItem("circuitBoards", JSON.stringify(data));
 }
 
-/* ======== セーブスロット ======== */
+/* ===== セーブスロット ===== */
 const slotCount = 5;
 const slotContainer = document.getElementById("slotButtons");
 
@@ -1242,7 +1262,7 @@ document.querySelectorAll(".loadBtn").forEach(btn => {
   };
 });
 
-/* ======== EX/IN ======== */
+/* ===== EX/IN ===== */
 const exportAllBtn = document.createElement("button");
 exportAllBtn.textContent = "ファイル出力";
 const importAllBtn = document.createElement("button");
@@ -1252,20 +1272,12 @@ importAllFile.type = "file";
 importAllFile.accept = ".txt";
 importAllFile.style.display = "none";
 
-const fileBtnContainer = document.createElement("div");
-exportAllBtn.style.width = "150px";
-exportAllBtn.style.height = "36px";
-importAllBtn.style.width = "150px";
-importAllBtn.style.height = "36px";
-
 document.querySelector(".side").appendChild(exportAllBtn);
 document.querySelector(".side").appendChild(importAllBtn);
 document.querySelector(".side").appendChild(importAllFile);
 
-/* ======== EX ======== */
 exportAllBtn.onclick = () => {
   try {
-    // 保存するデータを作成
     const slotsData = {};
     for (let i = 1; i <= 5; i++) {
       const slotName = localStorage.getItem("circuitBoards_slot" + i + "_name") || ("スロット" + i);
@@ -1294,16 +1306,14 @@ exportAllBtn.onclick = () => {
     a.click();
     URL.revokeObjectURL(url);
 
-     const now = new Date().toLocaleString();
+    const now = new Date().toLocaleString();
     addChangelog(`ファイルを保存しました : ${now}`);
-
   } catch (err) {
     alert("エクスポート出来ませんでした : " + err.message);
     console.error(err);
   }
 };
 
-/* ======== IN ======== */
 importAllBtn.onclick = () => importAllFile.click();
 
 importAllFile.onchange = (e) => {
@@ -1347,13 +1357,10 @@ importAllFile.onchange = (e) => {
   importAllFile.value = "";
 };
 
-/* ======== 更新履歴 ======== */
- function addChangelog(text) {
+function addChangelog(text) {
   const ul = document.getElementById("changelogList");
   const li = document.createElement("li");
   li.textContent = text;
   ul.prepend(li);
 }
 </script>
-
-
