@@ -127,10 +127,6 @@ h3 {
     border-radius: 5px;
 }
 
-.connected {
-    font-weight: bold;
-}
-
 .highlight-red {
     background: #fff0f0;
     color: #ff6666;
@@ -182,7 +178,6 @@ h3 {
   font-size: 26px;
   margin: 9px;
   border-radius: 5px;
-
 }
 
 .template-btn.selected.red-active {
@@ -252,7 +247,20 @@ h3 {
 
 .color-btn.active {
   box-shadow: 0 0 15px #3399ff;
+  font-weight: bold;
 }
+.color-btn.active[data-color="red"] {
+  color: #ff6666;
+}
+
+.color-btn.active[data-color="blue"] {
+  color: #3399ff;
+}
+
+.color-btn.active[data-color="green"] {
+  color: #33cc88;
+}
+
 /* ======== 回路選択 ======== */
 .palette {
     display: flex;
@@ -319,11 +327,24 @@ h3 {
     border: 2px dashed #333;
 }
 
-.num-edit-btn.selected {
-    background: #f0fff4;
-    color: #33cc88;
-    box-shadow: 0 0 20px #33cc88;
+.num-edit-btn.selected.red-active {
+  color: #ff6666;
+  background: #fff0f0;
+  box-shadow: 0 0 15px #ff6666;
 }
+
+.num-edit-btn.selected.blue-active {
+  color: #3399ff;
+  background: #f0f8ff;
+  box-shadow: 0 0 15px #3399ff;
+}
+
+.num-edit-btn.selected.green-active {
+  color: #33cc88;
+  background: #f0fff4;
+  box-shadow: 0 0 15px #33cc88;
+}
+
 .delete-btn.selected  {
     background: #fff0f0;
     color: #ff6666;
@@ -654,6 +675,7 @@ colorGroup.appendChild(colorTitle);
     "#f0fff4";
   btn.onclick = () => {
     document.querySelectorAll(".delete-btn").forEach(b => b.classList.remove("selected"));
+    clearAllSelections();
     selectedColor = c;
     document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
@@ -678,7 +700,7 @@ paletteData.forEach(group => {
   group.symbols.forEach(sym => {
     const s = document.createElement("div");
     s.className = "symbol";
-    if (sym === "変") s.classList.add("num-edit-btn", "no-color-sync");
+    if (sym === "変") s.classList.add("num-edit-btn");
     if (sym === "削") s.classList.add("delete-btn", "no-color-sync");
     if (group.multi) s.classList.add("multi");
     s.textContent = sym;
@@ -756,16 +778,17 @@ function selectButton(el, type, value = null, isMulti = false) {
 }
 
 function updateSelectedSymbolColor() {
-  document.querySelectorAll(".symbol, .template-btn").forEach(el => {
+  document.querySelectorAll(".symbol, .template-btn, .num-edit-btn").forEach(el => {
     if (el.classList.contains("no-color-sync")) return;
     el.classList.remove("red-active", "blue-active", "green-active");
+
     if (!el.classList.contains("selected")) return;
+
     if (selectedColor === "red")   el.classList.add("red-active");
     if (selectedColor === "blue")  el.classList.add("blue-active");
     if (selectedColor === "green") el.classList.add("green-active");
   });
 }
-
 function handleChangeButton(btn) {
 
   document.querySelectorAll(".symbol, .template-btn")
@@ -794,6 +817,7 @@ function handleChangeButton(btn) {
     btn.textContent = "数/効";
     btn.style.fontSize = "16px";
   }
+  updateSelectedSymbolColor();
 }
 
 document.getElementById("prevTemplate").onclick = () => {
@@ -897,7 +921,6 @@ for (let i = 0; i < 4; i++) {
 
   const clearBtn = document.createElement("button");
   clearBtn.textContent = "回路クリア";
-  clearBtn.className = "clear-board-btn";
   panel.appendChild(clearBtn);
 
   const board = document.createElement("div");
@@ -1051,7 +1074,6 @@ for (let i = 0; i < 4; i++) {
       } else {
         c.style.background = "";
       }
-      if (s.multi) c.classList.add("multi-cell");
     });
 
     updateBoard();
@@ -1451,5 +1473,3 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 </script>
-
-
