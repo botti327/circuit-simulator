@@ -28,7 +28,7 @@ h3 {
 }
 
 .description-column {
-    flex: 0 0 350px;
+    flex: 0 0 430px;
     display: flex;
     flex-direction: column;
     font-size: 14px;
@@ -52,8 +52,8 @@ h3 {
 }
 
 .side {
-    flex: 0 0 300px;
-    max-width: 300px;
+    flex: 0 0 350px;
+    max-width: 350px;
     height: 750px;
     background: #f5f5f5;
     padding: 16px;
@@ -185,9 +185,22 @@ h3 {
 
 }
 
-.template-btn.selected {
+.template-btn.selected.red-active {
+  background: #fff0f0;
+  color: #ff6666;
+  box-shadow: 0 0 15px #ff6666;
+}
+
+.template-btn.selected.blue-active {
   background: #f0f8ff;
-  box-shadow: 0 0 10px #3399ff;
+  color: #3399ff;
+  box-shadow: 0 0 15px #3399ff;
+}
+
+.template-btn.selected.green-active {
+  background: #f0fff4;
+  color: #33cc88;
+  box-shadow: 0 0 15px #33cc88;
 }
 
 .template-header {
@@ -209,7 +222,7 @@ h3 {
 
 .template-pager button {
   height: 24px;
-  padding: 0 10px;
+  padding: 0 5px;
   cursor: pointer;
   background: #fff;
   border: 1px solid #333;
@@ -222,6 +235,24 @@ h3 {
   text-align: center;
 }
 
+/* ======== 色選択 ======== */
+.color-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  font-size: 18px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
+}
+
+.color-btn.active {
+  box-shadow: 0 0 15px #3399ff;
+}
 /* ======== 回路選択 ======== */
 .palette {
     display: flex;
@@ -263,10 +294,22 @@ h3 {
     border-radius: 5px;
 }
 
-.symbol.selected {
-    background: #f0f8ff;
-    color: #3399ff;
-    box-shadow: 0 0 20px #3399ff;
+.symbol.selected.red-active {
+  background: #fff0f0;
+  color: #ff6666;
+  box-shadow: 0 0 15px #ff6666;
+}
+
+.symbol.selected.blue-active {
+  background: #f0f8ff;
+  color: #3399ff;
+  box-shadow: 0 0 15px #3399ff;
+}
+
+.symbol.selected.green-active {
+  background: #f0fff4;
+  color: #33cc88;
+  box-shadow: 0 0 15px #33cc88;
 }
 
 .symbol.multi {
@@ -394,7 +437,7 @@ h3 {
 }
 
 #changelog {
-    width: 100%;
+    width: 430px;
     height: 85px;
     background: #fefefe;
     border: 2px solid #333;
@@ -423,6 +466,7 @@ h3 {
 #changelog li {
     margin-bottom: 4px;
 }
+
   </style>
 </head>
 <body>
@@ -430,49 +474,49 @@ h3 {
   <div class="container">
     <div class="description-column">
       <div class="description">
-        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.8</h2>
+        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.75</h2>
         <h3>使い方・説明</h3>
         <p>
-          右から回路、追加効果、数値を選び、回路を配置して下さい。<br>
+          ・色<br>
+          ・回路<br>
+          ・追加効果<br>
+          ・数値<br>
+          を右から選び、回路を配置して下さい。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
           リストに無い追加効果を付けたい場合は自由入力欄に入力して下さい。<br>
+          <br><br>
+          [変] ボタンを押すごとにモードが変わり、配置された回路をクリックすることで、追加効果や数値を変更できます。<br>
+          [数] ……… 数値だけを変更。<br>
+          [効] ……… 追加効果だけを変更。<br>
+          [数/効]　… 数値と追加効果の両方を変更。<br>
+          ※回路色はその時選択されている色に変更されます。<br>
+          　回路色だけを変更したい場合、色だけを選択して下さい。<br>
           <br>
-          [変]<br>
-          押すごとにモードが変わり、配置された回路はそのままで、追加効果と数値を変更できます。<br>
-          [数]<br>
-          数値だけを変えるモード<br>
-          [効]<br>
-          追加効果だけを変えるモード<br>
-          [数/効]<br>
-          数値を追加効果の両方を変えるモード<br>
-          <br>
-          [削]<br>
-          配置した回路を削除できます。右クリックでも削除できます。<br>
-          <br>
-          ※ セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。<br>
-          ファイル出力でデータを保存して下さい。
-          ファイルは、現在の回路とスロットデータが保存されます。
+          [削] ……… 配置した回路を削除できます。右クリックでも削除できます。<br>
+          <br><br>
+          ※ セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。安全のためにファイル出力でデータを保存して下さい。<br>
         </p>
       </div>
 
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
-          <li>v1.8 ：変更モード実装</li>
+          <li>v1.8 ：色変更実装</li>
+          <li>v1.75：テンプレ追加 + 数値/効果変更実装</li>
           <li>v1.74：テンプレ追加 + その他調整</li>
           <li>v1.73：その他調整</li>
           <li>v1.72：その他調整</li>
           <li>v1.71：その他調整</li>
-          <li>v1.7 ：テンプレ機能追加</li>
+          <li>v1.7：テンプレ機能追加</li>
           <li>v1.62：その他調整</li>
           <li>v1.61：その他調整</li>
-          <li>v1.6 ：追加効果</li>
-          <li>v1.5 ：レイアウト + 色調整</li>
-          <li>v1.4 ：回路修正 + その他調整</li>
-          <li>v1.3 ：セーブスロット機能追加 + その他調整</li>
-          <li>v1.2 ：ローカル保存機能追加 + その他調整</li>
-          <li>v1.1 ：部位・数値・複製回路機能追加</li>
-          <li>v1.0 ：シミュ仮公開</li>
+          <li>v1.6：追加効果</li>
+          <li>v1.5：レイアウト + 色調整</li>
+          <li>v1.4：回路修正 + その他調整</li>
+          <li>v1.3：セーブスロット機能追加 + その他調整</li>
+          <li>v1.2：ローカル保存機能追加 + その他調整</li>
+          <li>v1.1：部位・数値・複製回路機能追加</li>
+          <li>v1.0：シミュ仮公開</li>
         </ul>
       </div>
     </div>
@@ -491,10 +535,11 @@ h3 {
       </div>
 
       <div class="template-buttons" id="templateButtons"></div>
+      <div class="palette" id="colorPalette"></div>
       <div class="palette" id="palette"></div>
 
       <h3>追加効果</h3>
-      <select id="charSelect" style="width:180px;">
+      <select id="charSelect" style="width:220px;">
         <option value=""></option>
         <option value="">------------上衣------------</option>
         <option value="持続ダメ">持続ダメージ</option>
@@ -516,33 +561,16 @@ h3 {
         style="width:100px; text-align:center;"
         placeholder="自由入力 (任意)"
       />
-<!-------------------------------------------------------------------------->
-<!--
-      <h3>数値</h3>
-      <div class="num-palette">
-        <input
-          id="numSlider"
-          type="range"
-          min="0.1"
-          max="1"
-          step="0.1"
-          value="0.5"
-          style="width: 200px;"
-        />
-        <span id="numValue">0.5</span>
-      </div>
--->      
-<!-------------------------------------------------------------------------->
 
       <h3>数値</h3>
       <div class="num-palette" id="numPalette">
-      <label><input type="radio" name="num" value="0.5"> 0.5</label>
-      <label><input type="radio" name="num" value="0.6"> 0.6</label>
-      <label><input type="radio" name="num" value="0.7" checked> 0.7</label>
-      <label><input type="radio" name="num" value="0.8"> 0.8</label>
-      <label><input type="radio" name="num" value="0.9"> 0.9</label>
-      <label><input type="radio" name="num" value="1.0"> 1.0</label>
-</div>
+        <label><input type="radio" name="num" value="0.5"> 0.5</label>
+        <label><input type="radio" name="num" value="0.6"> 0.6</label>
+        <label><input type="radio" name="num" value="0.7" checked> 0.7</label>
+        <label><input type="radio" name="num" value="0.8"> 0.8</label>
+        <label><input type="radio" name="num" value="0.9"> 0.9</label>
+        <label><input type="radio" name="num" value="1.0"> 1.0</label>
+      </div>
 
       <h3>セーブ</h3>
       <div class="slot-buttons" id="slotButtons"></div>
@@ -558,7 +586,7 @@ const partPos = { top: [3, 3], bottom: [0, 3], glove: [3, 0], shoes: [0, 0] };
 const boardsEl = document.getElementById("boards");
 const initialParts = ["top", "bottom", "glove", "shoes"];
 let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || null;
-
+let selectedColor = "red";
 const size = 4;
 
 const connections = {
@@ -576,7 +604,7 @@ const connections = {
 
 
 /* 
-   2. テンプレ
+   2. かいろ
  */
 const paletteData = [
   { title: "増幅回路", symbols: ["┃", "━", "変","削"], multi: false },
@@ -607,6 +635,36 @@ let currentTemplatePage = 0;
 const paletteEl = document.getElementById("palette");
 const templateBtnContainer = document.getElementById("templateButtons");
 
+const colorGroup = document.createElement("div");
+colorGroup.className = "palette-group";
+
+const colorTitle = document.createElement("div");
+colorTitle.className = "multi-title";
+colorTitle.textContent = "回路色";
+colorGroup.appendChild(colorTitle);
+
+["red","blue","green"].forEach(c => {
+  const btn = document.createElement("div");
+  btn.className = "color-btn" + (c === "red" ? " active" : "");
+  btn.dataset.color = c;
+  btn.textContent = c === "red" ? "演算" : c === "blue" ? "循環" : "復元";
+  btn.style.background =
+    c === "red" ? "#fff0f0" :
+    c === "blue" ? "#f0f8ff" :
+    "#f0fff4";
+  btn.onclick = () => {
+    document.querySelectorAll(".delete-btn").forEach(b => b.classList.remove("selected"));
+    selectedColor = c;
+    document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    updateSelectedSymbolColor();
+  };
+
+  colorGroup.appendChild(btn);
+});
+
+paletteEl.appendChild(colorGroup);
+
 paletteData.forEach(group => {
   const div = document.createElement("div");
   div.className = "palette-group";
@@ -620,8 +678,8 @@ paletteData.forEach(group => {
   group.symbols.forEach(sym => {
     const s = document.createElement("div");
     s.className = "symbol";
-    if (sym === "変") s.classList.add("num-edit-btn");
-    if (sym === "削") s.classList.add("delete-btn");
+    if (sym === "変") s.classList.add("num-edit-btn", "no-color-sync");
+    if (sym === "削") s.classList.add("delete-btn", "no-color-sync");
     if (group.multi) s.classList.add("multi");
     s.textContent = sym;
     div.appendChild(s);
@@ -694,9 +752,22 @@ function selectButton(el, type, value = null, isMulti = false) {
   selectState.type = type;
   selectState.value = value;
   selectState.isMulti = isMulti;
+   updateSelectedSymbolColor();
+}
+
+function updateSelectedSymbolColor() {
+  document.querySelectorAll(".symbol, .template-btn").forEach(el => {
+    if (el.classList.contains("no-color-sync")) return;
+    el.classList.remove("red-active", "blue-active", "green-active");
+    if (!el.classList.contains("selected")) return;
+    if (selectedColor === "red")   el.classList.add("red-active");
+    if (selectedColor === "blue")  el.classList.add("blue-active");
+    if (selectedColor === "green") el.classList.add("green-active");
+  });
 }
 
 function handleChangeButton(btn) {
+
   document.querySelectorAll(".symbol, .template-btn")
     .forEach(b => b.classList.remove("selected"));
 
@@ -744,6 +815,10 @@ document.querySelectorAll(".symbol").forEach(s => {
     if (s.classList.contains("num-edit-btn")) {
       handleChangeButton(s);
     } else {
+      if (s.textContent === "削") {
+        selectedColor = null;
+        document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
+      }
       selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
     }
   };
@@ -787,7 +862,8 @@ for (let i = 0; i < 4; i++) {
       symbol: "",
       number: "",
       char: "",
-      multi: false
+      multi: false,
+      color: "red"
     }))
   );
 
@@ -810,11 +886,6 @@ for (let i = 0; i < 4; i++) {
   const panel = document.createElement("div");
   panel.className = "panel";
   panel.innerHTML = `
-    <select class="color">
-      <option value="red">赤</option>
-      <option value="blue">青</option>
-      <option value="green">緑</option>
-    </select>
     <select class="part">
       <option value="top">上衣</option>
       <option value="bottom">下衣</option>
@@ -840,7 +911,6 @@ for (let i = 0; i < 4; i++) {
   wrap.charSumDiv = charSumDiv;
 
   panel.querySelector(".part").value = part;
-  panel.querySelector(".color").value = savedData?.[i]?.color || "red";
 
   panel.querySelector(".part").onchange = () => {
     const p = panel.querySelector(".part").value;
@@ -853,10 +923,7 @@ for (let i = 0; i < 4; i++) {
     saveBoards();
   };
 
-  panel.querySelector(".color").onchange = () => {
-    drawBoard();
-    saveBoards();
-  };
+
 
   clearBtn.onclick = () => {
     if (confirm("回路を全て削除しますか？")) {
@@ -877,8 +944,17 @@ for (let i = 0; i < 4; i++) {
       c.onclick = () => {
         const cell = grid[y][x];
         if (cell.symbol === "img") return;
+        if (!selectState.type && selectedColor && cell.symbol) {
+          cell.color = selectedColor;
+          drawBoard();
+          saveBoards();
+          return;
+        }
         if (selectState.type === "numEdit") {
           if (!cell.symbol || cell.multi) return;
+            if (selectedColor) {
+              cell.color = selectedColor;
+            }
             if (selectState.editMode === 1) {
               cell.number = getSelectedNumber();
             } else if (selectState.editMode === 2) {
@@ -897,13 +973,14 @@ for (let i = 0; i < 4; i++) {
               if (grid[ty][tx].symbol === "img") continue;
               const sym = selectState.value.grid[ty][tx];
               if (!sym || sym.trim() === "") {
-                grid[ty][tx] = { symbol: "", number: "", char: "", multi: false };
+                grid[ty][tx] = { symbol: "", number: "", char: "", multi: false, color: "red" };
               } else {
                 grid[ty][tx] = {
                   symbol: sym,
                   number: getSelectedNumber(),
                   char: getSelectedChar(),
-                  multi: false
+                  multi: false,
+                  color: selectedColor
                 };
               }
             }
@@ -915,13 +992,14 @@ for (let i = 0; i < 4; i++) {
 
         if (selectState.type === "symbol") {
           if (selectState.value === "削") {
-            grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+            grid[y][x] = { symbol: "", number: "", char: "", multi: false, color: "red" };
           } else {
             grid[y][x] = {
               symbol: selectState.value,
               number: selectState.isMulti ? "" : getSelectedNumber(),
               char: selectState.isMulti ? "" : getSelectedChar(),
-              multi: selectState.isMulti
+              multi: selectState.isMulti,
+              color: selectedColor
             };
           }
           drawBoard();
@@ -933,7 +1011,7 @@ for (let i = 0; i < 4; i++) {
         e.preventDefault();
         const cell = grid[y][x];
         if (cell.symbol === "img") return;
-        grid[y][x] = { symbol: "", number: "", char: "", multi: false };
+        grid[y][x] = { symbol: "", number: "", char: "", multi: false, color: "red" };
         drawBoard();
         saveBoards();
       };
@@ -960,8 +1038,16 @@ for (let i = 0; i < 4; i++) {
         <div class="number-display">${s.number || ""}</div>
       `;
       c.className = "cell";
-      if (s.multi) {
+      if (!s.symbol) {
+        c.style.background = "";
+      } else if (s.multi) {
         c.style.background = "#ffffaa";
+      } else if (s.color === "red") {
+        c.style.background = "#fff0f0";
+      } else if (s.color === "blue") {
+        c.style.background = "#f0f8ff";
+      } else if (s.color === "green") {
+        c.style.background = "#f0fff4";
       } else {
         c.style.background = "";
       }
@@ -1055,7 +1141,7 @@ for (let i = 0; i < 4; i++) {
       return;
     }
 
-    const color = panel.querySelector(".color").value;
+    
     const charSumTotal = {};
     const charSumMulti = {};
 
@@ -1102,8 +1188,8 @@ for (let i = 0; i < 4; i++) {
       }
 
       if (connections[s.symbol]) {
-        c.classList.add("connected", "highlight-" + color);
-      }
+  c.classList.add("connected", "highlight-" + (s.color || "red"));
+}
     });
 
     wrap.charSumDiv.innerHTML = `
@@ -1156,10 +1242,10 @@ function saveBoards() {
         symbol: cell.symbol || "",
         number: cell.number || "",
         char: cell.char || "",
-        multi: !!cell.multi
+        multi: !!cell.multi,
+        color: cell.color || "red"
       }))
     ),
-    color: b.panel.querySelector(".color").value || "red",
     part: b.panel.querySelector(".part").value || "top"
   }));
 
@@ -1213,10 +1299,10 @@ document.querySelectorAll(".saveBtn").forEach(btn => {
             symbol: cell.symbol || "",
             number: cell.number || "",
             char: cell.char || "",
-            multi: !!cell.multi
+            multi: !!cell.multi,
+            color: cell.color || "red"
           }))
         ),
-        color: b.panel.querySelector(".color").value || "red",
         part: b.panel.querySelector(".part").value || "top"
       }));
 
@@ -1249,7 +1335,6 @@ document.querySelectorAll(".loadBtn").forEach(btn => {
           for (let x = 0; x < 4; x++)
             boards[i].grid[y][x] = { ...d.grid[y][x] };
 
-        boards[i].panel.querySelector(".color").value = d.color || "red";
         boards[i].panel.querySelector(".part").value = d.part || "top";
         boards[i].drawBoard();
       });
@@ -1275,6 +1360,9 @@ importAllFile.style.display = "none";
 document.querySelector(".side").appendChild(exportAllBtn);
 document.querySelector(".side").appendChild(importAllBtn);
 document.querySelector(".side").appendChild(importAllFile);
+exportAllBtn.style.width = "150px";
+importAllBtn.style.width = "150px";
+exportAllBtn.style.marginRight = "12px";
 
 exportAllBtn.onclick = () => {
   try {
@@ -1292,7 +1380,6 @@ exportAllBtn.onclick = () => {
         char: c.char || "",
         multi: !!c.multi
       }))),
-      color: b.panel.querySelector(".color").value || "red",
       part: b.panel.querySelector(".part").value || "top"
     }));
 
@@ -1329,7 +1416,6 @@ importAllFile.onchange = (e) => {
           for (let y = 0; y < 4; y++)
             for (let x = 0; x < 4; x++)
               boards[i].grid[y][x] = { ...d.grid[y][x] };
-          boards[i].panel.querySelector(".color").value = d.color || "red";
           boards[i].panel.querySelector(".part").value = d.part || "top";
           boards[i].drawBoard();
         });
@@ -1364,4 +1450,3 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 </script>
-
