@@ -1378,7 +1378,8 @@ exportAllBtn.onclick = () => {
         symbol: c.symbol || "",
         number: c.number || "",
         char: c.char || "",
-        multi: !!c.multi
+        multi: !!c.multi,
+        color: c.color || "red"
       }))),
       part: b.panel.querySelector(".part").value || "top"
     }));
@@ -1450,4 +1451,5 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 </script>
+
 
