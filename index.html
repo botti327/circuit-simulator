@@ -664,27 +664,6 @@ colorTitle.className = "multi-title";
 colorTitle.textContent = "回路色";
 colorGroup.appendChild(colorTitle);
 
-["red","blue","green"].forEach(c => {
-  const btn = document.createElement("div");
-  btn.className = "color-btn" + (c === "red" ? " active" : "");
-  btn.dataset.color = c;
-  btn.textContent = c === "red" ? "演算" : c === "blue" ? "循環" : "復元";
-  btn.style.background =
-    c === "red" ? "#fff0f0" :
-    c === "blue" ? "#f0f8ff" :
-    "#f0fff4";
-  btn.onclick = () => {
-    document.querySelectorAll(".delete-btn").forEach(b => b.classList.remove("selected"));
-    clearAllSelections();
-    selectedColor = c;
-    document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    updateSelectedSymbolColor();
-  };
-
-  colorGroup.appendChild(btn);
-});
-
 paletteEl.appendChild(colorGroup);
 
 paletteData.forEach(group => {
@@ -777,28 +756,47 @@ function selectButton(el, type, value = null, isMulti = false) {
    updateSelectedSymbolColor();
 }
 
+/*--------------------------------color--------------------------------*/
 function updateSelectedSymbolColor() {
   document.querySelectorAll(".symbol, .template-btn, .num-edit-btn").forEach(el => {
     if (el.classList.contains("no-color-sync")) return;
     el.classList.remove("red-active", "blue-active", "green-active");
-
     if (!el.classList.contains("selected")) return;
-
     if (selectedColor === "red")   el.classList.add("red-active");
     if (selectedColor === "blue")  el.classList.add("blue-active");
     if (selectedColor === "green") el.classList.add("green-active");
   });
 }
-function handleChangeButton(btn) {
 
+["red","blue","green"].forEach(c => {
+  const btn = document.createElement("div");
+  btn.className = "color-btn" + (c === "red" ? " active" : "");
+  btn.dataset.color = c;
+  btn.textContent = c === "red" ? "演算" : c === "blue" ? "循環" : "復元";
+  btn.style.background =
+    c === "red" ? "#fff0f0" :
+    c === "blue" ? "#f0f8ff" :
+    "#f0fff4";
+  btn.onclick = () => {
+    document.querySelectorAll(".delete-btn").forEach(b => b.classList.remove("selected"));
+     if (selectState.type === "symbol" && selectState.value === "削") {
+      clearAllSelections();
+    }
+    selectedColor = c;
+    document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    updateSelectedSymbolColor();
+  };
+  colorGroup.appendChild(btn);
+});
+
+/*--------------------------------change--------------------------------*/
+function handleChangeButton(btn) {
   document.querySelectorAll(".symbol, .template-btn")
     .forEach(b => b.classList.remove("selected"));
-
   btn.classList.add("selected");
   selectState.type = "numEdit";
-
   selectState.editMode = (selectState.editMode + 1) % 4;
-
   if (selectState.editMode === 0) {
     selectState.type = null;
     btn.textContent = "変";
@@ -820,13 +818,13 @@ function handleChangeButton(btn) {
   updateSelectedSymbolColor();
 }
 
+/*--------------------------------template--------------------------------*/
 document.getElementById("prevTemplate").onclick = () => {
   const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
   currentTemplatePage = currentTemplatePage > 0 ? currentTemplatePage - 1 : maxPage;
   clearAllSelections();
   renderTemplatePage();
 };
-
 document.getElementById("nextTemplate").onclick = () => {
   const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
   currentTemplatePage = currentTemplatePage < maxPage ? currentTemplatePage + 1 : 0;
@@ -834,25 +832,36 @@ document.getElementById("nextTemplate").onclick = () => {
   renderTemplatePage();
 };
 
+/*--------------------------------delete--------------------------------*/
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
     if (s.classList.contains("num-edit-btn")) {
       handleChangeButton(s);
-    } else {
-      if (s.textContent === "削") {
-        selectedColor = null;
-        document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
-      }
-      selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
+      return;
     }
+    if (s.classList.contains("delete-btn")) {
+      const alreadySelected = s.classList.contains("selected");
+      clearAllSelections();
+      if (!alreadySelected) {
+        s.classList.add("selected");
+        selectState.type = "symbol";
+        selectState.value = "削";
+        selectState.isMulti = false;
+        updateSelectedSymbolColor();
+      }
+      return;
+    }
+    selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
   };
 });
 
+/*--------------------------------number--------------------------------*/
 function getSelectedNumber() {
   const checked = document.querySelector('input[name="num"]:checked');
   return checked ? parseFloat(checked.value) : 0;
 }
 
+/*--------------------------------bui--------------------------------*/
 const charInput = document.getElementById("charInput");
 const charSelect = document.getElementById("charSelect");
 
@@ -1473,4 +1482,3 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 </script>
-
