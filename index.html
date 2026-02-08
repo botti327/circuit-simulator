@@ -168,7 +168,7 @@ h3 {
   border: 1px solid #333;
   display: flex;
   background: #fff;
-  color: #ff6666;
+  color: #000;
   font-weight: bold;
   align-items: center;
   justify-content: center;
@@ -561,9 +561,8 @@ h3 {
 
       <h3>追加効果</h3>
       <select id="charSelect" style="width:220px;">
-        <option value=""></option>
         <option value="">------------上衣------------</option>
-        <option value="持続ダメ">持続ダメージ</option>
+        <option value="持続ダメ" selected>持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
         <option value="">------------下衣------------</option>
         <option value="両極化">両極化</option>
@@ -708,6 +707,7 @@ function renderTemplatePage() {
     btn.innerHTML = createTemplateLabel(tpl.grid);
     btn.onclick = () => {
       selectButton(btn, "template", tpl);
+      updateSelectedSymbolColor();
     };
     templateBtnContainer.appendChild(btn);
   });
@@ -754,6 +754,7 @@ function selectButton(el, type, value = null, isMulti = false) {
   selectState.value = value;
   selectState.isMulti = isMulti;
    updateSelectedSymbolColor();
+   updateColorButtonsActive();
 }
 
 /*--------------------------------color--------------------------------*/
@@ -761,10 +762,24 @@ function updateSelectedSymbolColor() {
   document.querySelectorAll(".symbol, .template-btn, .num-edit-btn").forEach(el => {
     if (el.classList.contains("no-color-sync")) return;
     el.classList.remove("red-active", "blue-active", "green-active");
-    if (!el.classList.contains("selected")) return;
-    if (selectedColor === "red")   el.classList.add("red-active");
-    if (selectedColor === "blue")  el.classList.add("blue-active");
-    if (selectedColor === "green") el.classList.add("green-active");
+
+    if (el.classList.contains("selected")) {
+      el.classList.add(selectedColor + "-active");
+    } else {
+      if (el.classList.contains("template-btn")) {
+        el.style.color = "";
+      }
+    }
+  });
+}
+
+function updateColorButtonsActive() {
+  document.querySelectorAll(".color-btn").forEach(btn => {
+    if (btn.dataset.color === selectedColor) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
   });
 }
 
@@ -778,13 +793,14 @@ function updateSelectedSymbolColor() {
     c === "blue" ? "#f0f8ff" :
     "#f0fff4";
   btn.onclick = () => {
-    document.querySelectorAll(".delete-btn").forEach(b => b.classList.remove("selected"));
-     if (selectState.type === "symbol" && selectState.value === "削") {
+    const deleteSelected = selectState.type === "symbol" && selectState.value === "削";
+    if (deleteSelected) {
       clearAllSelections();
     }
-    selectedColor = c;
     document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
+    selectedColor = c;
     btn.classList.add("active");
+    updateColorButtonsActive();
     updateSelectedSymbolColor();
   };
   colorGroup.appendChild(btn);
@@ -816,6 +832,7 @@ function handleChangeButton(btn) {
     btn.style.fontSize = "16px";
   }
   updateSelectedSymbolColor();
+  updateColorButtonsActive();
 }
 
 /*--------------------------------template--------------------------------*/
@@ -842,6 +859,9 @@ document.querySelectorAll(".symbol").forEach(s => {
     if (s.classList.contains("delete-btn")) {
       const alreadySelected = s.classList.contains("selected");
       clearAllSelections();
+    
+      document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
+    
       if (!alreadySelected) {
         s.classList.add("selected");
         selectState.type = "symbol";
