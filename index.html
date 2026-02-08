@@ -28,7 +28,7 @@ h3 {
 }
 
 .description-column {
-    flex: 0 0 430px;
+    flex: 0 0 450px;
     display: flex;
     flex-direction: column;
     font-size: 14px;
@@ -460,8 +460,8 @@ h3 {
 }
 
 #changelog {
-    width: 430px;
-    height: 85px;
+    width: 450px;
+    height: 90px;
     background: #fefefe;
     border: 2px solid #333;
     border-radius: 4px;
@@ -489,7 +489,20 @@ h3 {
 #changelog li {
     margin-bottom: 4px;
 }
+.doc-btn {
+  font-size: 10px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background: #fff;
+  color: #000;
 
+  text-align: center;
+}
   </style>
 </head>
 <body>
@@ -497,8 +510,7 @@ h3 {
   <div class="container">
     <div class="description-column">
       <div class="description">
-        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.8</h2>
-        <h3>使い方・説明</h3>
+        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.81</h2>
         <p>
           ・色<br>
           ・回路<br>
@@ -507,39 +519,50 @@ h3 {
           を右から選び、回路を配置して下さい。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
           リストに無い追加効果を付けたい場合は自由入力欄に入力して下さい。<br>
-          <br><br>
-          [変] ボタンを押すごとにモードが変わり、配置された回路をクリックすることで、追加効果や数値を変更できます。<br>
-          [数] ……… 数値だけを変更。<br>
-          [効] ……… 追加効果だけを変更。<br>
-          [数/効]　… 数値と追加効果の両方を変更。<br>
-          ※回路色はその時選択されている色に変更されます。<br>
-          　回路色だけを変更したい場合、色だけを選択して下さい。<br>
           <br>
-          [削] ……… 配置した回路を削除できます。右クリックでも削除できます。<br>
-          <br><br>
-          ※ セーブ機能はありますが、ブラウザのキャッシュクリア等で削除される場合があります。安全のためにファイル出力でデータを保存して下さい。<br>
+          <span class="doc-btn">解除</span> …… 回路を非選択状態にします。<br>
+          　　　　　同じ回路をもう一度クリックでも非選択にできます。<br>
+          <br>
+          <span class="doc-btn">変</span> …… 押すごとに表示が変わり、配置された回路をクリック
+          　　　　　で、数値や追加効果を変更できます。<br>
+          <span class="doc-btn">数</span> …… 数値だけを変更。<br>
+          <span class="doc-btn">効</span> …… 追加効果だけを変更。<br>
+          <span class="doc-btn">数/効</span> …… 数値と追加効果の両方を変更。<br>
+          ※ 回路色はその時選択されている色に変更されます。<br>
+          　 回路色だけを変更したい場合、色だけを選択して下さい。<br>
+          <br>
+          <span class="doc-btn">削</span> …… 配置した回路を削除できます。<br>
+          　　　　　右クリックでも削除できます。<br>
+          <br>
+          ※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>　 でデータを保存して下さい。<br>
         </p>
       </div>
 
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
-          <li>v1.8 ：色変更実装</li>
+          <li>v1.81：一部修正</li>
+          <li>v1.80：色変更実装</li>
           <li>v1.75：テンプレ追加 + 数値/効果変更実装</li>
-          <li>v1.74：テンプレ追加 + その他調整</li>
-          <li>v1.73：その他調整</li>
-          <li>v1.72：その他調整</li>
-          <li>v1.71：その他調整</li>
-          <li>v1.7：テンプレ機能追加</li>
-          <li>v1.62：その他調整</li>
-          <li>v1.61：その他調整</li>
-          <li>v1.6：追加効果</li>
-          <li>v1.5：レイアウト + 色調整</li>
-          <li>v1.4：回路修正 + その他調整</li>
-          <li>v1.3：セーブスロット機能追加 + その他調整</li>
-          <li>v1.2：ローカル保存機能追加 + その他調整</li>
-          <li>v1.1：部位・数値・複製回路機能追加</li>
-          <li>v1.0：シミュ仮公開</li>
+          <li>v1.74：テンプレ追加 + 一部修正</li>
+          <li>v1.73：一部修正</li>
+          <li>v1.72：一部修正</li>
+          <li>v1.71：一部修正</li>
+          <li>v1.70：テンプレ機能追加</li>
+          <li>v1.62：一部修正</li>
+          <li>v1.61：一部修正</li>
+          <li>v1.60：追加効果追加</li>
+          <li>v1.51：一部修正</li>
+          <li>v1.50：レイアウト変更</li>
+          <li>v1.42：一部修正</li>
+          <li>v1.41：一部修正</li>
+          <li>v1.40：複製回路追加</li>
+          <li>v1.32：一部修正</li>
+          <li>v1.31：一部修正</li>
+          <li>v1.30：セーブスロット機能追加</li>
+          <li>v1.20：ローカル保存機能追加</li>
+          <li>v1.10：部位・数値追加</li>
+          <li>v1.00：シミュ仮公開</li>
         </ul>
       </div>
     </div>
@@ -563,16 +586,16 @@ h3 {
 
       <h3>追加効果</h3>
       <select id="charSelect" style="width:220px;">
-        <option value="">------------上衣------------</option>
+        
         <option value="持続ダメ" selected>持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
-        <option value="">------------下衣------------</option>
+    
         <option value="両極化">両極化</option>
         <option value="以上ダメ">HP50%以上の敵攻撃時、ダメージ増加</option>
         <option value="以下ダメ">HP50%以下の敵攻撃時、ダメージ増加</option>
-        <option value="">------------手袋------------</option>
+       
         <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
-        <option value="">------------靴------------</option>
+   
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
@@ -816,7 +839,29 @@ function updateColorButtonsActive() {
   };
   colorGroup.appendChild(btn);
 });
+const clearSelectBtn = document.createElement("div");
+clearSelectBtn.className = "color-btn";
+clearSelectBtn.textContent = "解除";
+clearSelectBtn.style.color = "#000";
 
+
+/*--------------------------------change--------------------------------*/
+clearSelectBtn.onclick = () => {
+  clearAllSelections();
+  updateSelectedSymbolColor();
+  updateColorButtonsActive();
+
+  clearSelectBtn.style.transition = "0.1s all";
+  clearSelectBtn.style.transform = "scale(0.9)";
+
+
+  setTimeout(() => {
+    clearSelectBtn.style.transform = "scale(1)";
+    clearSelectBtn.style.boxShadow = "";
+  }, 100);
+};
+
+colorGroup.appendChild(clearSelectBtn);
 /*--------------------------------change--------------------------------*/
 function handleChangeButton(btn) {
   document.querySelectorAll(".symbol, .template-btn")
