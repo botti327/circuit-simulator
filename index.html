@@ -169,7 +169,6 @@ h3 {
   display: flex;
   background: #fff;
   color: #000;
-  font-weight: bold;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -251,14 +250,17 @@ h3 {
 }
 .color-btn.active[data-color="red"] {
   color: #ff6666;
+  box-shadow: 0 0 15px #ff6666;
 }
 
 .color-btn.active[data-color="blue"] {
   color: #3399ff;
+  box-shadow: 0 0 15px #3399ff;
 }
 
 .color-btn.active[data-color="green"] {
   color: #33cc88;
+  box-shadow: 0 0 15px #33cc88;
 }
 
 /* ======== 回路選択 ======== */
@@ -715,6 +717,7 @@ function renderTemplatePage() {
   const totalPages = Math.ceil(templates.length / TEMPLATES_PER_PAGE);
   document.getElementById("templatePageLabel").textContent =
     (currentTemplatePage + 1) + " / " + totalPages;
+  updateSelectedSymbolColor();
 }
 
 
@@ -759,16 +762,24 @@ function selectButton(el, type, value = null, isMulti = false) {
 
 /*--------------------------------color--------------------------------*/
 function updateSelectedSymbolColor() {
-  document.querySelectorAll(".symbol, .template-btn, .num-edit-btn").forEach(el => {
+  document.querySelectorAll(".symbol, .num-edit-btn").forEach(el => {
     if (el.classList.contains("no-color-sync")) return;
     el.classList.remove("red-active", "blue-active", "green-active");
-
     if (el.classList.contains("selected")) {
       el.classList.add(selectedColor + "-active");
+    }
+  });
+
+  document.querySelectorAll(".template-btn").forEach(el => {
+    el.classList.remove("red-active", "blue-active", "green-active");
+    if (el.classList.contains("selected")) {
+      el.classList.add(selectedColor + "-active");
+      el.style.color = "";
     } else {
-      if (el.classList.contains("template-btn")) {
-        el.style.color = "";
-      }
+      let colorHex = selectedColor === "red" ? "#ff6666"
+                   : selectedColor === "blue" ? "#3399ff"
+                   : "#33cc88";
+      el.style.color = colorHex;
     }
   });
 }
