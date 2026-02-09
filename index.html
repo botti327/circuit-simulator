@@ -208,12 +208,6 @@ h3 {
   margin: 0;
 }
 
-.template-pager {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .pager button {
   height: 24px;
   padding: 0 5px;
@@ -280,7 +274,6 @@ h3 {
     min-width: 50px;
 }
 
-.palette-title,
 .multi-title {
     font-size: 14px;
     font-weight: bold;
@@ -507,11 +500,15 @@ h3 {
   </style>
 </head>
 <body>
-
   <div class="container">
+    <!--------------------------------------------ひ-------------------------------------------->
     <div class="description-column">
       <div class="description">
-        <h2>エクサスケイル防具 <br> 回路シミュレーター v1.82</h2>
+        <h2>
+          エクサスケイル防具 <br>
+          回路シミュレーター v1.81
+        </h2>
+
         <p>
           ・色<br>
           ・回路<br>
@@ -524,7 +521,7 @@ h3 {
           <span class="doc-btn">解除</span> …… 回路を非選択状態にします。<br>
           　　　　　同じ回路をもう一度クリックでも非選択にできます。<br>
           <br>
-          <span class="doc-btn">変</span> …… 押すごとに表示が変わり、配置された回路をクリック
+          <span class="doc-btn">変</span> …… 押すごとに表示が変わり、配置された回路をクリック<br>
           　　　　　で、数値や追加効果を変更できます。<br>
           <span class="doc-btn">数</span> …… 数値だけを変更。<br>
           <span class="doc-btn">効</span> …… 追加効果だけを変更。<br>
@@ -535,14 +532,15 @@ h3 {
           <span class="doc-btn">削</span> …… 配置した回路を削除できます。<br>
           　　　　　右クリックでも削除できます。<br>
           <br>
-          ※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>　 でデータを保存して下さい。<br>
+          ※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>
+          　 でデータを保存して下さい。<br>
         </p>
       </div>
 
+      <!----------------------------------------------りれき-------------------------------------------->
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
-          <li>v1.82：一部修正</li>
           <li>v1.81：一部修正</li>
           <li>v1.80：色/数値/効果変更追加</li>
           <li>v1.75：テンプレ追加</li>
@@ -569,12 +567,13 @@ h3 {
       </div>
     </div>
 
+    <!--------------------------------------------ま-------------------------------------------->
     <div class="left-frame" id="boards"></div>
 
+    <!--------------------------------------------み-------------------------------------------->
     <div class="side">
-
       <div class="template-header">
-      <h3>テンプレート</h3>
+        <h3>テンプレート</h3>
         <div class="pager">
           <button id="prevTemplate">◀</button>
           <span id="templatePageLabel">1 / 1</span>
@@ -586,21 +585,19 @@ h3 {
       <div class="palette" id="colorPalette"></div>
       <div class="palette" id="palette"></div>
 
+
       <h3>追加効果</h3>
       <select id="charSelect" style="width:220px;">
-        
         <option value="持続ダメ" selected>持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
-    
         <option value="両極化">両極化</option>
         <option value="以上ダメ">HP50%以上の敵攻撃時、ダメージ増加</option>
         <option value="以下ダメ">HP50%以下の敵攻撃時、ダメージ増加</option>
-       
         <option value="スキダメ">柔軟、強靭、強烈、超越スキルダメージ増加</option>
-   
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
+
       <input
         id="charInput"
         type="text"
@@ -608,6 +605,7 @@ h3 {
         style="width:100px; text-align:center;"
         placeholder="自由入力 (任意)"
       />
+
 
       <h3>数値</h3>
       <div class="num-palette" id="numPalette">
@@ -619,21 +617,22 @@ h3 {
         <label><input type="radio" name="num" value="1.0"> 1.0</label>
       </div>
 
+
       <div class="template-header">
+        <h3>セーブ</h3>
+        <div></div>
+        <div class="pager">
+          <button id="prevSlot">◀</button>
+          <span id="slotPageLabel">1 / 2</span>
+          <button id="nextSlot">▶</button>
+        </div>
+      </div>
 
-      <h3>セーブ</h3>
-  <div></div>
-  <div class="pager">
-    <button id="prevSlot">◀</button>
-    <span id="slotPageLabel">1 / 2</span>
-    <button id="nextSlot">▶</button>
-  </div>
-</div>
-
-<div class="slot-buttons" id="slotButtons"></div>
+      <div class="slot-buttons" id="slotButtons"></div>
     </div>
   </div>
 </body>
+
 <script>
 /* 
    1. 初期設定
