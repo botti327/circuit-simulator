@@ -19,7 +19,7 @@ h3 {
     margin-bottom: 4px;
 }
 
-/* ======== コンテナ ======== */
+/*--------------------------------------コンテナ--------------------------------------*/
 .container {
     display: flex;
     align-items: flex-start;
@@ -63,7 +63,7 @@ h3 {
     align-self: flex-start;
 }
 
-/* ======== ボード ======== */
+/*--------------------------------------ボード--------------------------------------*/
 .board-wrap {
     text-align: center;
     background: #f5f5f5;
@@ -88,7 +88,7 @@ h3 {
     flex-shrink: 0;
 }
 
-/* ======== セル ======== */
+/*--------------------------------------セル--------------------------------------*/
 .cell {
     position: relative;
     border: 1px solid #333;
@@ -145,7 +145,7 @@ h3 {
     box-shadow: 0 0 30px #66ffaa;
 }
 
-/* ======== 色/部位 ======== */
+/*--------------------------------------色/部位--------------------------------------*/
 .panel {
     display: flex;
     gap: 15px;
@@ -153,7 +153,7 @@ h3 {
     margin-bottom: 6px;
 }
 
-/* ======== てんぷれ ======== */
+/*--------------------------------------てんぷれ--------------------------------------*/
 .template-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -223,7 +223,7 @@ h3 {
   text-align: center;
 }
 
-/* ======== 色選択 ======== */
+/*--------------------------------------色選択--------------------------------------*/
 .color-btn {
   width: 48px;
   height: 48px;
@@ -257,7 +257,7 @@ h3 {
   box-shadow: 0 0 15px #33cc88;
 }
 
-/* ======== 回路選択 ======== */
+/*--------------------------------------回路選択--------------------------------------*/
 .palette {
     display: flex;
     gap: 18px;
@@ -355,7 +355,7 @@ h3 {
     color: #000;
 }
 
-/* ======== 合計 ======== */
+/*--------------------------------------合計--------------------------------------*/
 
 .char-display {
     position: absolute;
@@ -399,7 +399,7 @@ h3 {
   font-size: 12px;
 }
 
-/* ======== 数値選択 ======== */
+/*--------------------------------------数値選択--------------------------------------*/
 .num-palette {
   display: grid;
   grid-template-columns: repeat(4, auto);
@@ -419,7 +419,7 @@ h3 {
     align-items: center;
 }
 
-/* ======== セーブスロット ======== */
+/*--------------------------------------セーブスロット--------------------------------------*/
 .slot-buttons div {
     display: flex;
     gap: 4px;
@@ -441,7 +441,7 @@ h3 {
     box-sizing: border-box;
 }
 
-/* ======== 更新履歴 ======== */
+/*--------------------------------------更新履歴--------------------------------------*/
 .description {
     background: #f0f0f0;
     padding: 16px;
@@ -501,12 +501,12 @@ h3 {
 </head>
 <body>
   <div class="container">
-    <!--------------------------------------------ひ-------------------------------------------->
+    <!--------------------------------------------------ひ-------------------------------------------------->
     <div class="description-column">
       <div class="description">
         <h2>
           エクサスケイル防具 <br>
-          回路シミュレーター v1.81
+          回路シミュレーター v1.82
         </h2>
 
         <p>
@@ -537,10 +537,11 @@ h3 {
         </p>
       </div>
 
-      <!----------------------------------------------りれき-------------------------------------------->
+      <!----------------------------------------------------りれき-------------------------------------------------->
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v1.82：一部修正</li>
           <li>v1.81：一部修正</li>
           <li>v1.80：色/数値/効果変更追加</li>
           <li>v1.75：テンプレ追加</li>
@@ -567,10 +568,10 @@ h3 {
       </div>
     </div>
 
-    <!--------------------------------------------ま-------------------------------------------->
+    <!--------------------------------------------------ま-------------------------------------------------->
     <div class="left-frame" id="boards"></div>
 
-    <!--------------------------------------------み-------------------------------------------->
+    <!--------------------------------------------------み-------------------------------------------------->
     <div class="side">
       <div class="template-header">
         <h3>テンプレート</h3>
@@ -634,9 +635,7 @@ h3 {
 </body>
 
 <script>
-/* 
-   1. 初期設定
- */
+/* ------------------------------------------------------------------1. 初期設定------------------------------------------------------------------ */
 const partPos = { top: [3, 3], bottom: [0, 3], glove: [3, 0], shoes: [0, 0] };
 const boardsEl = document.getElementById("boards");
 const initialParts = ["top", "bottom", "glove", "shoes"];
@@ -658,9 +657,7 @@ const connections = {
 };
 
 
-/* 
-   2. かいろ
- */
+/* ------------------------------------------------------------------2. かいろ------------------------------------------------------------------ */
 const paletteData = [
   { title: "増幅回路", symbols: ["┃", "━", "変","削"], multi: false },
   { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
@@ -754,9 +751,7 @@ function renderTemplatePage() {
 }
 
 
-/* 
-   3. 選択状態・入力
- */
+/* ------------------------------------------------------------------3. せんたくじょうたい------------------------------------------------------------------ */
 const selectState = {
   type: null,
   value: null,
@@ -793,7 +788,7 @@ function selectButton(el, type, value = null, isMulti = false) {
   updateColorButtonsActive();
 }
 
-/*--------------------------------template--------------------------------*/
+/*--------------------------------------template--------------------------------------*/
 document.getElementById("prevTemplate").onclick = () => {
   const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
   currentTemplatePage = currentTemplatePage > 0 ? currentTemplatePage - 1 : maxPage;
@@ -807,7 +802,7 @@ document.getElementById("nextTemplate").onclick = () => {
   renderTemplatePage();
 };
 
-/*--------------------------------color--------------------------------*/
+/*--------------------------------------color--------------------------------------*/
 function updateSelectedSymbolColor() {
   document.querySelectorAll(".symbol, .num-edit-btn").forEach(el => {
     if (el.classList.contains("no-color-sync")) return;
@@ -864,7 +859,7 @@ function updateColorButtonsActive() {
   colorGroup.appendChild(btn);
 });
 
-/*--------------------------------かいじょ--------------------------------*/
+/*--------------------------------------かいじょ--------------------------------------*/
 const clearSelectBtn = document.createElement("div");
 clearSelectBtn.className = "color-btn";
 clearSelectBtn.textContent = "解除";
@@ -886,7 +881,7 @@ clearSelectBtn.onclick = () => {
 };
 
 colorGroup.appendChild(clearSelectBtn);
-/*--------------------------------change--------------------------------*/
+/*--------------------------------------change--------------------------------------*/
 function handleChangeButton(btn) {
   document.querySelectorAll(".symbol, .template-btn")
     .forEach(b => b.classList.remove("selected"));
@@ -915,7 +910,7 @@ function handleChangeButton(btn) {
   updateColorButtonsActive();
 }
 
-/*--------------------------------delete--------------------------------*/
+/*--------------------------------------delete--------------------------------------*/
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
     if (s.classList.contains("num-edit-btn")) {
@@ -941,13 +936,13 @@ document.querySelectorAll(".symbol").forEach(s => {
   };
 });
 
-/*--------------------------------number--------------------------------*/
+/*--------------------------------------number--------------------------------------*/
 function getSelectedNumber() {
   const checked = document.querySelector('input[name="num"]:checked');
   return checked ? parseFloat(checked.value) : 0;
 }
 
-/*--------------------------------bui--------------------------------*/
+/*--------------------------------------bui--------------------------------------*/
 const charInput = document.getElementById("charInput");
 const charSelect = document.getElementById("charSelect");
 
@@ -966,9 +961,7 @@ charSelect.addEventListener("change", () => {
 });
 
 
-/* 
-   4. やばいところ
- */
+/* ------------------------------------------------------------------------------4. やばいところ------------------------------------------------------------------------------ */
 renderTemplatePage();
 const boards = [];
 
@@ -1425,9 +1418,7 @@ for (let i = 0; i < 4; i++) {
 }
 
 
-/* 
-   5. 保存・スロット・EX/IN・履歴
- */
+/* ------------------------------------------------------------------------------5. 保存------------------------------------------------------------------------------ */
 function saveBoards() {
   const data = boards.map(b => ({
     grid: b.grid.map(row =>
@@ -1445,7 +1436,7 @@ function saveBoards() {
   localStorage.setItem("circuitBoards", JSON.stringify(data));
 }
 
-/* ===== セーブスロット ===== */
+/*-------------------------セーブスロット-------------------------*/
 const slotCount = 15;
 const slotsPerPage = 5;
 let currentSlotPage = 0;
@@ -1562,7 +1553,7 @@ document.getElementById("nextSlot").onclick = () => {
 
 renderSlotPage();
 
-/* ===== EX/IN ===== */
+/*-------------------------EX/IN--------------------------------------*/
 const exportAllBtn = document.createElement("button");
 exportAllBtn.textContent = "ファイル出力";
 const importAllBtn = document.createElement("button");
@@ -1659,6 +1650,7 @@ importAllFile.onchange = (e) => {
   importAllFile.value = "";
 };
 
+/* ------------------------------------------------------------------------------6. りれき------------------------------------------------------------------------------ */
 function addChangelog(text) {
   const ul = document.getElementById("changelogList");
   const li = document.createElement("li");
@@ -1666,3 +1658,4 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 </script>
+
