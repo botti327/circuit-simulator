@@ -176,6 +176,7 @@ h3 {
   font-family: monospace;
   font-size: 26px;
   margin: 9px;
+  margin-bottom: -10px;
   border-radius: 5px;
 }
 
@@ -355,6 +356,14 @@ h3 {
     color: #000;
 }
 
+.ur {
+  display: flex;
+  flex-direction: row;
+  gap: 21px;
+  margin-left: 2.5px;
+  margin-top: 10px;
+  margin-bottom: -10px
+}
 /*--------------------------------------合計--------------------------------------*/
 
 .char-display {
@@ -465,6 +474,7 @@ h3 {
     overflow-y: auto;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
+    margin-top: 3px
 }
 
 #changelog h4 {
@@ -483,6 +493,7 @@ h3 {
 #changelog li {
     margin-bottom: 4px;
 }
+
 .doc-btn {
   font-size: 10px;
   width: 26px;
@@ -494,7 +505,20 @@ h3 {
   border: 1px solid #333;
   background: #fff;
   color: #000;
+  text-align: center;
+}
 
+.doc-btn-ur {
+  font-size: 15px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background: #fff;
+  color: #000;
   text-align: center;
 }
   </style>
@@ -506,7 +530,7 @@ h3 {
       <div class="description">
         <h2>
           エクサスケイル防具 <br>
-          回路シミュレーター v1.82
+          回路シミュレーター v1.90
         </h2>
 
         <p>
@@ -517,10 +541,8 @@ h3 {
           を右から選び、回路を配置して下さい。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
           リストに無い追加効果を付けたい場合は自由入力欄に入力して下さい。<br>
-          <br>
           <span class="doc-btn">解除</span> …… 回路を非選択状態にします。<br>
           　　　　　同じ回路をもう一度クリックでも非選択にできます。<br>
-          <br>
           <span class="doc-btn">変</span> …… 押すごとに表示が変わり、配置された回路をクリック<br>
           　　　　　で、数値や追加効果を変更できます。<br>
           <span class="doc-btn">数</span> …… 数値だけを変更。<br>
@@ -528,12 +550,13 @@ h3 {
           <span class="doc-btn">数/効</span> …… 数値と追加効果の両方を変更。<br>
           ※ 回路色はその時選択されている色に変更されます。<br>
           　 回路色だけを変更したい場合、色だけを選択して下さい。<br>
-          <br>
           <span class="doc-btn">削</span> …… 配置した回路を削除できます。<br>
           　　　　　右クリックでも削除できます。<br>
+          <span class="doc-btn-ur">◀◀</span> …… 直前の操作の取り消し。(Ctrl+Z)<br>
+          <span class="doc-btn-ur">▶▶</span> …… 取り消した操作のやり直し。(Ctrl+Y、Ctrl+Shift+Z)<br>
           <br>
           ※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>
-          　 でデータを保存して下さい。<br>
+          　 をしてデータを保存して下さい。<br>
         </p>
       </div>
 
@@ -541,6 +564,7 @@ h3 {
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v1.90：Undo/Redo 追加</li>
           <li>v1.82：一部修正</li>
           <li>v1.81：一部修正</li>
           <li>v1.80：色/数値/効果変更追加</li>
@@ -587,6 +611,12 @@ h3 {
       <div class="palette" id="palette"></div>
 
 
+      <div class="ur">
+        <div class="symbol" id="undoBtn">◀◀</div>
+        <div class="symbol" id="redoBtn">▶▶</div>
+      </div>
+
+
       <h3>追加効果</h3>
       <select id="charSelect" style="width:220px;">
         <option value="持続ダメ" selected>持続ダメージ</option>
@@ -598,7 +628,6 @@ h3 {
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
-
       <input
         id="charInput"
         type="text"
@@ -642,6 +671,8 @@ const initialParts = ["top", "bottom", "glove", "shoes"];
 let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || null;
 let selectedColor = "red";
 const size = 4;
+let undoStack = [];
+let redoStack = [];
 
 const connections = {
   "┃": { l: 0, r: 0, u: 1, d: 1 },
@@ -869,18 +900,19 @@ clearSelectBtn.onclick = () => {
   clearAllSelections();
   updateSelectedSymbolColor();
   updateColorButtonsActive();
-
-  clearSelectBtn.style.transition = "0.1s all";
-  clearSelectBtn.style.transform = "scale(0.9)";
-
-
-  setTimeout(() => {
-    clearSelectBtn.style.transform = "scale(1)";
-    clearSelectBtn.style.boxShadow = "";
-  }, 100);
+  animateButton(clearSelectBtn);
 };
 
 colorGroup.appendChild(clearSelectBtn);
+
+function animateButton(btn) {
+  btn.style.transition = "0.1s all";
+  btn.style.transform = "scale(0.9)";
+  setTimeout(() => {
+    btn.style.transform = "scale(1)";
+    btn.style.boxShadow = "";
+  }, 100);
+}
 /*--------------------------------------change--------------------------------------*/
 function handleChangeButton(btn) {
   document.querySelectorAll(".symbol, .template-btn")
@@ -934,6 +966,67 @@ document.querySelectorAll(".symbol").forEach(s => {
     }
     selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
   };
+});
+
+/*-------------------------u/r-------------------------*/
+function pushHistory() {
+  const snapshot = JSON.stringify(boards.map(b => ({
+    grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
+    part: b.panel.querySelector(".part").value
+  })));
+  undoStack.push(snapshot);
+  if (undoStack.length > 100) undoStack.shift();
+  redoStack = [];
+}
+
+function restoreFromSnapshot(snapshot) {
+  const data = JSON.parse(snapshot);
+  data.forEach((d, i) => {
+    for (let y = 0; y < 4; y++)
+      for (let x = 0; x < 4; x++)
+        boards[i].grid[y][x] = { ...d.grid[y][x] };
+
+    boards[i].panel.querySelector(".part").value = d.part || "top";
+    boards[i].drawBoard();
+  });
+  localStorage.setItem("circuitBoards", snapshot);
+}
+
+document.getElementById("undoBtn").onclick = () => {
+  const btn = document.getElementById("undoBtn");
+  animateButton(btn);
+  if (undoStack.length === 0) return;
+  const current = JSON.stringify(boards.map(b => ({
+    grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
+    part: b.panel.querySelector(".part").value
+  })));
+  redoStack.push(current);
+  const prev = undoStack.pop();
+  restoreFromSnapshot(prev);
+};
+
+document.getElementById("redoBtn").onclick = () => {
+  const btn = document.getElementById("redoBtn");
+  animateButton(btn);
+  if (redoStack.length === 0) return;
+  const current = JSON.stringify(boards.map(b => ({
+    grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
+    part: b.panel.querySelector(".part").value
+  })));
+  undoStack.push(current);
+  const next = redoStack.pop();
+  restoreFromSnapshot(next);
+};
+
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key === "z") {
+    e.preventDefault();
+    document.getElementById("undoBtn").click();
+  }
+  if (e.ctrlKey && (e.key === "y" || (e.shiftKey && e.key === "Z"))) {
+    e.preventDefault();
+    document.getElementById("redoBtn").click();
+  }
 });
 
 /*--------------------------------------number--------------------------------------*/
@@ -1024,6 +1117,7 @@ for (let i = 0; i < 4; i++) {
   panel.querySelector(".part").value = part;
 
   panel.querySelector(".part").onchange = () => {
+    pushHistory();
     const p = panel.querySelector(".part").value;
     for (let y = 0; y < 4; y++)
       for (let x = 0; x < 4; x++)
@@ -1036,6 +1130,7 @@ for (let i = 0; i < 4; i++) {
 
   clearBtn.onclick = () => {
     if (confirm("回路を全て削除しますか？")) {
+      pushHistory();
       for (let y = 0; y < 4; y++)
         for (let x = 0; x < 4; x++)
           if (grid[y][x].symbol !== "img")
@@ -1053,30 +1148,37 @@ for (let i = 0; i < 4; i++) {
       c.onclick = () => {
         const cell = grid[y][x];
         if (cell.symbol === "img") return;
+        if (selectState.type !== "template" && selectState.type !== "numEdit") {
+          pushHistory();
+        }
         if (!selectState.type && selectedColor && cell.symbol) {
           cell.color = selectedColor;
           drawBoard();
           saveBoards();
           return;
         }
+
         if (selectState.type === "numEdit") {
           if (!cell.symbol || cell.multi) return;
-            if (selectedColor) {
-              cell.color = selectedColor;
-            }
-            if (selectState.editMode === 1) {
-              cell.number = getSelectedNumber();
-            } else if (selectState.editMode === 2) {
-              cell.char = getSelectedChar();
-            } else if (selectState.editMode === 3) {
-              cell.number = getSelectedNumber();
-              cell.char = getSelectedChar();
-            }
-            drawBoard();
-            saveBoards();
-            return;
+          pushHistory();
+          if (selectedColor) {
+            cell.color = selectedColor;
           }
+          if (selectState.editMode === 1) {
+            cell.number = getSelectedNumber();
+          } else if (selectState.editMode === 2) {
+            cell.char = getSelectedChar();
+          } else if (selectState.editMode === 3) {
+            cell.number = getSelectedNumber();
+            cell.char = getSelectedChar();
+          }
+          drawBoard();
+          saveBoards();
+          return;
+        }
+
         if (selectState.type === "template") {
+          pushHistory();
           for (let ty = 0; ty < 4; ty++) {
             for (let tx = 0; tx < 4; tx++) {
               if (grid[ty][tx].symbol === "img") continue;
@@ -1118,6 +1220,7 @@ for (let i = 0; i < 4; i++) {
 
       c.oncontextmenu = (e) => {
         e.preventDefault();
+        pushHistory();
         const cell = grid[y][x];
         if (cell.symbol === "img") return;
         grid[y][x] = { symbol: "", number: "", char: "", multi: false, color: "red" };
@@ -1416,7 +1519,7 @@ for (let i = 0; i < 4; i++) {
   boardsEl.appendChild(wrap);
   drawBoard();
 }
-
+pushHistory();
 
 /* ------------------------------------------------------------------------------5. 保存------------------------------------------------------------------------------ */
 function saveBoards() {
@@ -1437,8 +1540,8 @@ function saveBoards() {
 }
 
 /*-------------------------セーブスロット-------------------------*/
-const slotCount = 15;
-const slotsPerPage = 5;
+const slotCount = 12;
+const slotsPerPage = 4;
 let currentSlotPage = 0;
 const slotContainer = document.getElementById("slotButtons");
 
@@ -1658,6 +1761,3 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 </script>
-
-
-
