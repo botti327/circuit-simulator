@@ -73,17 +73,15 @@ h3 {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    margin-bottom: 0px;
+    height: 380px;
 }
 
 .board {
     display: grid;
-    grid-template-columns: repeat(4, 56px);
-    grid-template-rows: repeat(4, 56px);
+    grid-template-columns: repeat(4, 60px);
+    grid-template-rows: repeat(4, 60px);
     gap: 2px;
     padding: 5px;
-    background: #e0e0e0;
-    border-radius: 5px;
     margin: 0 auto;
     flex-shrink: 0;
 }
@@ -92,7 +90,7 @@ h3 {
 .cell {
     position: relative;
     border: 1px solid #333;
-    font-size: 60px;
+    font-size: 59px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -360,7 +358,7 @@ h3 {
   display: flex;
   flex-direction: row;
   gap: 21px;
-  margin-left: 2.5px;
+  margin-left: 2px;
   margin-top: 10px;
   margin-bottom: -10px
 }
@@ -413,8 +411,8 @@ h3 {
   display: grid;
   grid-template-columns: repeat(4, auto);
   gap: 10px 30px;
-  margin-top: 6px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  margin-top: -5px;
   justify-content: center;
 }
 
@@ -422,72 +420,66 @@ h3 {
   grid-column: 1;
 }
 
-.num-group {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-}
-
 /*--------------------------------------セーブスロット--------------------------------------*/
 .slot-buttons div {
-    display: flex;
-    gap: 4px;
-    width: 100%;
-    justify-content: stretch;
-    align-items: center;
-    margin-bottom: 6px;
-    box-sizing: border-box;
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: stretch;
+  align-items: center;
+  margin-bottom: 6px;
+  box-sizing: border-box;
 }
 
 .slot-name {
-    flex: 1;
-    height: 28px;
-    box-sizing: border-box;
+  flex: 1;
+  height: 25px;
+  box-sizing: border-box;
 }
 
 .slot-buttons button {
-    height: 28px;
-    box-sizing: border-box;
+  height: 25px;
+  box-sizing: border-box;
 }
 
 /*--------------------------------------更新履歴--------------------------------------*/
 .description {
-    background: #f0f0f0;
-    padding: 16px;
-    border-radius: 10px;
-    border: 2px solid #333;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    text-align: left;
-    font-size: 14px;
-    line-height: 1.4;
+  background: #f0f0f0;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 #changelog {
-    width: 450px;
-    height: 90px;
-    background: #fefefe;
-    border: 2px solid #333;
-    border-radius: 4px;
-    padding: 10px;
-    font-family: monospace;
-    font-size: 12px;
-    overflow-y: auto;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-    box-sizing: border-box;
-    margin-top: 3px
+  width: 450px;
+  height: 90px;
+  background: #fefefe;
+  border: 2px solid #333;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  overflow-y: auto;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  margin-top: 3px
 }
 
 #changelog h4 {
-    margin: 0 0 6px 0;
-    font-size: 14px;
-    text-align: left;
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  text-align: left;
 }
 
 #changelog ul {
-    padding-left: 6px;
-    margin: 0;
-    list-style: none;
-    text-align: left;
+  padding-left: 6px;
+  margin: 0;
+  list-style: none;
+  text-align: left;
 }
 
 #changelog li {
@@ -564,7 +556,7 @@ h3 {
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
-          <li>v1.90：Undo/Redo 仮追加</li>
+          <li>v1.90：Undo/Redo 追加</li>
           <li>v1.82：一部修正</li>
           <li>v1.81：一部修正</li>
           <li>v1.80：色/数値/効果変更追加</li>
@@ -819,6 +811,14 @@ function selectButton(el, type, value = null, isMulti = false) {
   updateColorButtonsActive();
 }
 
+function animateButton(btn) {
+  btn.style.transition = "0.1s all";
+  btn.style.transform = "scale(0.9)";
+  setTimeout(() => {
+    btn.style.transform = "scale(1)";
+    btn.style.boxShadow = "";
+  }, 100);
+}
 /*--------------------------------------template--------------------------------------*/
 document.getElementById("prevTemplate").onclick = () => {
   const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
@@ -905,14 +905,6 @@ clearSelectBtn.onclick = () => {
 
 colorGroup.appendChild(clearSelectBtn);
 
-function animateButton(btn) {
-  btn.style.transition = "0.1s all";
-  btn.style.transform = "scale(0.9)";
-  setTimeout(() => {
-    btn.style.transform = "scale(1)";
-    btn.style.boxShadow = "";
-  }, 100);
-}
 /*--------------------------------------change--------------------------------------*/
 function handleChangeButton(btn) {
   document.querySelectorAll(".symbol, .template-btn")
@@ -1052,7 +1044,6 @@ charInput.addEventListener("input", () => {
 charSelect.addEventListener("change", () => {
   charInput.value = "";
 });
-
 
 /* ------------------------------------------------------------------------------4. やばいところ------------------------------------------------------------------------------ */
 renderTemplatePage();
@@ -1540,8 +1531,8 @@ function saveBoards() {
 }
 
 /*-------------------------セーブスロット-------------------------*/
-const slotCount = 12;
-const slotsPerPage = 4;
+const slotCount = 15;
+const slotsPerPage = 5;
 let currentSlotPage = 0;
 const slotContainer = document.getElementById("slotButtons");
 
@@ -1761,4 +1752,3 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 </script>
-
