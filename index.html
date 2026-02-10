@@ -771,6 +771,7 @@ function renderTemplatePage() {
   document.getElementById("templatePageLabel").textContent =
     (currentTemplatePage + 1) + " / " + totalPages;
   updateSelectedSymbolColor();
+  addButtonAnimations();
 }
 
 
@@ -819,6 +820,23 @@ function animateButton(btn) {
     btn.style.boxShadow = "";
   }, 100);
 }
+
+function addButtonAnimations() {
+  const clickableSelectors = [
+    ".symbol",
+    ".color-btn",
+    ".template-btn",
+  ];
+
+  const elements = document.querySelectorAll(clickableSelectors.join(","));
+
+  elements.forEach(el => {
+    el.addEventListener("click", () => {
+      animateButton(el);
+    });
+  });
+}
+
 /*--------------------------------------template--------------------------------------*/
 document.getElementById("prevTemplate").onclick = () => {
   const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
@@ -900,7 +918,6 @@ clearSelectBtn.onclick = () => {
   clearAllSelections();
   updateSelectedSymbolColor();
   updateColorButtonsActive();
-  animateButton(clearSelectBtn);
 };
 
 colorGroup.appendChild(clearSelectBtn);
@@ -986,7 +1003,6 @@ function restoreFromSnapshot(snapshot) {
 
 document.getElementById("undoBtn").onclick = () => {
   const btn = document.getElementById("undoBtn");
-  animateButton(btn);
   if (undoStack.length === 0) return;
   const current = JSON.stringify(boards.map(b => ({
     grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
@@ -999,7 +1015,6 @@ document.getElementById("undoBtn").onclick = () => {
 
 document.getElementById("redoBtn").onclick = () => {
   const btn = document.getElementById("redoBtn");
-  animateButton(btn);
   if (redoStack.length === 0) return;
   const current = JSON.stringify(boards.map(b => ({
     grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
@@ -1048,7 +1063,7 @@ charSelect.addEventListener("change", () => {
 /* ------------------------------------------------------------------------------4. やばいところ------------------------------------------------------------------------------ */
 renderTemplatePage();
 const boards = [];
-
+addButtonAnimations()
 for (let i = 0; i < 4; i++) {
   let part = savedData?.[i]?.part || initialParts[i];
   const [px, py] = partPos[part];
