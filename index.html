@@ -7,11 +7,12 @@
 body {
     font-family: monospace;
     padding: 20px;
-    max-width: 1200px;
+    max-width: none;
     margin: auto;
     background: #fff;
     color: #000;
     text-align: center;
+    overflow-x: auto;
 }
 
 h3 {
@@ -19,21 +20,30 @@ h3 {
     margin-bottom: 4px;
 }
 
+h2 {
+    text-align: left;
+    margin-bottom: -5px;
+    margin-top: -5px;
+}
+
 /*--------------------------------------コンテナ--------------------------------------*/
 .container {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  min-width: max-content;
+  padding-right: 30px;
+  padding-left: 10px;  
 }
 
 .description-column {
-    flex: 0 0 450px;
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-    gap: 12px;
-    align-items: flex-end;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 12px;
+  align-items: stretch;
 }
 
 .left-frame {
@@ -454,8 +464,8 @@ h3 {
 }
 
 #changelog {
-  width: 450px;
-  height: 90px;
+  width: 100%;
+  height: 80px;
   background: #fefefe;
   border: 2px solid #333;
   border-radius: 4px;
@@ -465,7 +475,7 @@ h3 {
   overflow-y: auto;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
-  margin-top: 3px
+  margin-top: -8px
 }
 
 #changelog h4 {
@@ -498,56 +508,44 @@ h3 {
   color: #000;
   text-align: center;
 }
-
-.doc-btn-ur {
-  font-size: 15px;
-  width: 26px;
-  height: 26px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  border: 1px solid #333;
-  background: #fff;
-  color: #000;
-  text-align: center;
-}
   </style>
 </head>
 <body>
   <div class="container">
     <!--------------------------------------------------ひ-------------------------------------------------->
     <div class="description-column">
-      <div class="description">
+      <div class="description" style="font-family: meiryo, sans-serif; line-height: 1.6; ">
         <h2>
-          エクサスケイル防具 <br>
-          回路シミュレーター v1.91
+          エクサスケイル防具<br>
+          回路シミュレーター　Ver.1.92<br>
         </h2>
-
         <p>
           ・色<br>
           ・回路<br>
           ・追加効果<br>
           ・数値<br>
           を右から選び、回路を配置して下さい。<br>
+          リストに無い追加効果は自由入力欄に入力して下さい。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
-          リストに無い追加効果を付けたい場合は自由入力欄に入力して下さい。<br>
-          <span class="doc-btn-ur">◀◀</span> …… 直前の操作の取り消し。(Ctrl+Z)<br>
-          <span class="doc-btn-ur">▶▶</span> …… 取り消した操作のやり直し。(Ctrl+Y、Ctrl+Shift+Z)<br>
-          <span class="doc-btn">変</span> …… 押すごとに表示が変わり、配置された回路をクリック<br>
-          　　　　　で、数値や追加効果を変更できます。<br>
-          <span class="doc-btn">数</span> …… 数値だけを変更。<br>
-          <span class="doc-btn">効</span> …… 追加効果だけを変更。<br>
-          <span class="doc-btn">数/効</span> …… 数値と追加効果の両方を変更。<br>
+          <br>
+          <span class="doc-btn">◀◀</span> --- 直前の操作の取り消し。(Ctrl+Z)<br>
+          <span class="doc-btn">▶▶</span> --- 取り消した操作のやり直し。(Ctrl+Y、Ctrl+Shift+Z)<br>
+          <span class="doc-btn">変更</span> --- 押すごとに表示が変わり、配置された回路をクリック<br>
+          　　　　で、数値や追加効果を変更できます。<br>
+          <span class="doc-btn">数値</span> --- 数値だけを変更。<br>
+          <span class="doc-btn">効果</span> --- 追加効果だけを変更。<br>
+          <span class="doc-btn">数/効</span> --- 数値と追加効果の両方を変更。<br>
           ※ 回路色はその時選択されている色に変更されます。<br>
           　 回路色だけを変更したい場合、色だけを選択して下さい。<br>
-          <span class="doc-btn">解除</span> …… 回路を非選択状態にします。<br>
-          　　　　　同じ回路をもう一度クリックでも非選択にできます。<br>
-          <span class="doc-btn">削</span> …… 配置した回路を削除できます。<br>
-          　　　　　右クリックでも削除できます。<br>
+          <span class="doc-btn">　</span> --- 回路ボタンを非選択状態にします。<br>
+          　　　　同じ回路をもう一度クリックでも非選択にできます。<br>
+          <span class="doc-btn">削除</span> --- 配置した回路を削除できます。<br>
+          　　　　右クリックでも削除できます。<br>
           <br>
+          <strong>
           ※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>
           　 をしてデータを保存して下さい。<br>
+          </strong>
         </p>
       </div>
 
@@ -555,6 +553,7 @@ h3 {
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v1.92：細かな調整</li>
           <li>v1.91：レイアウト変更 + 一部修正</li>
           <li>v1.90：Undo/Redo 追加</li>
           <li>v1.82：一部修正</li>
@@ -606,14 +605,15 @@ h3 {
       <div class="ur">
         <div class="symbol" id="undoBtn">◀◀</div>
         <div class="symbol" id="redoBtn">▶▶</div>
-        <div class="symbol num-edit-btn" id="ChangeBtn">変</div>
-        <div class="symbol color-btn" id="ClearBtn" style="font-size:18px;">解除</div>
-        <div class="symbol delete-btn" id="DeleteBtn">削</div>
+        <div class="symbol num-edit-btn" id="ChangeBtn"style="font-size:16px;">変更</div>
+        <div class="symbol color-btn" id="ClearBtn" style="font-size:16px;"></div>
+        <div class="symbol delete-btn" id="DeleteBtn"style="font-size:16px;">削除</div>
       </div>
 
 
       <h3>追加効果</h3>
       <select id="charSelect" style="width:220px;">
+        <option value=""></option>
         <option value="持続ダメ" selected>持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
         <option value="両極化">両極化</option>
@@ -715,19 +715,16 @@ const colorTitle = document.createElement("div");
 colorTitle.className = "multi-title";
 colorTitle.textContent = "回路色";
 colorGroup.appendChild(colorTitle);
-
 paletteEl.appendChild(colorGroup);
 
 paletteData.forEach(group => {
   const div = document.createElement("div");
   div.className = "palette-group";
-
   const titleDiv = document.createElement("div");
   titleDiv.className = "multi-title";
   if (group.hideTitle) titleDiv.style.visibility = "hidden";
   titleDiv.textContent = group.title;
   div.appendChild(titleDiv);
-
   group.symbols.forEach(sym => {
     const s = document.createElement("div");
     s.className = "symbol";
@@ -735,7 +732,6 @@ paletteData.forEach(group => {
     s.textContent = sym;
     div.appendChild(s);
   });
-
   paletteEl.appendChild(div);
 });
 
@@ -747,11 +743,9 @@ function createTemplateLabel(grid) {
 
 function renderTemplatePage() {
   templateBtnContainer.innerHTML = "";
-
   const start = currentTemplatePage * TEMPLATES_PER_PAGE;
   const end = start + TEMPLATES_PER_PAGE;
   const pageTemplates = templates.slice(start, end);
-
   pageTemplates.forEach(tpl => {
     const btn = document.createElement("div");
     btn.className = "template-btn";
@@ -762,7 +756,6 @@ function renderTemplatePage() {
     };
     templateBtnContainer.appendChild(btn);
   });
-
   const totalPages = Math.ceil(templates.length / TEMPLATES_PER_PAGE);
   document.getElementById("templatePageLabel").textContent =
     (currentTemplatePage + 1) + " / " + totalPages;
@@ -782,13 +775,10 @@ const selectState = {
 function clearAllSelections() {
   document.querySelectorAll(".symbol, .template-btn")
     .forEach(b => b.classList.remove("selected"));
-
   const changeBtn = document.querySelector(".num-edit-btn");
   if (changeBtn) {
-    changeBtn.textContent = "変";
-    changeBtn.style.fontSize = "26px";
+    changeBtn.textContent = "変更";
   }
-
   selectState.type = null;
   selectState.value = null;
   selectState.isMulti = false;
@@ -799,7 +789,6 @@ function selectButton(el, type, value = null, isMulti = false) {
   const alreadySelected = el.classList.contains("selected");
   clearAllSelections();
   if (alreadySelected) return;
-
   el.classList.add("selected");
   selectState.type = type;
   selectState.value = value;
@@ -916,31 +905,20 @@ function pushHistory() {
 
 function restoreFromSnapshot(snapshot) {
   const data = JSON.parse(snapshot);
-
   data.forEach((d, i) => {
     const board = boards[i];
-
-    // grid の値を復元
     for (let y = 0; y < 4; y++)
       for (let x = 0; x < 4; x++)
         board.grid[y][x] = { ...d.grid[y][x] };
-
-    // 部位を復元
     const part = d.part || "top";
     board.panel.querySelector(".part").value = part;
-
-    // ←Undoでも部位画像が戻るように grid を再構築
     for (let y = 0; y < 4; y++)
       for (let x = 0; x < 4; x++)
         if (board.grid[y][x].symbol === "img") board.grid[y][x].symbol = "";
-
     const [imgX, imgY] = partPos[part];
     board.grid[imgY][imgX] = { symbol: "img", number: "", multi: false };
-
-    // 盤面を描画
     board.drawBoard();
   });
-
   localStorage.setItem("circuitBoards", snapshot);
 }
 
@@ -988,21 +966,17 @@ function handleChangeButton(btn) {
   selectState.editMode = (selectState.editMode + 1) % 4;
   if (selectState.editMode === 0) {
     selectState.type = null;
-    btn.textContent = "変";
-    btn.style.fontSize = "26px";
+    btn.textContent = "変更";
     btn.classList.remove("selected");
     return;
   }
 
   if (selectState.editMode === 1) {
-    btn.textContent = "数";
-    btn.style.fontSize = "26px";
+    btn.textContent = "数値";
   } else if (selectState.editMode === 2) {
-    btn.textContent = "効";
-    btn.style.fontSize = "26px";
+    btn.textContent = "効果";
   } else if (selectState.editMode === 3) {
     btn.textContent = "数/効";
-    btn.style.fontSize = "18px";
   }
   updateSelectedSymbolColor();
   updateColorButtonsActive();
@@ -1597,11 +1571,10 @@ function renderSlotPage() {
 function attachSlotEvents() {
   document.querySelectorAll(".saveBtn").forEach(btn => {
     btn.onclick = () => {
-
       const slot = btn.dataset.slot;
       const slotDiv = btn.parentElement;
       const slotName = slotDiv.querySelector(".slot-name").value || ("スロット" + slot);
-
+      if (!confirm(slotName + " に保存しますか？")) return;
       try {
         const saveData = boards.map(b => ({
           grid: b.grid.map(row =>
@@ -1615,7 +1588,6 @@ function attachSlotEvents() {
           ),
           part: b.panel.querySelector(".part").value || "top"
         }));
-
         localStorage.setItem("circuitBoards_slot" + slot, JSON.stringify(saveData));
         localStorage.setItem("circuitBoards_slot" + slot + "_name", slotName);
         addChangelog(slotName + " に保存しました : " + new Date().toLocaleString());
@@ -1630,12 +1602,10 @@ function attachSlotEvents() {
       const slot = btn.dataset.slot;
       const data = localStorage.getItem("circuitBoards_slot" + slot);
       const slotName = localStorage.getItem("circuitBoards_slot" + slot + "_name") || ("スロット" + slot);
-
       if (!data) {
         alert(slotName + " は空です");
         return;
       }
-
       try {
         pushHistory();
         const parsed = JSON.parse(data);
@@ -1643,11 +1613,9 @@ function attachSlotEvents() {
           for (let y = 0; y < 4; y++)
             for (let x = 0; x < 4; x++)
               boards[i].grid[y][x] = { ...d.grid[y][x] };
-
           boards[i].panel.querySelector(".part").value = d.part || "top";
           boards[i].drawBoard();
         });
-
         addChangelog(slotName + " から読み込みました : " + new Date().toLocaleString());
       } catch (e) {
         alert(slotName + " のデータが壊れています");
