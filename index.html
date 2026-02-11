@@ -355,12 +355,11 @@ h3 {
 }
 
 .ur {
-  display: flex;
-  flex-direction: row;
-  gap: 21px;
-  margin-left: 2px;
+  display: grid;
+  grid-template-columns: repeat(5, 48px);
+  gap: 26px;
   margin-top: 10px;
-  margin-bottom: -10px
+  justify-content: start;
 }
 /*--------------------------------------合計--------------------------------------*/
 
@@ -411,8 +410,8 @@ h3 {
   display: grid;
   grid-template-columns: repeat(4, auto);
   gap: 10px 30px;
-  margin-bottom: 10px;
-  margin-top: -5px;
+  margin-bottom: 5px;
+  margin-top: -15px;
   justify-content: center;
 }
 
@@ -522,7 +521,7 @@ h3 {
       <div class="description">
         <h2>
           エクサスケイル防具 <br>
-          回路シミュレーター v1.90
+          回路シミュレーター v1.91
         </h2>
 
         <p>
@@ -533,8 +532,8 @@ h3 {
           を右から選び、回路を配置して下さい。<br>
           追加効果が空白の場合は「指定なし」として計算されます。<br>
           リストに無い追加効果を付けたい場合は自由入力欄に入力して下さい。<br>
-          <span class="doc-btn">解除</span> …… 回路を非選択状態にします。<br>
-          　　　　　同じ回路をもう一度クリックでも非選択にできます。<br>
+          <span class="doc-btn-ur">◀◀</span> …… 直前の操作の取り消し。(Ctrl+Z)<br>
+          <span class="doc-btn-ur">▶▶</span> …… 取り消した操作のやり直し。(Ctrl+Y、Ctrl+Shift+Z)<br>
           <span class="doc-btn">変</span> …… 押すごとに表示が変わり、配置された回路をクリック<br>
           　　　　　で、数値や追加効果を変更できます。<br>
           <span class="doc-btn">数</span> …… 数値だけを変更。<br>
@@ -542,10 +541,10 @@ h3 {
           <span class="doc-btn">数/効</span> …… 数値と追加効果の両方を変更。<br>
           ※ 回路色はその時選択されている色に変更されます。<br>
           　 回路色だけを変更したい場合、色だけを選択して下さい。<br>
+          <span class="doc-btn">解除</span> …… 回路を非選択状態にします。<br>
+          　　　　　同じ回路をもう一度クリックでも非選択にできます。<br>
           <span class="doc-btn">削</span> …… 配置した回路を削除できます。<br>
           　　　　　右クリックでも削除できます。<br>
-          <span class="doc-btn-ur">◀◀</span> …… 直前の操作の取り消し。(Ctrl+Z)<br>
-          <span class="doc-btn-ur">▶▶</span> …… 取り消した操作のやり直し。(Ctrl+Y、Ctrl+Shift+Z)<br>
           <br>
           ※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>
           　 をしてデータを保存して下さい。<br>
@@ -556,6 +555,7 @@ h3 {
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v1.91：レイアウト変更 + 一部修正</li>
           <li>v1.90：Undo/Redo 追加</li>
           <li>v1.82：一部修正</li>
           <li>v1.81：一部修正</li>
@@ -606,6 +606,9 @@ h3 {
       <div class="ur">
         <div class="symbol" id="undoBtn">◀◀</div>
         <div class="symbol" id="redoBtn">▶▶</div>
+        <div class="symbol num-edit-btn" id="ChangeBtn">変</div>
+        <div class="symbol color-btn" id="ClearBtn" style="font-size:18px;">解除</div>
+        <div class="symbol delete-btn" id="DeleteBtn">削</div>
       </div>
 
 
@@ -620,12 +623,7 @@ h3 {
         <option value="ボスダメ">ボスに与えるダメージ増加</option>
         <option value="PT動作速度">PTメンバーの動作速度</option>
       </select>
-      <input
-        id="charInput"
-        type="text"
-        maxlength="8"
-        style="width:100px; text-align:center;"
-        placeholder="自由入力 (任意)"
+      <input id="charInput" type="text" maxlength="8" style="width:100px; text-align:center;" placeholder="自由入力 (任意)"
       />
 
 
@@ -682,7 +680,7 @@ const connections = {
 
 /* ------------------------------------------------------------------2. かいろ------------------------------------------------------------------ */
 const paletteData = [
-  { title: "増幅回路", symbols: ["┃", "━", "変","削"], multi: false },
+  { title: "増幅回路", symbols: ["┃", "━"], multi: false },
   { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
   { title: "増幅回路", symbols: ["┳", "┫", "┻", "┣"], multi: false, hideTitle: true },
   { title: "複製回路", symbols: ["┳", "┫", "┻", "┣"], multi: true }
@@ -733,8 +731,6 @@ paletteData.forEach(group => {
   group.symbols.forEach(sym => {
     const s = document.createElement("div");
     s.className = "symbol";
-    if (sym === "変") s.classList.add("num-edit-btn");
-    if (sym === "削") s.classList.add("delete-btn", "no-color-sync");
     if (group.multi) s.classList.add("multi");
     s.textContent = sym;
     div.appendChild(s);
@@ -775,7 +771,7 @@ function renderTemplatePage() {
 }
 
 
-/* ------------------------------------------------------------------3. せんたくじょうたい------------------------------------------------------------------ */
+/* ------------------------------------------------------------------3. せんたく------------------------------------------------------------------ */
 const selectState = {
   type: null,
   value: null,
@@ -822,14 +818,8 @@ function animateButton(btn) {
 }
 
 function addButtonAnimations() {
-  const clickableSelectors = [
-    ".symbol",
-    ".color-btn",
-    ".template-btn",
-  ];
-
+  const clickableSelectors = [".symbol",".color-btn",".template-btn"];
   const elements = document.querySelectorAll(clickableSelectors.join(","));
-
   elements.forEach(el => {
     el.addEventListener("click", () => {
       animateButton(el);
@@ -837,6 +827,11 @@ function addButtonAnimations() {
   });
 }
 
+document.querySelectorAll(".symbol").forEach(s => {
+  s.onclick = () => {
+    selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
+  };
+});
 /*--------------------------------------template--------------------------------------*/
 document.getElementById("prevTemplate").onclick = () => {
   const maxPage = Math.ceil(templates.length / TEMPLATES_PER_PAGE) - 1;
@@ -908,76 +903,7 @@ function updateColorButtonsActive() {
   colorGroup.appendChild(btn);
 });
 
-/*--------------------------------------かいじょ--------------------------------------*/
-const clearSelectBtn = document.createElement("div");
-clearSelectBtn.className = "color-btn";
-clearSelectBtn.textContent = "解除";
-clearSelectBtn.style.color = "#000";
-
-clearSelectBtn.onclick = () => {
-  clearAllSelections();
-  updateSelectedSymbolColor();
-  updateColorButtonsActive();
-};
-
-colorGroup.appendChild(clearSelectBtn);
-
-/*--------------------------------------change--------------------------------------*/
-function handleChangeButton(btn) {
-  document.querySelectorAll(".symbol, .template-btn")
-    .forEach(b => b.classList.remove("selected"));
-  btn.classList.add("selected");
-  selectState.type = "numEdit";
-  selectState.editMode = (selectState.editMode + 1) % 4;
-  if (selectState.editMode === 0) {
-    selectState.type = null;
-    btn.textContent = "変";
-    btn.style.fontSize = "26px";
-    btn.classList.remove("selected");
-    return;
-  }
-
-  if (selectState.editMode === 1) {
-    btn.textContent = "数";
-    btn.style.fontSize = "26px";
-  } else if (selectState.editMode === 2) {
-    btn.textContent = "効";
-    btn.style.fontSize = "26px";
-  } else if (selectState.editMode === 3) {
-    btn.textContent = "数/効";
-    btn.style.fontSize = "16px";
-  }
-  updateSelectedSymbolColor();
-  updateColorButtonsActive();
-}
-
-/*--------------------------------------delete--------------------------------------*/
-document.querySelectorAll(".symbol").forEach(s => {
-  s.onclick = () => {
-    if (s.classList.contains("num-edit-btn")) {
-      handleChangeButton(s);
-      return;
-    }
-    if (s.classList.contains("delete-btn")) {
-      const alreadySelected = s.classList.contains("selected");
-      clearAllSelections();
-    
-      document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
-    
-      if (!alreadySelected) {
-        s.classList.add("selected");
-        selectState.type = "symbol";
-        selectState.value = "削";
-        selectState.isMulti = false;
-        updateSelectedSymbolColor();
-      }
-      return;
-    }
-    selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
-  };
-});
-
-/*-------------------------u/r-------------------------*/
+/*--------------------------------------ur--------------------------------------*/
 function pushHistory() {
   const snapshot = JSON.stringify(boards.map(b => ({
     grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
@@ -990,14 +916,31 @@ function pushHistory() {
 
 function restoreFromSnapshot(snapshot) {
   const data = JSON.parse(snapshot);
+
   data.forEach((d, i) => {
+    const board = boards[i];
+
+    // grid の値を復元
     for (let y = 0; y < 4; y++)
       for (let x = 0; x < 4; x++)
-        boards[i].grid[y][x] = { ...d.grid[y][x] };
+        board.grid[y][x] = { ...d.grid[y][x] };
 
-    boards[i].panel.querySelector(".part").value = d.part || "top";
-    boards[i].drawBoard();
+    // 部位を復元
+    const part = d.part || "top";
+    board.panel.querySelector(".part").value = part;
+
+    // ←Undoでも部位画像が戻るように grid を再構築
+    for (let y = 0; y < 4; y++)
+      for (let x = 0; x < 4; x++)
+        if (board.grid[y][x].symbol === "img") board.grid[y][x].symbol = "";
+
+    const [imgX, imgY] = partPos[part];
+    board.grid[imgY][imgX] = { symbol: "img", number: "", multi: false };
+
+    // 盤面を描画
+    board.drawBoard();
   });
+
   localStorage.setItem("circuitBoards", snapshot);
 }
 
@@ -1035,6 +978,69 @@ document.addEventListener("keydown", (e) => {
     document.getElementById("redoBtn").click();
   }
 });
+
+/*--------------------------------------change--------------------------------------*/
+function handleChangeButton(btn) {
+  document.querySelectorAll(".symbol, .template-btn")
+    .forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  selectState.type = "numEdit";
+  selectState.editMode = (selectState.editMode + 1) % 4;
+  if (selectState.editMode === 0) {
+    selectState.type = null;
+    btn.textContent = "変";
+    btn.style.fontSize = "26px";
+    btn.classList.remove("selected");
+    return;
+  }
+
+  if (selectState.editMode === 1) {
+    btn.textContent = "数";
+    btn.style.fontSize = "26px";
+  } else if (selectState.editMode === 2) {
+    btn.textContent = "効";
+    btn.style.fontSize = "26px";
+  } else if (selectState.editMode === 3) {
+    btn.textContent = "数/効";
+    btn.style.fontSize = "18px";
+  }
+  updateSelectedSymbolColor();
+  updateColorButtonsActive();
+}
+
+const ChangeBtn = document.getElementById("ChangeBtn");
+ChangeBtn.onclick = () => handleChangeButton(ChangeBtn);
+
+/*--------------------------------------clear--------------------------------------*/
+const ClearBtn = document.getElementById("ClearBtn");
+ClearBtn.onclick = () => {
+  clearAllSelections();
+  updateSelectedSymbolColor();
+  updateColorButtonsActive();
+};
+
+/*--------------------------------------delete--------------------------------------*/
+const DeleteBtn = document.getElementById("DeleteBtn");
+DeleteBtn.onclick = () => {
+  const alreadySelected = DeleteBtn.classList.contains("selected");
+
+  if (alreadySelected) {
+    DeleteBtn.classList.remove("selected");
+    selectState.type = null;
+    selectState.value = null;
+    selectState.isMulti = false;
+    updateColorButtonsActive();
+  updateSelectedSymbolColor();
+  } else {
+    clearAllSelections();
+    DeleteBtn.classList.add("selected");
+    selectState.type = "symbol";
+    selectState.value = "削";
+    selectState.isMulti = false;
+    document.querySelectorAll(".color-btn").forEach(btn => btn.classList.remove("active"));
+    updateSelectedSymbolColor();
+  }
+};
 
 /*--------------------------------------number--------------------------------------*/
 function getSelectedNumber() {
@@ -1591,6 +1597,7 @@ function renderSlotPage() {
 function attachSlotEvents() {
   document.querySelectorAll(".saveBtn").forEach(btn => {
     btn.onclick = () => {
+
       const slot = btn.dataset.slot;
       const slotDiv = btn.parentElement;
       const slotName = slotDiv.querySelector(".slot-name").value || ("スロット" + slot);
@@ -1630,6 +1637,7 @@ function attachSlotEvents() {
       }
 
       try {
+        pushHistory();
         const parsed = JSON.parse(data);
         parsed.forEach((d, i) => {
           for (let y = 0; y < 4; y++)
