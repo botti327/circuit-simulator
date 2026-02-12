@@ -33,7 +33,7 @@ h2 {
   justify-content: center;
   gap: 20px;
   min-width: max-content;
-  padding-right: 30px;
+  padding-right: 20px;
   padding-left: 10px;  
 }
 
@@ -47,22 +47,22 @@ h2 {
 }
 
 .left-frame {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    column-gap: 60px;  
-    row-gap: 0; 
-    height: 750px;
-    align-items: flex-start;
-    flex: 0 0 500px;
-    background: #f5f5f5;
-    padding: 16px;
-    border-radius: 10px;
-    border: 2px solid #333;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  column-gap: 60px;  
+  row-gap: 0; 
+  height: 750px;
+  align-items: flex-start;
+  flex: 0 0 500px;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .side {
-    flex: 0 0 350px;
+    flex: 0 0 450px;
     max-width: 350px;
     height: 750px;
     background: #f5f5f5;
@@ -96,70 +96,69 @@ h2 {
     flex-shrink: 0;
 }
 
+.panel {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
 /*--------------------------------------セル--------------------------------------*/
 .cell {
-    position: relative;
-    border: 1px solid #333;
-    font-size: 59px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    background: #fff;
-    border-radius: 5px;
-    font-weight: bold;
+  position: relative;
+  border: 1px solid #333;
+  font-size: 59px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  background: #fff;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
+.char-display {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  pointer-events: none;
+}
 .symbol-display {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
-
 .number-display {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    font-size: 11px;
-    color: #000;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 11px;
+  color: #000;
 }
-
+.multi-label {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+}
 .img {
-    width: 52px;
-    object-fit: contain;
-    pointer-events: none;
-    border-radius: 5px;
+  width: 56px;
+  object-fit: contain;
+  pointer-events: none;
+  border-radius: 5px;
 }
 
-.highlight-red {
-    background: #fff0f0;
-    color: #ff6666;
-    box-shadow: 0 0 30px #ff6666;
-}
-
-.highlight-blue {
-    background: #f0f8ff;
-    color: #3399ff;
-    box-shadow: 0 0 30px #66b3ff;
-}
-
-.highlight-green {
-    background: #f0fff4;
-    color: #33cc88;
-    box-shadow: 0 0 30px #66ffaa;
-}
-
-/*--------------------------------------色/部位--------------------------------------*/
-.panel {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 6px;
-}
+.highlight-red   {background: #fff0f0; color: #ff6666; box-shadow: 0 0 30px #ff6666;}
+.highlight-blue  {background: #f0f8ff; color: #3399ff; box-shadow: 0 0 30px #66b3ff;}
+.highlight-green {background: #f0fff4; color: #33cc88; box-shadow: 0 0 30px #66ffaa;}
 
 /*--------------------------------------てんぷれ--------------------------------------*/
 .template-buttons {
@@ -188,35 +187,12 @@ h2 {
   border-radius: 5px;
 }
 
-.template-btn.selected.red-active {
-  background: #fff0f0;
-  color: #ff6666;
-  box-shadow: 0 0 15px #ff6666;
-}
-
-.template-btn.selected.blue-active {
-  background: #f0f8ff;
-  color: #3399ff;
-  box-shadow: 0 0 15px #3399ff;
-}
-
-.template-btn.selected.green-active {
-  background: #f0fff4;
-  color: #33cc88;
-  box-shadow: 0 0 15px #33cc88;
-}
-
 .template-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
 }
-
-.template-header h3 {
-  margin: 0;
-}
-
+.template-header h3 {margin: 0;}
 .pager button {
   height: 24px;
   padding: 0 5px;
@@ -224,12 +200,6 @@ h2 {
   background: #fff;
   border: 1px solid #333;
   border-radius: 4px;
-}
-
-.pager span {
-  font-size: 12px;
-  min-width: 50px;
-  text-align: center;
 }
 
 /*--------------------------------------色選択--------------------------------------*/
@@ -247,124 +217,74 @@ h2 {
   border-radius: 5px;
 }
 
-.color-btn.active {
-  box-shadow: 0 0 15px #3399ff;
-  font-weight: bold;
-}
-.color-btn.active[data-color="red"] {
-  color: #ff6666;
-  box-shadow: 0 0 15px #ff6666;
-}
-
-.color-btn.active[data-color="blue"] {
-  color: #3399ff;
-  box-shadow: 0 0 15px #3399ff;
-}
-
-.color-btn.active[data-color="green"] {
-  color: #33cc88;
-  box-shadow: 0 0 15px #33cc88;
-}
+.color-btn.active {font-weight: bold;}
+.color-btn.active[data-color="red"]   {color: #ff6666; box-shadow: 0 0 15px #ff6666;}
+.color-btn.active[data-color="blue"]  { color: #3399ff; box-shadow: 0 0 15px #3399ff;}
+.color-btn.active[data-color="green"] { color: #33cc88; box-shadow: 0 0 15px #33cc88;}
 
 /*--------------------------------------回路選択--------------------------------------*/
 .palette {
-    display: flex;
-    gap: 18px;
-    margin-top: 10px;
-    justify-content: center;
-
+  display: flex;
+  gap: 18px;
+  margin-top: 10px;
+  justify-content: center;
 }
 
 .palette-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    min-width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 50px;
 }
 
 .multi-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 4px;
-    text-align: center;
-    height: 22px;
-    line-height: 1.5;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-align: center;
+  height: 22px;
+  line-height: 1.5;
 }
 
 .symbol {
-    width: 48px;
-    height: 48px;
-    border: 1px solid #333;
-    font-size: 26px;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    border-radius: 5px;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  font-size: 26px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
 }
-
-.symbol.selected.red-active {
-  background: #fff0f0;
-  color: #ff6666;
-  box-shadow: 0 0 15px #ff6666;
-}
-
-.symbol.selected.blue-active {
-  background: #f0f8ff;
-  color: #3399ff;
-  box-shadow: 0 0 15px #3399ff;
-}
-
-.symbol.selected.green-active {
-  background: #f0fff4;
-  color: #33cc88;
-  box-shadow: 0 0 15px #33cc88;
-}
-
 .symbol.multi {
-    width: 46px;
-    height: 46px;
-    font-size: 26px;
-    border: 2px dashed #333;
+  width: 46px;
+  height: 46px;
+  font-size: 26px;
+  border: 2px dashed #333;
 }
 
-.num-edit-btn.selected.red-active {
-  color: #ff6666;
+.selected {font-weight: bold;}
+.selected.red-active {
   background: #fff0f0;
+  color: #ff6666;
   box-shadow: 0 0 15px #ff6666;
 }
-
-.num-edit-btn.selected.blue-active {
-  color: #3399ff;
+.selected.blue-active {
   background: #f0f8ff;
+  color: #3399ff;
   box-shadow: 0 0 15px #3399ff;
 }
-
-.num-edit-btn.selected.green-active {
-  color: #33cc88;
+.selected.green-active {
   background: #f0fff4;
+  color: #33cc88;
   box-shadow: 0 0 15px #33cc88;
 }
 
-.delete-btn.selected  {
-    background: #fff0f0;
-    color: #ff6666;
-    box-shadow: 0 0 20px #ff6666;
-}
-
-.multi-label {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    font-size: 11px;
-    font-weight: bold;
-    color: #000;
-}
-
-.ur {
+.action {
   display: grid;
   grid-template-columns: repeat(5, 48px);
   gap: 26px;
@@ -372,16 +292,6 @@ h2 {
   justify-content: start;
 }
 /*--------------------------------------合計--------------------------------------*/
-
-.char-display {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    font-size: 11px;
-    font-weight: bold;
-    color: #000;
-    pointer-events: none;
-}
 .char-sum-div {
   height: 70px; 
   max-height: 80px;
@@ -393,19 +303,11 @@ h2 {
 .sum-header {
   font-weight: bold;
   margin-bottom: 2px;
-    text-align:center;
-}
-.sum-name {
-  text-align: left;
-}
-
-.sum-total{
   text-align:center;
 }
-
-.sum-multi {
-  text-align: center ;
-}
+.sum-name {text-align: left;}
+.sum-total{text-align:center;}
+.sum-multi {text-align: center;}
 
 .sum-grid {
   display: grid;
@@ -420,16 +322,20 @@ h2 {
   display: grid;
   grid-template-columns: repeat(4, auto);
   gap: 10px 30px;
-  margin-bottom: 5px;
-  margin-top: -15px;
+  margin-top: -5px;
   justify-content: center;
 }
 
-.num-palette label:nth-child(3) {
-  grid-column: 1;
-}
+.num-palette label:nth-child(3) {grid-column: 1;}
 
 /*--------------------------------------セーブスロット--------------------------------------*/
+.save-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.save-header h3 {margin: 10;}
+
 .slot-buttons div {
   display: flex;
   gap: 4px;
@@ -440,16 +346,12 @@ h2 {
   box-sizing: border-box;
 }
 
-.slot-name {
-  flex: 1;
-  height: 25px;
-  box-sizing: border-box;
-}
-
+.slot-name,
 .slot-buttons button {
   height: 25px;
   box-sizing: border-box;
 }
+.slot-name {flex: 1;}
 
 /*--------------------------------------更新履歴--------------------------------------*/
 .description {
@@ -477,23 +379,18 @@ h2 {
   box-sizing: border-box;
   margin-top: -8px
 }
-
 #changelog h4 {
   margin: 0 0 6px 0;
   font-size: 14px;
   text-align: left;
 }
-
 #changelog ul {
   padding-left: 6px;
   margin: 0;
   list-style: none;
   text-align: left;
 }
-
-#changelog li {
-    margin-bottom: 4px;
-}
+#changelog li {margin-bottom: 4px;}
 
 .doc-btn {
   font-size: 10px;
@@ -542,14 +439,11 @@ h2 {
           <span class="doc-btn">削除</span> --- 配置した回路を削除できます。<br>
           　　　　右クリックでも削除できます。<br>
           <br>
-          <strong>
-          ※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>
-          　 をしてデータを保存して下さい。<br>
-          </strong>
+          <strong>※ ローカルセーブ機能はありますが、安全のためにファイル出力<br>
+          　 をしてデータを保存して下さい。</strong>
         </p>
       </div>
 
-      <!----------------------------------------------------りれき-------------------------------------------------->
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
@@ -601,15 +495,13 @@ h2 {
       <div class="palette" id="colorPalette"></div>
       <div class="palette" id="palette"></div>
 
-
-      <div class="ur">
+      <div class="action">
         <div class="symbol" id="undoBtn">◀◀</div>
         <div class="symbol" id="redoBtn">▶▶</div>
         <div class="symbol num-edit-btn" id="ChangeBtn"style="font-size:16px;">変更</div>
         <div class="symbol color-btn" id="ClearBtn" style="font-size:16px;"></div>
         <div class="symbol delete-btn" id="DeleteBtn"style="font-size:16px;">削除</div>
       </div>
-
 
       <h3>追加効果</h3>
       <select id="charSelect" style="width:220px;">
@@ -626,7 +518,6 @@ h2 {
       <input id="charInput" type="text" maxlength="8" style="width:100px; text-align:center;" placeholder="自由入力 (任意)"
       />
 
-
       <h3>数値</h3>
       <div class="num-palette" id="numPalette">
         <label><input type="radio" name="num" value="0.5"> 0.5</label>
@@ -638,7 +529,7 @@ h2 {
       </div>
 
 
-      <div class="template-header">
+      <div class="save-header">
         <h3>セーブ</h3>
         <div></div>
         <div class="pager">
@@ -654,7 +545,7 @@ h2 {
 </body>
 
 <script>
-/* ------------------------------------------------------------------1. 初期設定------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ ------------------------------------------------------------------ */
 const partPos = { top: [3, 3], bottom: [0, 3], glove: [3, 0], shoes: [0, 0] };
 const boardsEl = document.getElementById("boards");
 const initialParts = ["top", "bottom", "glove", "shoes"];
@@ -678,7 +569,7 @@ const connections = {
 };
 
 
-/* ------------------------------------------------------------------2. かいろ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------かいろ------------------------------------------------------------------ */
 const paletteData = [
   { title: "増幅回路", symbols: ["┃", "━"], multi: false },
   { title: "増幅回路", symbols: ["┗", "┏", "┓", "┛"], multi: false, hideTitle: true },
@@ -764,7 +655,7 @@ function renderTemplatePage() {
 }
 
 
-/* ------------------------------------------------------------------3. せんたく------------------------------------------------------------------ */
+/* ------------------------------------------------------------------せんたく------------------------------------------------------------------ */
 const selectState = {
   type: null,
   value: null,
@@ -1022,7 +913,7 @@ function getSelectedNumber() {
   return checked ? parseFloat(checked.value) : 0;
 }
 
-/*--------------------------------------bui--------------------------------------*/
+/*--------------------------------------status--------------------------------------*/
 const charInput = document.getElementById("charInput");
 const charSelect = document.getElementById("charSelect");
 
@@ -1040,7 +931,7 @@ charSelect.addEventListener("change", () => {
   charInput.value = "";
 });
 
-/* ------------------------------------------------------------------------------4. やばいところ------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------やばいところ------------------------------------------------------------------------------ */
 renderTemplatePage();
 const boards = [];
 addButtonAnimations()
@@ -1507,7 +1398,7 @@ for (let i = 0; i < 4; i++) {
 }
 pushHistory();
 
-/* ------------------------------------------------------------------------------5. 保存------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------保存------------------------------------------------------------------------------ */
 function saveBoards() {
   const data = boards.map(b => ({
     grid: b.grid.map(row =>
@@ -1525,7 +1416,7 @@ function saveBoards() {
   localStorage.setItem("circuitBoards", JSON.stringify(data));
 }
 
-/*-------------------------セーブスロット-------------------------*/
+/*--------------------------------------セーブスロット--------------------------------------*/
 const slotCount = 15;
 const slotsPerPage = 5;
 let currentSlotPage = 0;
@@ -1638,7 +1529,7 @@ document.getElementById("nextSlot").onclick = () => {
 
 renderSlotPage();
 
-/*-------------------------EX/IN--------------------------------------*/
+/*--------------------------------------EX/IN--------------------------------------*/
 const exportAllBtn = document.createElement("button");
 exportAllBtn.textContent = "ファイル出力";
 const importAllBtn = document.createElement("button");
@@ -1735,7 +1626,7 @@ importAllFile.onchange = (e) => {
   importAllFile.value = "";
 };
 
-/* ------------------------------------------------------------------------------6. りれき------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------りれき------------------------------------------------------------------------------ */
 function addChangelog(text) {
   const ul = document.getElementById("changelogList");
   const li = document.createElement("li");
