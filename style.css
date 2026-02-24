@@ -1,0 +1,342 @@
+
+body {
+    font-family: monospace;
+    padding: 20px;
+    max-width: none;
+    margin: auto;
+    background: #fff;
+    color: #000;
+    text-align: center;
+    overflow-x: auto;
+}
+
+h3 {text-align: left; margin-bottom: 4px;}
+
+h2 {text-align: left; margin-bottom: -5px; margin-top: -5px;}
+
+/*--------------------------------------コンテナ--------------------------------------*/
+.container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  min-width: max-content;
+  padding-right: 20px;
+  padding-left: 10px;  
+}
+
+.description-column {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.center {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  column-gap: 60px;  
+  row-gap: 0; 
+  height: 750px;
+  align-items: flex-start;
+  flex: 0 0 500px;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.right {
+  flex: 0 0 450px;
+  max-width: 350px;
+  height: 750px;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  align-self: flex-start;
+}
+
+/*--------------------------------------ボード--------------------------------------*/
+.board-wrap {
+  text-align: center;
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 380px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 60px);
+  grid-template-rows: repeat(4, 60px);
+  gap: 2px;
+  padding: 5px;
+   margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.panel {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+/*--------------------------------------セル--------------------------------------*/
+.cell {
+  position: relative;
+  border: 1px solid #333;
+  font-size: 59px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  background: #fff;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.char-display {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  pointer-events: none;
+}
+.symbol-display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.number-display {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 11px;
+  color: #000;
+}
+.multi-label {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+}
+.img {
+  width: 56px;
+  object-fit: contain;
+  pointer-events: none;
+  border-radius: 5px;
+}
+
+.highlight-red   {background: #fff0f0; color: #ff6666; box-shadow: 0 0 30px #ff6666;}
+.highlight-blue  {background: #f0f8ff; color: #3399ff; box-shadow: 0 0 30px #66b3ff;}
+.highlight-green {background: #f0fff4; color: #33cc88; box-shadow: 0 0 30px #66ffaa;}
+
+/*--------------------------------------てんぷれ--------------------------------------*/
+.template-header {display: flex; align-items: center; justify-content: space-between;}
+.template-header h3 {margin: 0;}
+.pager button {
+  height: 24px;
+  padding: 0 5px;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+.template-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.template-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  display: flex;
+  background: #fff;
+  color: #000;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 26px;
+  margin: 9px;
+  margin-bottom: -10px;
+  border-radius: 5px;
+}
+
+/*--------------------------------------色選択--------------------------------------*/
+.color-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  font-size: 18px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
+}
+
+.color-btn.active {font-weight: bold;}
+.color-btn.active[data-color="red"]   {color: #ff6666; box-shadow: 0 0 15px #ff6666;}
+.color-btn.active[data-color="blue"]  {color: #3399ff; box-shadow: 0 0 15px #3399ff;}
+.color-btn.active[data-color="green"] {color: #33cc88; box-shadow: 0 0 15px #33cc88;}
+
+/*--------------------------------------回路選択--------------------------------------*/
+.palette {
+  display: flex;
+  gap: 18px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.palette-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 50px;
+}
+
+.multi-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-align: center;
+  height: 22px;
+  line-height: 1.5;
+}
+
+.symbol {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  font-size: 26px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
+}
+.symbol.multi {
+  width: 46px;
+  height: 46px;
+  font-size: 26px;
+  border: 2px dashed #333;
+}
+.action {
+  display: grid;
+  grid-template-columns: repeat(5, 48px);
+  gap: 26px;
+  margin-top: 10px;
+  justify-content: start;
+}
+
+.selected {font-weight: bold;}
+.selected.red-active   {background: #fff0f0; color: #ff6666; box-shadow: 0 0 15px #ff6666;}
+.selected.blue-active  {background: #f0f8ff; color: #3399ff; box-shadow: 0 0 15px #3399ff;}
+.selected.green-active {background: #f0fff4; color: #33cc88; box-shadow: 0 0 15px #33cc88;}
+
+/*--------------------------------------合計--------------------------------------*/
+.char-sum-div {overflow-y: auto;}
+.sum-header   {font-weight: bold; margin-top: 4px; margin-bottom: 2px; text-align:center;}
+.sum-name     {text-align: left;}
+.sum-total    {text-align:center;}
+.sum-multi    {text-align: center;}
+
+.sum-grid {display: grid; grid-template-columns: auto 60px 60px; font-size: 12px;}
+
+/*--------------------------------------数値選択--------------------------------------*/
+.num-palette {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 10px 30px;
+  margin-top: -5px;
+  justify-content: center;
+}
+
+.num-palette label:nth-child(3) {grid-column: 1;}
+
+/*--------------------------------------セーブスロット--------------------------------------*/
+.save-header {display: flex; align-items: center; justify-content: space-between;}
+.save-header h3 {margin: 10;}
+
+.slot-buttons div {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: stretch;
+  align-items: center;
+  margin-bottom: 6px;
+  box-sizing: border-box;
+}
+
+.slot-name,.slot-buttons button {height: 25px; box-sizing: border-box;}
+.slot-name {flex: 1;}
+
+/*--------------------------------------更新履歴--------------------------------------*/
+.description {
+  background: #f0f0f0;
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+#changelog {
+  width: 100%;
+  height: 80px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  overflow-y: auto;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  margin-top: -8px
+}
+#changelog h4 {margin: 0 0 6px 0; font-size: 14px; text-align: left;}
+#changelog ul {padding-left: 6px; margin: 0; list-style: none; text-align: left;}
+#changelog li {margin-bottom: 4px;}
+
+.doc-btn {
+  font-size: 10px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background: #fff;
+  color: #000;
+  text-align: center;
+}
