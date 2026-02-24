@@ -577,7 +577,7 @@ for (let i = 0; i < 4; i++) {
       const x = i % 4;
       const s = grid[y][x];
       const part = panel.querySelector(".part").value;
-      const circleImages = { top: "top.png", bottom: "bottom.png", glove: "glove.png", shoes: "shoes.png" };
+      const circleImages = { top: "png/top.png", bottom: "png/bottom.png", glove: "png/glove.png", shoes: "png/shoes.png" };
       let symbolHTML = s.symbol;
 
       if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="img">`;
@@ -1097,4 +1097,5 @@ function addChangelog(text) {
   const li = document.createElement("li");
   li.textContent = text;
   ul.prepend(li);
+
 }
