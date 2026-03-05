@@ -13,7 +13,7 @@
       <div class="doc-list">
         <h2>
         エクサスケイル防具<br>
-        回路シミュレーター　Ver.1.94<br>
+        回路シミュレーター　Ver.2.00<br>
         </h2>
         <div class="doc-text">
           ・色<br>
@@ -79,6 +79,7 @@
       <div id="changelog">
         <h4>更新履歴</h4>
         <ul id="changelogList">
+          <li>v2.00：お問い合わせ機能追加</li>
           <li>v1.94：細かな調整</li>
           <li>v1.93：一部修正</li>
           <li>v1.92：細かな調整</li>
@@ -178,6 +179,21 @@
 
 
   </div>
+  <form action="https://formspree.io/f/xnjganqa" method="POST" class="contact-form">
+    <h3>お問い合わせ</h3>
+
+    <label>お名前</label>
+    <input type="text" name="name" required>
+
+    <label>メールアドレス</label>
+    <input type="email" name="email" required>
+
+    <label>お問い合わせ内容</label>
+    <textarea name="message" rows="4" required></textarea>
+
+    <button type="submit">送信</button>
+  </form>
+
   <script src="main.js"></script>
 </body>
 </html>
