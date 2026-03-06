@@ -1014,7 +1014,7 @@ exportAllBtn.style.marginRight = "12px";
 exportAllBtn.onclick = () => {
   try {
     const slotsData = {};
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= slotCount; i++) {
       const slotName = localStorage.getItem("circuitBoards_slot" + i + "_name") || ("スロット" + i);
       const slotData = localStorage.getItem("circuitBoards_slot" + i) || null;
       slotsData[i] = { name: slotName, data: slotData };
@@ -1070,7 +1070,7 @@ importAllFile.onchange = (e) => {
       }
 
       if (parsed.slots) {
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= slotCount; i++) {
           if (parsed.slots[i]) {
             localStorage.setItem("circuitBoards_slot" + i, parsed.slots[i].data || null);
             localStorage.setItem("circuitBoards_slot" + i + "_name", parsed.slots[i].name || ("スロット" + i));
@@ -1098,3 +1098,17 @@ function addChangelog(text) {
   li.textContent = text;
   ul.prepend(li);
 }
+
+/* ------------------------------------------------------------------------------page------------------------------------------------------------------------------ */
+const tabBtns = document.querySelectorAll(".tab-btn");
+const tabPages = document.querySelectorAll(".tab-page");
+
+tabBtns.forEach(btn => {
+  btn.onclick = () => {
+    tabBtns.forEach(b => b.classList.remove("active"));
+    tabPages.forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    const id = "tab-" + btn.dataset.tab;
+    document.getElementById(id).classList.add("active");
+  };
+});
