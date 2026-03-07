@@ -247,8 +247,8 @@ button:hover,.symbol:hover,.color-btn:hover,.template-btn:hover,.cell:hover {
 .template-btn     { margin-top: 10px; margin-bottom: -10px;}
 .color-btn        { font-size: 18px;}
 .symbol.multi     { width: 46px; height: 46px; border: 2px dashed #333;}
-.selected,.color-btn.active          { font-weight: bold;}
-.num-edit-btn,.delete-btn,#ClearBtn      { font-size:16px;}
+.selected,.color-btn.active         { font-weight: bold;}
+.num-edit-btn,.delete-btn,#ClearBtn { font-size:16px;}
 
 /*--------------------------------------テンプレ--------------------------------------*/
 .template-header h3 {margin: 0px;}
