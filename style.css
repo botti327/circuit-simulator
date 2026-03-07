@@ -7,7 +7,6 @@ body {
     background: #fff;
     color: #000;
     text-align: center;
-    overflow-x: auto;
 }
 h2 {text-align: left; margin-bottom: 0px; margin-top: 0px;}
 h3 {text-align: left; margin-bottom: 4px;}
@@ -19,8 +18,8 @@ h3 {text-align: left; margin-bottom: 4px;}
   justify-content: center;
   gap: 20px;
   min-width: max-content;
-  padding-right: 20px;
-  padding-left: 10px;  
+  padding: 0 20px;
+  overflow-x: auto;
 }
 
 .left,
@@ -41,12 +40,12 @@ h3 {text-align: left; margin-bottom: 4px;}
   font-size: 14px;
   font-family: sans-serif;
   line-height: 1.6;
-  flex: 0 0 450px;
+  flex: 0 0 430px;
 }
 
 .center {
   display: grid;
-  grid-template-columns: repeat(2, auto);
+  grid-template-columns: repeat(2, 1fr);
   column-gap: 60px;
   row-gap: 0;
   align-items: flex-start;
@@ -62,9 +61,12 @@ h3 {text-align: left; margin-bottom: 4px;}
   border:2px solid #333;
   cursor:pointer;
   border-radius: 5px;
+  background:#fff;
+  font-size: 16px;
+  font-weight: bold;
 }
 .left-tabs         { display:flex; gap:10px;}
-.tab-btn.active    { background:#fff; font-weight:bold;}
+.tab-btn.active    { background:#f5f5f5; font-weight:bold;transform: none;cursor: default; border:1px solid; }
 .tab-page          { display:none;}
 .tab-page.active   { display:block;}
 #tab-contact.active{ display:flex; flex-direction:column; height:100%;}
@@ -127,7 +129,7 @@ kbd {
   border-radius: 6px;
   cursor: pointer;
 }
-.contact-form button:hover { background: #555;}
+.contact-form button:hover {background: #555;}
 
 /*--------------------------------------こうしん--------------------------------------*/
 #changelog {
@@ -167,11 +169,8 @@ kbd {
   flex-shrink: 0;
 }
 
-.panel {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-}
+.panel { display: flex; gap: 15px; justify-content: center;}
+
 /*--------------------------------------セル--------------------------------------*/
 .cell {
   position: relative;
@@ -185,6 +184,7 @@ kbd {
   background: #fff;
   border-radius: 5px;
   font-weight: bold;
+  transition:  box-shadow 0.2s, transform 0.1s;
 }
 
 .symbol-display {
@@ -225,9 +225,34 @@ kbd {
 .sum-name     {text-align: left; margin-left: 20px;}
 .sum-grid     {display: grid; grid-template-columns: auto 60px 60px; font-size: 12px;}
 
-/*--------------------------------------てんぷれ--------------------------------------*/
-.template-header {display: flex; align-items: center; justify-content: space-between;}
+/*--------------------------------------ぼたん--------------------------------------*/
+.template-btn,.color-btn,.symbol{
+  width: 48px;
+  height: 48px;
+  border: 1px solid #333;
+  font-size: 26px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
+}
+
+button,.symbol,.color-btn,.template-btn { transition: transform 0.1s;}
+button:hover,.symbol:hover,.color-btn:hover,.template-btn:hover,.cell:hover {
+  transform: scale(1.05);
+}
+.template-btn     { margin-top: 10px; margin-bottom: -10px;}
+.color-btn        { font-size: 18px;}
+.symbol.multi     { width: 46px; height: 46px; border: 2px dashed #333;}
+.selected,.color-btn.active          { font-weight: bold;}
+.num-edit-btn,.delete-btn,#ClearBtn      { font-size:16px;}
+
+/*--------------------------------------テンプレ--------------------------------------*/
 .template-header h3 {margin: 0px;}
+.template-header {display: flex; align-items: center; justify-content: space-between;}
 .pager button {
   height: 24px;
   padding: 0 5px;
@@ -236,56 +261,17 @@ kbd {
   border: 1px solid #333;
   border-radius: 4px;
 }
-
-.template-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-.template-btn {
-  width: 48px;
-  height: 48px;
-  border: 1px solid #333;
-  display: flex;
-  background: #fff;
-  color: #000;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
-  font-size: 26px;
-  margin: 9px;
-  margin-bottom: -10px;
-  border-radius: 5px;
-}
+.template-buttons { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center;  margin-bottom: 20px;}
 
 /*--------------------------------------色選択--------------------------------------*/
-.color-btn {
-  width: 48px;
-  height: 48px;
-  border: 1px solid #333;
-  font-size: 18px;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
-  border-radius: 5px;
-}
-
-.color-btn.active {font-weight: bold;}
-.color-btn.active[data-color="red"]   {color: #ff6666; box-shadow: 0 0 15px #ff6666;}
-.color-btn.active[data-color="blue"]  {color: #3399ff; box-shadow: 0 0 15px #3399ff;}
-.color-btn.active[data-color="green"] {color: #33cc88; box-shadow: 0 0 15px #33cc88;}
+.selected.red-active  ,.color-btn.active[data-color="red"  ] {background: #fff0f0; color: #ff6666; box-shadow: 0 0 15px #ff6666;}
+.selected.blue-active ,.color-btn.active[data-color="blue" ] {background: #f0f8ff; color: #3399ff; box-shadow: 0 0 15px #3399ff;}
+.selected.green-active,.color-btn.active[data-color="green"] {background: #f0fff4; color: #33cc88; box-shadow: 0 0 15px #33cc88;}
 
 /*--------------------------------------回路選択--------------------------------------*/
 .palette {
   display: flex;
   gap: 18px;
-  margin-top: 10px;
   justify-content: center;
 }
 
@@ -294,38 +280,17 @@ kbd {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  min-width: 50px;
+  min-width:50px;
 }
 
 .multi-title {
   font-size: 14px;
   font-weight: bold;
-  margin-bottom: 4px;
   text-align: center;
   height: 22px;
   line-height: 1.5;
 }
 
-.symbol {
-  width: 48px;
-  height: 48px;
-  border: 1px solid #333;
-  font-size: 26px;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
-  border-radius: 5px;
-    font-weight: bold;
-}
-.symbol.multi {
-  width: 46px;
-  height: 46px;
-  font-size: 26px;
-  border: 2px dashed #333;
-}
 .action {
   display: grid;
   grid-template-columns: repeat(5, 48px);
@@ -333,11 +298,6 @@ kbd {
   margin-top: 10px;
   justify-content: start;
 }
-
-.selected              {font-weight: bold;}
-.selected.red-active   {background: #fff0f0; color: #ff6666; box-shadow: 0 0 15px #ff6666;}
-.selected.blue-active  {background: #f0f8ff; color: #3399ff; box-shadow: 0 0 15px #3399ff;}
-.selected.green-active {background: #f0fff4; color: #33cc88; box-shadow: 0 0 15px #33cc88;}
 
 /*--------------------------------------数値選択--------------------------------------*/
 .num-palette {
@@ -366,5 +326,3 @@ kbd {
 .slot-name           {flex: 1;}
 .slot-name,
 .slot-buttons button {height: 25px; box-sizing: border-box;}
-
-
