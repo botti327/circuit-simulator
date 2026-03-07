@@ -238,6 +238,7 @@ kbd {
   cursor: pointer;
   user-select: none;
   border-radius: 5px;
+  font-weight: bold;
 }
 
 button,.symbol,.color-btn,.template-btn { transition: transform 0.1s;}
