@@ -9,6 +9,7 @@ const size = 4;
 let undoStack = [];
 let redoStack = [];
 
+
 const connections = {
   "┃": { l: 0, r: 0, u: 1, d: 1 },
   "━": { l: 1, r: 1, u: 0, d: 0 },
@@ -105,7 +106,6 @@ function renderTemplatePage() {
   document.getElementById("templatePageLabel").textContent =
     (currentTemplatePage + 1) + " / " + totalPages;
   updateSelectedSymbolColor();
-  addButtonAnimations();
 }
 
 
@@ -140,25 +140,6 @@ function selectButton(el, type, value = null, isMulti = false) {
   selectState.isMulti = isMulti;
   updateSelectedSymbolColor();
   updateColorButtonsActive();
-}
-
-function animateButton(btn) {
-  btn.style.transition = "0.1s all";
-  btn.style.transform = "scale(0.9)";
-  setTimeout(() => {
-    btn.style.transform = "scale(1)";
-    btn.style.boxShadow = "";
-  }, 100);
-}
-
-function addButtonAnimations() {
-  const clickableSelectors = [".symbol",".color-btn",".template-btn"];
-  const elements = document.querySelectorAll(clickableSelectors.join(","));
-  elements.forEach(el => {
-    el.addEventListener("click", () => {
-      animateButton(el);
-    });
-  });
 }
 
 document.querySelectorAll(".symbol").forEach(s => {
@@ -252,13 +233,13 @@ function restoreFromSnapshot(snapshot) {
   const data = JSON.parse(snapshot);
   data.forEach((d, i) => {
     const board = boards[i];
-    for (let y = 0; y < 4; y++)
-      for (let x = 0; x < 4; x++)
+    for (let y = 0; y < size; y++)
+      for (let x = 0; x < size; x++)
         board.grid[y][x] = { ...d.grid[y][x] };
     const part = d.part || "top";
     board.panel.querySelector(".part").value = part;
-    for (let y = 0; y < 4; y++)
-      for (let x = 0; x < 4; x++)
+    for (let y = 0; y < size; y++)
+      for (let x = 0; x < size; x++)
         if (board.grid[y][x].symbol === "img") board.grid[y][x].symbol = "";
     const [imgX, imgY] = partPos[part];
     board.grid[imgY][imgX] = { symbol: "img", number: "", multi: false };
@@ -388,26 +369,30 @@ charSelect.addEventListener("change", () => {
 /* ------------------------------------------------------------------------------やばいところ------------------------------------------------------------------------------ */
 renderTemplatePage();
 const boards = [];
-addButtonAnimations()
+
+function emptyCell() {
+  return {
+    symbol: "",
+    number: "",
+    char: "",
+    multi: false,
+    color: "red"
+  };
+}
+
 for (let i = 0; i < 4; i++) {
   let part = savedData?.[i]?.part || initialParts[i];
   const [px, py] = partPos[part];
 
-  const grid = Array.from({ length: 4 }, () =>
-    Array(4).fill(null).map(() => ({
-      symbol: "",
-      number: "",
-      char: "",
-      multi: false,
-      color: "red"
-    }))
-  );
+  const grid = Array.from({length:size},() =>
+    Array.from({length:size}, emptyCell)
+    );
 
   grid[py][px] = { symbol: "img", number: "", multi: false };
 
   if (savedData?.[i]?.grid) {
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 4; x++) {
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
         if (savedData[i].grid[y][x].symbol !== "img") {
           grid[y][x] = { ...savedData[i].grid[y][x] };
         }
@@ -455,8 +440,8 @@ for (let i = 0; i < 4; i++) {
 
   partSelect.onchange = () => {
     const p = partSelect.value;
-    for (let y = 0; y < 4; y++)
-      for (let x = 0; x < 4; x++)
+    for (let y = 0; y < size; y++)
+      for (let x = 0; x < size; x++)
         if (grid[y][x].symbol === "img")
           grid[y][x].symbol = "";
 
@@ -470,8 +455,8 @@ for (let i = 0; i < 4; i++) {
   clearBtn.onclick = () => {
     if (confirm("回路を全て削除しますか？")) {
       pushHistory();
-      for (let y = 0; y < 4; y++)
-        for (let x = 0; x < 4; x++)
+      for (let y = 0; y < size; y++)
+        for (let x = 0; x < size; x++)
           if (grid[y][x].symbol !== "img")
             grid[y][x] = { symbol: "", number: "", multi: false };
       drawBoard();
@@ -479,8 +464,8 @@ for (let i = 0; i < 4; i++) {
     }
   };
 
-  for (let y = 0; y < 4; y++) {
-    for (let x = 0; x < 4; x++) {
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
       const c = document.createElement("div");
       c.className = "cell";
 
@@ -523,7 +508,7 @@ for (let i = 0; i < 4; i++) {
               if (grid[ty][tx].symbol === "img") continue;
               const sym = selectState.value.grid[ty][tx];
               if (!sym || sym.trim() === "") {
-                grid[ty][tx] = { symbol: "", number: "", char: "", multi: false, color: "red" };
+                grid[ty][tx] = emptyCell();
               } else {
                 grid[ty][tx] = {
                   symbol: sym,
@@ -542,7 +527,7 @@ for (let i = 0; i < 4; i++) {
 
         if (selectState.type === "symbol") {
           if (selectState.value === "削") {
-            grid[y][x] = { symbol: "", number: "", char: "", multi: false, color: "red" };
+            grid[y][x] = emptyCell();
           } else {
             grid[y][x] = {
               symbol: selectState.value,
@@ -562,7 +547,7 @@ for (let i = 0; i < 4; i++) {
         pushHistory();
         const cell = grid[y][x];
         if (cell.symbol === "img") return;
-        grid[y][x] = { symbol: "", number: "", char: "", multi: false, color: "red" };
+        grid[y][x] = emptyCell();
         drawBoard();
         saveBoards();
       };
@@ -616,8 +601,8 @@ for (let i = 0; i < 4; i++) {
           .filter(v => v !== "");
 
       let cx = -1, cy = -1;
-      for (let y = 0; y < 4; y++) {
-          for (let x = 0; x < 4; x++) {
+      for (let y = 0; y < size; y++) {
+          for (let x = 0; x < size; x++) {
               if (grid[y][x].symbol === "img") {
                   cx = x;
                   cy = y;
@@ -879,6 +864,7 @@ function saveBoards() {
   }));
 
   localStorage.setItem("circuitBoards", JSON.stringify(data));
+  return data;
 }
 
 /*--------------------------------------セーブスロット--------------------------------------*/
@@ -932,18 +918,7 @@ function attachSlotEvents() {
       const slotName = slotDiv.querySelector(".slot-name").value || ("スロット" + slot);
       if (!confirm(slotName + " に保存しますか？")) return;
       try {
-        const saveData = boards.map(b => ({
-          grid: b.grid.map(row =>
-            row.map(cell => ({
-              symbol: cell.symbol || "",
-              number: cell.number || "",
-              char: cell.char || "",
-              multi: !!cell.multi,
-              color: cell.color || "red"
-            }))
-          ),
-          part: b.panel.querySelector(".part").value || "top"
-        }));
+        const saveData = saveBoards();
         localStorage.setItem("circuitBoards_slot" + slot, JSON.stringify(saveData));
         localStorage.setItem("circuitBoards_slot" + slot + "_name", slotName);
         addChangelog(slotName + " に保存しました : " + new Date().toLocaleString());
@@ -966,8 +941,8 @@ function attachSlotEvents() {
         pushHistory();
         const parsed = JSON.parse(data);
         parsed.forEach((d, i) => {
-          for (let y = 0; y < 4; y++)
-            for (let x = 0; x < 4; x++)
+          for (let y = 0; y < size; y++)
+            for (let x = 0; x < size; x++)
               boards[i].grid[y][x] = { ...d.grid[y][x] };
           boards[i].panel.querySelector(".part").value = d.part || "top";
           boards[i].drawBoard();
@@ -1020,16 +995,7 @@ exportAllBtn.onclick = () => {
       slotsData[i] = { name: slotName, data: slotData };
     }
 
-    const boardsData = boards.map(b => ({
-      grid: b.grid.map(r => r.map(c => ({
-        symbol: c.symbol || "",
-        number: c.number || "",
-        char: c.char || "",
-        multi: !!c.multi,
-        color: c.color || "red"
-      }))),
-      part: b.panel.querySelector(".part").value || "top"
-    }));
+    const boardsData = saveBoards();
 
     const exportData = { boards: boardsData, slots: slotsData };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "text/plain" });
@@ -1061,8 +1027,8 @@ importAllFile.onchange = (e) => {
 
       if (parsed.boards && Array.isArray(parsed.boards)) {
         parsed.boards.forEach((d, i) => {
-          for (let y = 0; y < 4; y++)
-            for (let x = 0; x < 4; x++)
+          for (let y = 0; y < size; y++)
+            for (let x = 0; x < size; x++)
               boards[i].grid[y][x] = { ...d.grid[y][x] };
           boards[i].panel.querySelector(".part").value = d.part || "top";
           boards[i].drawBoard();
@@ -1074,7 +1040,7 @@ importAllFile.onchange = (e) => {
           if (parsed.slots[i]) {
             localStorage.setItem("circuitBoards_slot" + i, parsed.slots[i].data || null);
             localStorage.setItem("circuitBoards_slot" + i + "_name", parsed.slots[i].name || ("スロット" + i));
-            const slotDiv = document.querySelectorAll(".slot-buttons div")[i - 1];
+            const slotDiv = document.querySelectorAll("#slotButtons div")[i - 1];
             slotDiv.querySelector(".slot-name").value = parsed.slots[i].name || ("スロット" + i);
           }
         }
@@ -1099,6 +1065,17 @@ function addChangelog(text) {
   ul.prepend(li);
 }
 
+function updateVersionFromChangelog() {
+  const titleH2 = document.querySelector(".left h2");
+  if (!titleH2) return;
+  const changelogList = document.querySelectorAll("#changelogList li");
+  if (changelogList.length === 0) return;
+  const latestLi = changelogList[0];
+  const versionMatch = latestLi.textContent.match(/v\d+\.\d+/);
+  const version = versionMatch ? versionMatch[0] : "";
+  titleH2.innerHTML = `エクサスケイル防具<br>回路シミュレーター　ver.${version.slice(1)}<br>`;
+}
+window.addEventListener("DOMContentLoaded", updateVersionFromChangelog);
 /* ------------------------------------------------------------------------------page------------------------------------------------------------------------------ */
 const tabBtns = document.querySelectorAll(".tab-btn");
 const tabPages = document.querySelectorAll(".tab-page");
