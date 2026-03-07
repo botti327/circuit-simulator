@@ -318,6 +318,7 @@ kbd {
   cursor: pointer;
   user-select: none;
   border-radius: 5px;
+    font-weight: bold;
 }
 .symbol.multi {
   width: 46px;
@@ -365,4 +366,5 @@ kbd {
 .slot-name           {flex: 1;}
 .slot-name,
 .slot-buttons button {height: 25px; box-sizing: border-box;}
+
 
