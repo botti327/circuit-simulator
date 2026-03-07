@@ -230,7 +230,7 @@ kbd {
   width: 48px;
   height: 48px;
   border: 1px solid #333;
-  font-size: 6px;
+  font-size: 26px;
   background: #fff;
   display: flex;
   align-items: center;
@@ -238,6 +238,7 @@ kbd {
   cursor: pointer;
   user-select: none;
   border-radius: 5px;
+  font-weight: bold;
 }
 
 button,.symbol,.color-btn,.template-btn { transition: transform 0.1s;}
