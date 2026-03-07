@@ -230,7 +230,7 @@ kbd {
   width: 48px;
   height: 48px;
   border: 1px solid #333;
-  font-size: 26px;
+  font-size: 6px;
   background: #fff;
   display: flex;
   align-items: center;
@@ -238,7 +238,6 @@ kbd {
   cursor: pointer;
   user-select: none;
   border-radius: 5px;
-  font-weight: bold;
 }
 
 button,.symbol,.color-btn,.template-btn { transition: transform 0.1s;}
@@ -327,3 +326,4 @@ button:hover,.symbol:hover,.color-btn:hover,.template-btn:hover,.cell:hover {
 .slot-name           {flex: 1;}
 .slot-name,
 .slot-buttons button {height: 25px; box-sizing: border-box;}
+
