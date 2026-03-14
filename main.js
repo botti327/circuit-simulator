@@ -1089,3 +1089,17 @@ tabBtns.forEach(btn => {
     document.getElementById(id).classList.add("active");
   };
 });
+
+/* ------------------------------------------------------------------------------otoi------------------------------------------------------------------------------ */
+document.querySelector(".contact-form").addEventListener("submit", function(e){
+  const nameInput = this.querySelector('input[name="name"]');
+  if(!nameInput.value.trim()){
+    nameInput.value = "匿名";
+  }
+});
+
+document.getElementById("message").placeholder = 
+`例：
+・〇〇をすると挙動がおかしくなります。
+・△△の要素を追加してください。
+・使用ブラウザ：Chrome バージョン 144.0.7559.133`;
