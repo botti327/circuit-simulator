@@ -86,13 +86,13 @@
         <form action="https://formspree.io/f/xnjganqa" method="POST" class="contact-form">
 
           <label>お名前</label>
-          <input type="text" name="name" required>
+          <input type="text" name="name" placeholder="匿名">
 
           <label>メールアドレス</label>
-          <input type="email" name="email" required>
+          <input type="email" name="email" placeholder="example@gmail.com" required>
 
           <label>お問い合わせ内容</label>
-          <textarea name="message" rows="7" required></textarea>
+          <textarea id="message" name="message" rows="7" required></textarea>
 
           <button type="submit">送信</button>
         </form>
@@ -207,4 +207,3 @@
   <script src="main.js"></script>
 </body>
 </html>
-
