@@ -44,12 +44,14 @@ h3 {text-align: left; margin-bottom: 4px;}
 }
 
 .center {
+  min-width: 650px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 60px;
   row-gap: 0;
   align-items: flex-start;
   flex: 0 0 500px;
+  overflow-y: auto;
 }
 
 .right { flex: 0 0 350px; align-self: flex-start;}
@@ -169,7 +171,7 @@ kbd {
   flex-shrink: 0;
 }
 
-.panel { display: flex; gap: 15px; justify-content: center;}
+.panel { display: flex; gap: 6px; justify-content: center;}
 
 /*--------------------------------------セル--------------------------------------*/
 .cell {
