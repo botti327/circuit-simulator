@@ -2,13 +2,13 @@
 /* ------------------------------------------------------------------ ------------------------------------------------------------------ */
 const partPos = { top: [3, 3], bottom: [0, 3], glove: [3, 0], shoes: [0, 0] };
 const boardsEl = document.getElementById("boards");
-const initialParts = ["top", "bottom", "glove", "shoes"];
+const initialParts = ["top", "bottom", "bottom", "bottom", "glove", "shoes"];
 let savedData = JSON.parse(localStorage.getItem("circuitBoards") || "null") || null;
 let selectedColor = "red";
 const size = 4;
 let undoStack = [];
 let redoStack = [];
-
+let copiedBoardData = null
 
 const connections = {
   "┃": { l: 0, r: 0, u: 1, d: 1 },
@@ -382,7 +382,7 @@ function emptyCell() {
   };
 }
 
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < 6; i++) {
   let part = savedData?.[i]?.part || initialParts[i];
   const [px, py] = partPos[part];
 
@@ -418,10 +418,58 @@ for (let i = 0; i < 4; i++) {
   `;
   wrap.appendChild(panel);
 
+  const copyBtn = document.createElement("button");
+  copyBtn.textContent = "コピー";
+  const pasteBtn = document.createElement("button");
+  pasteBtn.textContent = "貼り付け";
   const clearBtn = document.createElement("button");
-  clearBtn.textContent = "回路クリア";
-  panel.appendChild(clearBtn);
+  clearBtn.textContent = "クリア";
 
+  copyBtn.onclick = () => {
+    copiedBoardData = {
+        grid: grid.map(row => row.map(cell => ({ ...cell }))),
+      part: panel.querySelector(".part").value
+    };
+  };
+
+  pasteBtn.onclick = () => {
+    if (!copiedBoardData) return;
+    pushHistory();
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        grid[y][x] = { ...copiedBoardData.grid[y][x] };
+      }
+    }
+    panel.querySelector(".part").value = copiedBoardData.part;
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        if (grid[y][x].symbol === "img") {
+          grid[y][x].symbol = "";
+        }
+      }
+    }
+    const [px, py] = partPos[copiedBoardData.part];
+    grid[py][px] = { symbol: "img", number: "", multi: false };
+    drawBoard();
+    saveBoards();
+  };
+
+  clearBtn.onclick = () => {
+    if (confirm("回路を全て削除しますか？")) {
+      pushHistory();
+      for (let y = 0; y < size; y++)
+        for (let x = 0; x < size; x++)
+          if (grid[y][x].symbol !== "img")
+            grid[y][x] = { symbol: "", number: "", multi: false };
+      drawBoard();
+      saveBoards();
+    }
+  };
+
+  panel.appendChild(copyBtn);
+  panel.appendChild(pasteBtn);
+  panel.appendChild(clearBtn);
+  
   const board = document.createElement("div");
   board.className = "board";
   wrap.appendChild(board);
@@ -452,18 +500,6 @@ for (let i = 0; i < 4; i++) {
 
     drawBoard();
     saveBoards();
-  };
-
-  clearBtn.onclick = () => {
-    if (confirm("回路を全て削除しますか？")) {
-      pushHistory();
-      for (let y = 0; y < size; y++)
-        for (let x = 0; x < size; x++)
-          if (grid[y][x].symbol !== "img")
-            grid[y][x] = { symbol: "", number: "", multi: false };
-      drawBoard();
-      saveBoards();
-    }
   };
 
   for (let y = 0; y < size; y++) {
