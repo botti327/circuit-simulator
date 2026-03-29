@@ -172,15 +172,7 @@ kbd {
 }
 
 .panel { display: flex; gap: 6px; justify-content: center;}
-.ui-btn,.saveBtn,.loadBtn {
-  cursor: pointer;
-  border-radius: 4px;
-  background: #fafafa;
-  border: 1px solid #ccc;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-.ui-btn:hover,.saveBtn:hover,.loadBtn:hover    { background: #e0e0e0;}
-.ui-btn:active,.saveBtn:active,.loadBtn:active { box-shadow: inset 0 1px 20px rgba(0,0,0,0.2);}
+
 /*--------------------------------------セル--------------------------------------*/
 .cell {
   position: relative;
@@ -260,7 +252,15 @@ button:hover,.symbol:hover,.color-btn:hover,.template-btn:hover,.cell:hover {
 .symbol.multi     { width: 46px; height: 46px; border: 2px dashed #333;}
 .selected,.color-btn.active         { font-weight: bold;}
 .num-edit-btn,.delete-btn,#ClearBtn { font-size:16px;}
-
+.ui-btn,.saveBtn,.loadBtn {
+  cursor: pointer;
+  border-radius: 4px;
+  background: #fafafa;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.ui-btn:hover,.saveBtn:hover,.loadBtn:hover    { background: #e0e0e0;}
+.ui-btn:active,.saveBtn:active,.loadBtn:active { box-shadow: inset 0 1px 20px rgba(0,0,0,0.2);}
 /*--------------------------------------テンプレ--------------------------------------*/
 .template-header h3 {margin: 0px;}
 .template-header {display: flex; align-items: center; justify-content: space-between;}
