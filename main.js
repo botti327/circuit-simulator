@@ -432,11 +432,11 @@ for (let i = 0; i < 6; i++) {
   wrap.appendChild(panel);
 
   const partNameMap = {
-  top: "上衣",
-  bottom: "下衣",
-  glove: "手袋",
-  shoes: "靴"
-};
+   top: "上衣",
+   bottom: "下衣",
+   glove: "手袋",
+   shoes: "靴"
+ };
   const copyBtn = document.createElement("button");
   const pasteBtn = document.createElement("button");
   const clearBtn = document.createElement("button");
