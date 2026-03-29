@@ -52,6 +52,16 @@ const templates = [
   {grid:[["┏","━","━","┓"],["┃","┏","┓","┃"],["┃","┃","┃","┃"],["┗","┛","┗","┛"]]},
   {grid:[["┏","━","━","┓"],["┗","━","┓","┃"],["┏","━","┛","┃"],["┗","━","━","┛"]]},
   {grid:[["┏","━","━","┓"],["┃","┏","━","┛"],["┃","┗","━","┓"],["┗","━","━","┛"]]},
+
+  {grid:[["┏","┓","┏","┓"],["┃","┃","┗","┛"],["┃","┗","━","┓"],["┗","━","━","┛"]]},
+  {grid:[["┏","━","━","┓"],["┃","┏","━","┛"],["┃","┃","┏","┓"],["┗","┛","┗","┛"]]},
+  {grid:[["┏","━","━","┓"],["┗","━","┓","┃"],["┏","┓","┃","┃"],["┗","┛","┗","┛"]]},
+  {grid:[["┏","┓","┏","┓"],["┗","┛","┃","┃"],["┏","━","┛","┃"],["┗","━","━","┛"]]},
+
+  {grid:[["┏","┳","┳","┓"],["┣","　","　","┫"],["┣","　","　","┫"],["┗","┻","┻","┛"]]},
+  {grid:[["┏","┓","┏","┓"],["┣","┫","┣","┫"],["┣","┫","┣","┫"],["┗","┛","┗","┛"]]},
+  {grid:[["┏","┳","┳","┓"],["┗","┻","┻","┛"],["┏","┳","┳","┓"],["┗","┻","┻","┛"]]},
+  {grid:[["　","　","　","　"],["　","　","　","　"],["　","　","　","　"],["　","　","　","　"]]},
 ];
 
 const TEMPLATES_PER_PAGE = 4;
@@ -421,18 +431,28 @@ for (let i = 0; i < 6; i++) {
   `;
   wrap.appendChild(panel);
 
+  const partNameMap = {
+  top: "上衣",
+  bottom: "下衣",
+  glove: "手袋",
+  shoes: "靴"
+};
   const copyBtn = document.createElement("button");
-  copyBtn.textContent = "コピー";
   const pasteBtn = document.createElement("button");
-  pasteBtn.textContent = "貼り付け";
   const clearBtn = document.createElement("button");
+  copyBtn.textContent = "コピー";
+  pasteBtn.textContent = "貼り付け";
   clearBtn.textContent = "クリア";
+  copyBtn.className = "ui-btn";
+  pasteBtn.className = "ui-btn";
+  clearBtn.className = "ui-btn";
 
   copyBtn.onclick = () => {
     copiedBoardData = {
         grid: grid.map(row => row.map(cell => ({ ...cell }))),
       part: panel.querySelector(".part").value
     };
+    addChangelog(partNameMap[part] + "回路をコピーしました : " + new Date().toLocaleString());
   };
 
   pasteBtn.onclick = () => {
@@ -455,6 +475,7 @@ for (let i = 0; i < 6; i++) {
     grid[py][px] = { symbol: "img", number: "", multi: false };
     drawBoard();
     saveBoards();
+    addChangelog(partNameMap[copiedBoardData.part] + "回路を貼り付けました : " + new Date().toLocaleString());
   };
 
   clearBtn.onclick = () => {
@@ -466,13 +487,14 @@ for (let i = 0; i < 6; i++) {
             grid[y][x] = { symbol: "", number: "", multi: false };
       drawBoard();
       saveBoards();
+      addChangelog(partNameMap[part] + "回路をクリアしました : " + new Date().toLocaleString());
     }
   };
 
   panel.appendChild(copyBtn);
   panel.appendChild(pasteBtn);
   panel.appendChild(clearBtn);
-  
+
   const board = document.createElement("div");
   board.className = "board";
   wrap.appendChild(board);
@@ -934,7 +956,7 @@ function renderSlotPage() {
     saveBtn.dataset.slot = i;
     saveBtn.textContent = "保存";
     div.appendChild(saveBtn);
-
+  
     const loadBtn = document.createElement("button");
     loadBtn.className = "loadBtn";
     loadBtn.dataset.slot = i;
@@ -1019,6 +1041,8 @@ const importAllFile = document.createElement("input");
 importAllFile.type = "file";
 importAllFile.accept = ".txt";
 importAllFile.style.display = "none";
+exportAllBtn.className = "ui-btn";
+importAllBtn.className = "ui-btn";
 
 document.querySelector(".right").appendChild(exportAllBtn);
 document.querySelector(".right").appendChild(importAllBtn);
