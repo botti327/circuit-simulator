@@ -11,12 +11,11 @@
     <div class="left">
 
       <h2 id="headerTitle"></h2>
-
+      <button id="darkModeBtn">🌙 ダークモード</button>
       <div class="left-tabs">
         <button class="tab-btn active" data-tab="doc">説明</button>
         <button class="tab-btn" data-tab="contact">お問い合わせ・更新履歴</button>
       </div>
-
       <div class="tab-page active" id="tab-doc">
         <div class="doc-list">
 
@@ -67,7 +66,7 @@
 
           <div class="doc">
             <span class="doc-btn">　</span>
-            <span>回路ボタンを非選択状態にします。<br>選択された回路をもう一度クリックでも非選択にできます。</span>
+            <span>回路ボタンを非選択状態にします。</span>
           </div>
 
           <div class="doc">
@@ -76,7 +75,7 @@
           </div>
 
           <div class="doc-text">
-            <br>※ ローカルセーブ機能はありますが、安全のためにファイル出力をして、データを保存して下さい。
+            ※ ローカルセーブ機能はありますが、安全のためにファイル出力をして、データを保存して下さい。
           </div>
 
         </div>
@@ -100,6 +99,8 @@
         <h3>更新履歴</h3>
         <div id="changelog">
           <ul id="changelogList">
+            <li>v2.21：ダークモード実装</li>
+            <li>v2.20：実際の回路画像を使用</li>
             <li>v2.10：6部位表示に変更 + 回路コピー＆貼り付けボタン追加</li>
             <li>v2.03：テンプレ追加</li>
             <li>v2.02：細かな調整</li>
@@ -166,7 +167,7 @@
       </div>
 
       <h3>追加効果</h3>
-      <select id="charSelect" style="width:220px;">
+      <select class="char" id="charSelect" style="width:220px;">
         <option value=""></option>
         <option value="持続ダメ" selected>持続ダメージ</option>
         <option value="CT初期化">スキルのCT初期化</option>
