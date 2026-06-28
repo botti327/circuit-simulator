@@ -22,7 +22,18 @@ const connections = {
   "┣": { l: 0, r: 1, u: 1, d: 1 },
   "┫": { l: 1, r: 0, u: 1, d: 1 }
 };
-
+const symbolImageMap = {
+  "┃": "i1",
+  "━": "i2",
+  "┗": "l1",
+  "┏": "l2",
+  "┓": "l3",
+  "┛": "l4",
+  "┳": "t1",
+  "┻": "t2",
+  "┣": "t3",
+  "┫": "t4"
+};
 
 /* ------------------------------------------------------------------かいろ------------------------------------------------------------------ */
 const paletteData = [
@@ -87,12 +98,23 @@ paletteData.forEach(group => {
   titleDiv.textContent = group.title;
   div.appendChild(titleDiv);
   group.symbols.forEach(sym => {
-    const s = document.createElement("div");
-    s.className = "symbol";
-    if (group.multi) s.classList.add("multi");
+  const s = document.createElement("div");
+  s.className = "symbol";
+  if (group.multi) s.classList.add("multi");
+
+  s.dataset.symbol = sym;
+
+  if (symbolImageMap[sym]) {
+    const img = document.createElement("img");
+    img.src = `png/${selectedColor}${symbolImageMap[sym]}d.png`;
+    img.className = "symbol-img";
+    s.appendChild(img);
+  } else {
     s.textContent = sym;
-    div.appendChild(s);
-  });
+  }
+
+  div.appendChild(s);
+});
   paletteEl.appendChild(div);
 });
 
@@ -159,7 +181,12 @@ function selectButton(el, type, value = null, isMulti = false) {
 
 document.querySelectorAll(".symbol").forEach(s => {
   s.onclick = () => {
-    selectButton(s, "symbol", s.textContent, s.classList.contains("multi"));
+    selectButton(
+      s,
+      "symbol",
+      s.dataset.symbol,
+      s.classList.contains("multi")
+    );
   };
 });
 /*--------------------------------------template--------------------------------------*/
@@ -215,13 +242,11 @@ function updateColorButtonsActive() {
   btn.className = "color-btn" + (c === "red" ? " active" : "");
   btn.dataset.color = c;
   btn.textContent = c === "red" ? "演算" : c === "blue" ? "循環" : "復元";
-  btn.style.background =
-    c === "red" ? "#fff0f0" :
-    c === "blue" ? "#f0f8ff" :
-    "#f0fff4";
   btn.onclick = () => {
-    const deleteSelected = selectState.type === "symbol" && selectState.value === "削";
-    if (deleteSelected) {
+    if (
+      selectState.type === "symbol" &&
+      selectState.value === "削"
+    ) {
       clearAllSelections();
     }
     document.querySelectorAll(".color-btn").forEach(b => b.classList.remove("active"));
@@ -229,6 +254,15 @@ function updateColorButtonsActive() {
     btn.classList.add("active");
     updateColorButtonsActive();
     updateSelectedSymbolColor();
+    document.querySelectorAll(".symbol").forEach(el => {
+  const sym = el.dataset.symbol;
+  if (!symbolImageMap[sym]) return;
+
+  const img = el.querySelector("img");
+  if (img) {
+    img.src = `png/${selectedColor}${symbolImageMap[sym]}d.png`;
+  }
+});
   };
   colorGroup.appendChild(btn);
 });
@@ -264,7 +298,6 @@ function restoreFromSnapshot(snapshot) {
 }
 
 document.getElementById("undoBtn").onclick = () => {
-  const btn = document.getElementById("undoBtn");
   if (undoStack.length === 0) return;
   const current = JSON.stringify(boards.map(b => ({
     grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
@@ -276,7 +309,6 @@ document.getElementById("undoBtn").onclick = () => {
 };
 
 document.getElementById("redoBtn").onclick = () => {
-  const btn = document.getElementById("redoBtn");
   if (redoStack.length === 0) return;
   const current = JSON.stringify(boards.map(b => ({
     grid: b.grid.map(row => row.map(cell => ({ ...cell }))),
@@ -548,9 +580,7 @@ for (let i = 0; i < 6; i++) {
         if (selectState.type === "numEdit") {
           if (!cell.symbol || cell.multi) return;
           pushHistory();
-          if (selectedColor) {
-            cell.color = selectedColor;
-          }
+          cell.color = selectedColor;
           if (selectState.editMode === 1) {
             cell.number = getSelectedNumber();
           } else if (selectState.editMode === 2) {
@@ -626,9 +656,14 @@ for (let i = 0; i < 6; i++) {
       const s = grid[y][x];
       const part = panel.querySelector(".part").value;
       const circleImages = { top: "png/top.png", bottom: "png/bottom.png", glove: "png/glove.png", shoes: "png/shoes.png" };
-      let symbolHTML = s.symbol;
+     let symbolHTML = s.symbol;
 
-      if (s.symbol === "img" && circleImages[part]) symbolHTML = `<img src="${circleImages[part]}" class="img">`;
+if (s.symbol === "img" && circleImages[part]) {
+  symbolHTML = `<img src="${circleImages[part]}" class="img">`;
+}
+else if (symbolImageMap[s.symbol]) {
+  symbolHTML = `<img src="png/${s.color || "red"}${symbolImageMap[s.symbol]}d.png" class="symbol-img">`;
+}
 
       c.innerHTML = `
         <div class="symbol-display">${symbolHTML}</div>
@@ -637,19 +672,7 @@ for (let i = 0; i < 6; i++) {
         <div class="number-display">${s.number || ""}</div>
       `;
       c.className = "cell";
-      if (!s.symbol) {
-        c.style.background = "";
-      } else if (s.multi) {
-        c.style.background = "#ffffaa";
-      } else if (s.color === "red") {
-        c.style.background = "#fff0f0";
-      } else if (s.color === "blue") {
-        c.style.background = "#f0f8ff";
-      } else if (s.color === "green") {
-        c.style.background = "#f0fff4";
-      } else {
-        c.style.background = "";
-      }
+      
     });
 
     updateBoard();
@@ -864,7 +887,10 @@ for (let i = 0; i < 6; i++) {
           }
 
           if (connections[s.symbol]) {
-              c.classList.add("connected", "highlight-" + (s.color || "red"));
+            const img = c.querySelector(".symbol-img");
+              if (img) {
+                  img.src = `png/${s.color || "red"}${symbolImageMap[s.symbol]}a.png`;
+              }
           }
       });
 
@@ -1172,3 +1198,20 @@ document.getElementById("message").placeholder =
 
 制作者：もふもふ
 `;
+
+/* ------------------------------------------------------------------------------だあく------------------------------------------------------------------------------ */
+
+const darkModeBtn = document.getElementById("darkModeBtn");
+
+if(localStorage.getItem("darkMode") === "on"){
+    document.body.classList.add("dark-mode");
+}
+
+darkModeBtn.onclick = () => {
+    document.body.classList.toggle("dark-mode");
+
+    localStorage.setItem(
+        "darkMode",
+        document.body.classList.contains("dark-mode") ? "on" : "off"
+    );
+};
